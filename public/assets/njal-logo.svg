@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 90" fill="none">
+  <defs>
+    <linearGradient id="logoRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF385C" />
+      <stop offset="50%" stop-color="#FF0B3A" />
+      <stop offset="100%" stop-color="#C90025" />
+    </linearGradient>
+    <filter id="logoGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#FF0B3A" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  <g fill="url(#logoRed)" filter="url(#logoGlow)">
+    <!-- N -->
+    <path d="M15 15 L28 15 L52 62 L52 15 L65 15 L65 75 L52 75 L28 28 L28 75 L15 75 Z" />
+    <!-- J -->
+    <path d="M90 15 L103 15 L103 58 C103 68 95 76 82 76 C70 76 65 70 65 64 L77 64 C77 66 79 67 82 67 C86 67 90 64 90 58 Z" />
+    <!-- A (Futuristic Lambda Cutout) -->
+    <path d="M125 75 L145 15 L160 15 L180 75 L166 75 L152.5 32 L139 75 Z" />
+    <!-- L -->
+    <path d="M200 15 L213 15 L213 64 L245 64 L245 75 L200 75 Z" />
+  </g>
+  <!-- Subtitle -->
+  <text x="260" y="48" font-family="'Chakra Petch', sans-serif" font-weight="900" font-size="16" letter-spacing="4" fill="#FFFFFF">BRASIL</text>
+  <text x="260" y="66" font-family="'Inter', sans-serif" font-weight="700" font-size="9" letter-spacing="2" fill="#FF0B3A">FORGED FOR CHAMPIONS</text>
+</svg>

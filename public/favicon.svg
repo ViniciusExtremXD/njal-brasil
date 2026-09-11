@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="none">
+  <defs>
+    <linearGradient id="njalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2A54" />
+      <stop offset="100%" stop-color="#CC0028" />
+    </linearGradient>
+    <filter id="njalGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FF0B3A" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <!-- Geometric Stylized Double Slash N Emblem -->
+  <path d="M22 100 L22 28 L40 28 L40 100 Z" fill="url(#njalGrad)" filter="url(#njalGlow)" />
+  <path d="M22 28 L78 92 L78 72 L40 28 Z" fill="url(#njalGrad)" />
+  <path d="M60 20 L78 20 L78 92 L60 92 Z" fill="url(#njalGrad)" filter="url(#njalGlow)" />
+  <polygon points="22,100 38,100 78,32 62,32" fill="url(#njalGrad)" />
+</svg>
