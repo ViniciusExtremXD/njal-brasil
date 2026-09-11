@@ -1,0 +1,18 @@
+---
+/**
+ * Kicker de seção: numero grande + traço + rótulo.
+ * O número "forja" ao entrar em cena (brilho vermelho que esfria), o traço
+ * desenha da esquerda pra direita. Estilos em global.css (.kicker*, @keyframes forge-num).
+ */
+interface Props {
+  index: string;
+  label: string;
+}
+const { index, label } = Astro.props;
+---
+
+<p class="kicker" data-reveal>
+  <span class="kicker__num" aria-hidden="true">{index}</span>
+  <span class="kicker__bar" aria-hidden="true"></span>
+  <span class="kicker__label">{label}</span>
+</p>

@@ -1,6 +1,7 @@
 ---
 import { ART, BRAND, MANIFESTO_LINES } from '../data/site';
 import Plate from './Plate.astro';
+import Kicker from './Kicker.astro';
 ---
 
 <section class="mani section" id="manifesto" aria-labelledby="mani-title">
@@ -16,8 +17,8 @@ import Plate from './Plate.astro';
     </div>
 
     <div class="mani__body">
-      <p class="eyebrow" data-reveal><b>01</b> — Manifesto</p>
-      <h2 class="mani__title d" id="mani-title" data-reveal="clip">
+      <Kicker index="01" label="Manifesto" />
+      <h2 class="mani__title d" id="mani-title" data-reveal="forge">
         <span class="sr-only">{BRAND.scriptures.who}: </span>É para quem
       </h2>
       <ol class="mani__lines">
@@ -34,9 +35,6 @@ import Plate from './Plate.astro';
         NJAL é vestuário de treino de alta intensidade, feito em São Paulo. Crossfit, ferro pesado,
         jiu-jitsu no-gi e rua: quatro arenas, uma mesma armadura.
         <strong>{BRAND.scriptures.armor}</strong>
-      </p>
-      <p class="eyebrow mani__say" data-reveal style="--i:7">
-        <span aria-hidden="true">✌</span> <b>{BRAND.say}</b>
       </p>
     </div>
   </div>

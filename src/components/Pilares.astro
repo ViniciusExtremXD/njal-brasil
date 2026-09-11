@@ -1,19 +1,20 @@
 ---
 import { ART, PILLARS } from '../data/site';
 import Plate from './Plate.astro';
+import Kicker from './Kicker.astro';
 ---
 
 <section class="pil section section--line" id="pilares" aria-labelledby="pil-title">
   <div class="wrap">
     <header class="sec-head">
-      <p class="eyebrow" data-reveal><b>02</b> — Pilares da cultura</p>
+      <Kicker index="02" label="Pilares da cultura" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="pil-title" data-reveal="clip">
+        <h2 class="sec-head__title d" id="pil-title" data-reveal="forge">
           Quatro arenas.<br />Uma armadura.
         </h2>
         <p class="copy" data-reveal style="--i:1">
-          Crossfit, academia, tatame e rua. E a confecção própria que faz tudo isso existir.
-          <strong>O que é a NJAL</strong> se responde no treino.
+          Cada arena pede uma peça diferente, e a confecção própria é o que faz todas elas
+          existirem. <strong>O que é a NJAL</strong> se responde no treino.
         </p>
       </div>
     </header>

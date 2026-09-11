@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import { AVATAR, BRAND, FEED } from '../data/site';
 import Plate from './Plate.astro';
 import Icon from './Icon.astro';
+import Kicker from './Kicker.astro';
 
 const { point } = BRAND;
 ---
@@ -10,9 +11,9 @@ const { point } = BRAND;
 <section class="com section section--line" id="comunidade" aria-labelledby="com-title">
   <div class="wrap">
     <header class="sec-head com__head">
-      <p class="eyebrow" data-reveal><b>05</b> — Comunidade</p>
+      <Kicker index="05" label="Comunidade" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="com-title" data-reveal="clip">Do feed<br />para o box.</h2>
+        <h2 class="sec-head__title d" id="com-title" data-reveal="forge">Do feed<br />para o box.</h2>
         <div class="com__profile" data-reveal style="--i:1">
           <Image src={AVATAR} alt="" width={112} height={112} class="com__avatar" loading="lazy" />
           <div class="com__who">

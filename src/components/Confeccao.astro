@@ -2,15 +2,16 @@
 import { B2B, BRAND } from '../data/site';
 import Plate from './Plate.astro';
 import Icon from './Icon.astro';
+import Kicker from './Kicker.astro';
 ---
 
 <section class="b2b section section--line" id="confeccao" aria-labelledby="b2b-title">
   <div class="wrap b2b__grid">
     <div class="b2b__body">
-      <p class="eyebrow" data-reveal><b>06</b> — Confecção própria · B2B</p>
-      <h2 class="b2b__title d" id="b2b-title" data-reveal="clip">
-        Sua ideia.<br />
-        <span class="d--red">Nossa confecção.</span>
+      <Kicker index="06" label="Confecção própria · B2B" />
+      <h2 class="b2b__title d" id="b2b-title">
+        <span data-reveal="forge">Sua ideia.</span><br />
+        <span class="d--red" data-reveal="forge-red" style="--i:1">Nossa confecção.</span>
       </h2>
       <p class="lead" data-reveal>{B2B.intro}</p>
       <ul class="b2b__list">

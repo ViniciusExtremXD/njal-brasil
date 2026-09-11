@@ -1,15 +1,16 @@
 ---
 import { FABRIC } from '../data/site';
+import Kicker from './Kicker.astro';
 ---
 
 <section class="tec section section--line" id="tecido" aria-labelledby="tec-title">
   <div class="wrap">
     <header class="sec-head">
-      <p class="eyebrow" data-reveal><b>04</b> — Engenharia do tecido</p>
+      <Kicker index="04" label="Engenharia do tecido" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="tec-title" data-reveal="clip">
-          Não são apenas roupas.<br />
-          <span class="d--red">São armaduras de treino.</span>
+        <h2 class="sec-head__title d" id="tec-title">
+          <span data-reveal="forge">Cada exigência.</span><br />
+          <span class="d--red" data-reveal="forge-red" style="--i:1">Uma resposta.</span>
         </h2>
         <p class="copy" data-reveal style="--i:1">
           Cada arena cobra uma coisa diferente do tecido. A peça nasce do que o treino exige, não do

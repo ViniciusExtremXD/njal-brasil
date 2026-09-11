@@ -2,6 +2,7 @@
 import { BRAND, DROPS } from '../data/site';
 import Plate from './Plate.astro';
 import Icon from './Icon.astro';
+import Kicker from './Kicker.astro';
 
 const MONO_PATH = 'M15 15H49L111 77V31L102 15H131V170H97L32 105V149L42.5 170H15ZM32 27L111 106V155L32 76Z';
 ---
@@ -9,9 +10,9 @@ const MONO_PATH = 'M15 15H49L111 77V31L102 15H131V170H97L32 105V149L42.5 170H15Z
 <section class="drops section section--line" id="drops" aria-labelledby="drops-title">
   <div class="wrap">
     <header class="sec-head">
-      <p class="eyebrow" data-reveal><b>03</b> — Drops</p>
+      <Kicker index="03" label="Drops" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="drops-title" data-reveal="clip">
+        <h2 class="sec-head__title d" id="drops-title" data-reveal="forge">
           Anunciado no feed.<br />Fechado no WhatsApp.
         </h2>
         <p class="copy" data-reveal style="--i:1">
@@ -60,7 +61,7 @@ const MONO_PATH = 'M15 15H49L111 77V31L102 15H131V170H97L32 105V149L42.5 170H15Z
               <p class="drop__idx eyebrow" data-reveal>
                 Drop <b>{d.index}</b>
               </p>
-              <h3 class="drop__name d" id={`drop-${d.index}-name`} data-reveal="clip">
+              <h3 class="drop__name d" id={`drop-${d.index}-name`} data-reveal="forge">
                 {d.name}
               </h3>
               <p class="drop__meta eyebrow" data-reveal style="--i:1">
