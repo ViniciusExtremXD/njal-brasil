@@ -1,26 +1,27 @@
-# NJAL BRASIL — Vitrine Editorial
+# NJAL BRASIL — vitrine
 
-> **FORGED FOR CHAMPIONS** · ✌️ Se fala **NIJAL**
+> **FORGED FOR CHAMPIONS** · ✌ SE FALA NIJAL
 > Não são apenas roupas. São armaduras de treino.
 
-Vitrine oficial da marca [@njalbrasil](https://www.instagram.com/njalbrasil/) — Crossfit RX,
-Saga Valhalla, Jiu-Jitsu Fightwear e Streetwear Oversized.
-
-**Isto não é uma loja virtual.** Não há carrinho, preço nem checkout: os drops são anunciados
-no Instagram oficial e a conversão acontece no atendimento concierge do WhatsApp.
+Site oficial da [@njalbrasil](https://www.instagram.com/njalbrasil/). Não é loja:
+os drops são anunciados no feed e o pedido fecha no WhatsApp.
 
 🔗 **No ar:** https://viniciusextremxd.github.io/njal-brasil/
 
 ## Stack
 
-React 18 · TypeScript · Vite 6 · Tailwind CSS 3 · framer-motion 12 · Canvas 2D · lucide-react
+Next.js 16 (App Router, export estático) · React 19 · TypeScript · Tailwind CSS 3 ·
+Framer Motion · GSAP + ScrollTrigger · Lenis · Three.js via React Three Fiber
 
-## Rodando local
+## Rodando
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
 ```
+
+`?motion=full` na URL ignora o `prefers-reduced-motion` do sistema — útil para
+revisar a experiência completa em máquina com a flag ligada.
 
 ## Publicando
 
@@ -28,20 +29,27 @@ npm run dev     # http://localhost:3000
 npm run deploy
 ```
 
-Builda com `VITE_BASE=/njal-brasil/` e faz push da pasta `dist/` para a branch `gh-pages`.
-O GitHub Pages serve essa branch em alguns instantes.
+Builda com `NEXT_PUBLIC_BASE_PATH=/njal-brasil` e empurra `out/` para a branch `gh-pages`.
 
-## Estrutura
+## Mapa
 
 | Caminho | O que é |
 | --- | --- |
-| `src/config/brand.ts` | Fonte única: links oficiais, escrituras da marca e `whatsappLink()` / `asset()` |
-| `src/components/` | Seções da vitrine (Hero, Manifesto, Vitrine de Drops, Lookbook, Tech, B2B…) |
-| `src/components/ui/` | Peças de motion design: `GlowCard`, `MagneticButton`, `ParticleCanvas`, `FloatingBadge` |
-| `src/data/instagramPosts.ts` | Mural do feed @njalbrasil |
-| `public/assets/` | Logotipos HD autênticos e fotos reais dos atletas |
+| `src/lib/brand.ts` | Links oficiais, escrituras da marca, `concierge()` e `asset()` |
+| `src/data/drops.ts` | Catálogo editorial dos drops (alimenta a vitrine e as rotas `/drop/[slug]`) |
+| `src/components/motion/` | Primitivos: scroll suave, cursor, revelações, magnetismo, glitch, letreiros |
+| `src/components/three/` | Shader do retrato do Hero (distorção + aberração cromática) |
+| `src/components/sections/` | Hero, Arsenal, Manifesto, Legado, Comunidade, Forja |
+| `src/hooks/useEnvironment.ts` | Decide onde os efeitos pesados podem rodar |
 
-## Trocando links ou textos da marca
+## Camadas de degradação
 
-Tudo passa por `src/config/brand.ts` — Instagram, WhatsApp, slogan, ponto físico.
-Alterar lá reflete no site inteiro.
+O site tem três níveis, escolhidos em runtime:
+
+1. **Completo** — desktop com ponteiro fino: WebGL no retrato, scroll suave via Lenis,
+   pinning horizontal do Legado, cursor próprio.
+2. **Leve** — mobile/tablet: mesmo conteúdo, seções empilhadas, sem WebGL nem pinning.
+3. **Reduzido** — `prefers-reduced-motion`: tudo entra no estado final, sem animação.
+
+Se o contexto WebGL cair (GPU reset, aba suspensa), o Hero volta sozinho para a
+foto tratada em CSS.

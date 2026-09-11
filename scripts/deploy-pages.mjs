@@ -1,12 +1,11 @@
 /**
- * Publica a vitrine NJAL no GitHub Pages (branch gh-pages).
+ * Publica o export estático da NJAL no GitHub Pages (branch gh-pages).
  *
  * Uso: npm run deploy
  *
- * O que ele faz:
- *  1. builda com VITE_BASE=/<repo>/ para os assets resolverem no subdiretorio;
- *  2. copia dist/ para uma pasta temporaria com .nojekyll;
- *  3. faz force push dessa pasta na branch gh-pages do remote origin.
+ *  1. builda com NEXT_PUBLIC_BASE_PATH=/njal-brasil (o Pages serve em subpasta);
+ *  2. copia out/ para uma pasta temporária com .nojekyll;
+ *  3. faz force push dessa pasta na branch gh-pages.
  */
 import { execFileSync } from 'node:child_process';
 import { cpSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -14,32 +13,44 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const REPO_URL = 'https://github.com/ViniciusExtremXD/njal-brasil.git';
-const BASE = '/njal-brasil/';
+const BASE_PATH = '/njal-brasil';
 
-const run = (cmd, args, cwd) =>
-  execFileSync(cmd, args, { cwd, stdio: 'inherit', shell: process.platform === 'win32' });
+const win = process.platform === 'win32';
+const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, stdio: 'inherit', shell: win });
 
-console.log(`\n> build com base ${BASE}`);
+console.log(`\n> build estático com basePath ${BASE_PATH}`);
 execFileSync('npm', ['run', 'build'], {
   stdio: 'inherit',
-  shell: process.platform === 'win32',
-  env: { ...process.env, VITE_BASE: BASE },
+  shell: win,
+  env: { ...process.env, NEXT_PUBLIC_BASE_PATH: BASE_PATH },
 });
 
 const staging = mkdtempSync(join(tmpdir(), 'njal-pages-'));
 try {
-  cpSync('dist', staging, { recursive: true });
-  // Impede o Jekyll do GitHub de ignorar arquivos iniciados por _
+  cpSync('out', staging, { recursive: true });
+  // Sem isto o Jekyll do GitHub ignora a pasta _next inteira.
   writeFileSync(join(staging, '.nojekyll'), '');
 
   run('git', ['init', '-b', 'gh-pages', '-q'], staging);
   run('git', ['add', '-A'], staging);
-  run('git', ['-c', 'user.name=NJAL Deploy', '-c', 'user.email=deploy@njal.local',
-              'commit', '-q', '-m', 'Deploy da vitrine NJAL Brasil'], staging);
+  run(
+    'git',
+    [
+      '-c',
+      'user.name=NJAL Deploy',
+      '-c',
+      'user.email=deploy@njal.local',
+      'commit',
+      '-q',
+      '-m',
+      'Deploy da vitrine NJAL',
+    ],
+    staging
+  );
   run('git', ['remote', 'add', 'origin', REPO_URL], staging);
   run('git', ['push', '-f', 'origin', 'gh-pages'], staging);
 
-  console.log(`\n> publicado em https://viniciusextremxd.github.io${BASE}`);
+  console.log(`\n> publicado em https://viniciusextremxd.github.io${BASE_PATH}/`);
 } finally {
   rmSync(staging, { recursive: true, force: true });
 }

@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --blood: 232 18 63;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    /* O smooth scroll é do Lenis; o nativo brigaria com ele. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-void text-smoke font-body antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    @apply bg-blood text-bone;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-void;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-iron;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-blood;
+  }
+
+  /* Cursor próprio assume no desktop com ponteiro fino. */
+  @media (hover: hover) and (pointer: fine) {
+    body[data-cursor='on'],
+    body[data-cursor='on'] * {
+      cursor: none !important;
+    }
+  }
+}
+
+@layer components {
+  /* Tipografia display expandida — a assinatura visual da marca. */
+  .type-brutal {
+    font-family: var(--font-display), system-ui, sans-serif;
+    font-weight: 900;
+    font-stretch: 125%;
+    font-variation-settings: 'wdth' 125;
+    letter-spacing: -0.04em;
+    line-height: 0.82;
+    text-transform: uppercase;
+  }
+
+  .type-tactical {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+
+  /* Corte diagonal do monograma aplicado como recorte de caixa. */
+  .cut-corner {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
+  }
+
+  .cut-badge {
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .edge-blood {
+    box-shadow: inset 0 0 0 1px rgb(var(--blood) / 0.35);
+  }
+}
+
+@layer utilities {
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  }
+
+  /* Trava a linha para reveal por máscara sem cortar acentos. */
+  /*
+   * Máscara de revelação: a linha entra deslizando de baixo, então só a borda
+   * inferior precisa cortar. Recortar o topo comeria os acentos (É, Ã, Ç) em
+   * line-height fechado — por isso clip-path com folga negativa em cima.
+   */
+  .line-mask {
+    display: block;
+    clip-path: inset(-0.45em -0.08em 0 -0.08em);
+  }
+}
+
+/* html[data-motion='full'] é a saída de emergência de QA (?motion=full). */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) *,
+  html:not([data-motion='full']) *::before,
+  html:not([data-motion='full']) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Deslocamento do grão de filme (usado por <Atmosphere />). */
+@keyframes grain {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-12px, 8px, 0); }
+  40% { transform: translate3d(10px, -14px, 0); }
+  60% { transform: translate3d(-8px, -6px, 0); }
+  80% { transform: translate3d(14px, 10px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
