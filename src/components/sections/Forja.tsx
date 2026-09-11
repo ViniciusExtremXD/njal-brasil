@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { concierge, asset } from '@/lib/brand';
-import { RevealLines, RevealBlock } from '@/components/motion/Reveal';
+import { Reveal, RevealLines, RevealRule, RevealWords, RevealMedia } from '@/components/motion/Reveal';
 import { Magnetic } from '@/components/motion/Magnetic';
 
 const PIECES = [
@@ -38,8 +38,10 @@ export function Forja() {
     <section id="forja" className="relative overflow-hidden border-t border-iron/60 bg-void py-24 sm:py-32">
       <div className="mx-auto max-w-[1680px] px-5 sm:px-8">
         <div className="mb-12 flex items-center gap-4">
-          <span className="type-tactical text-[10px] text-blood">05 — A FORJA</span>
-          <span className="h-px flex-1 bg-iron" />
+          <Reveal kind="right" as="span" className="type-tactical text-[10px] text-blood">
+            05 — A FORJA
+          </Reveal>
+          <RevealRule delay={120} className="flex-1" />
         </div>
 
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
@@ -51,46 +53,54 @@ export function Forja() {
               lineClassName="text-[13vw] leading-[0.84] sm:text-[8vw] lg:text-[5vw]"
             />
 
-            <p className="mt-8 max-w-lg text-sm leading-relaxed text-smoke sm:text-base">
-              Máquina, corte, modelagem e estamparia dentro de casa. Produzimos a linha oficial do
-              seu box, academia, equipe de luta ou marca própria a partir de 10 peças — com o mesmo
-              padrão das peças que vestimos nos nossos atletas.
-            </p>
+            <RevealWords
+              as="p"
+              text="Máquina, corte, modelagem e estamparia dentro de casa. Produzimos a linha oficial do seu box, academia, equipe de luta ou marca própria a partir de 10 peças — com o mesmo padrão das peças que vestimos nos nossos atletas."
+              className="mt-8 block max-w-lg text-sm leading-relaxed text-smoke sm:text-base"
+              delay={220}
+              step={16}
+            />
 
-            <RevealBlock className="mt-10 grid gap-px overflow-hidden border border-iron/70 bg-iron/70 sm:grid-cols-2">
+            <div className="mt-10 grid gap-px overflow-hidden border border-iron/70 bg-iron/70 sm:grid-cols-2">
               {[
                 { k: 'MÍNIMO', v: '10 PEÇAS' },
                 { k: 'TÉCNICAS', v: 'SILK · DTF · BORDADO' },
                 { k: 'MOCKUP', v: 'APROVAÇÃO ANTES DO CORTE' },
                 { k: 'ENVIO', v: 'TODO O BRASIL' },
-              ].map((item) => (
-                <div key={item.k} className="bg-void p-6">
+              ].map((item, i) => (
+                <Reveal key={item.k} kind="up" delay={i * 100} className="bg-void p-6">
                   <div className="type-tactical text-[9px] text-ash">{item.k}</div>
                   <div className="type-brutal mt-2 text-lg text-bone">{item.v}</div>
-                </div>
+                </Reveal>
               ))}
-            </RevealBlock>
+            </div>
 
-            <figure className="mt-10 aspect-[16/10] w-full overflow-hidden">
+            <RevealMedia className="mt-10 aspect-[16/10] w-full" kind="clip-x">
               <img
+                data-parallax="9"
                 src={asset('/assets/images/post-confeccao-portfolio.jpg')}
                 alt="Portfólio da confecção NJAL"
                 loading="lazy"
-                className="h-full w-full object-cover object-center"
+                className="h-full w-full scale-[1.22] object-cover object-center"
               />
-            </figure>
+            </RevealMedia>
           </div>
 
           {/* Configurador que monta a mensagem do orçamento */}
           <div className="lg:col-span-6">
-            <div className="cut-corner border border-iron/70 bg-graphite p-7 sm:p-10">
-              <div className="type-tactical text-[9px] text-blood">MONTE SEU PEDIDO</div>
-              <h3 className="type-brutal mt-3 text-2xl text-bone sm:text-3xl">
-                ORÇAMENTO EM UMA MENSAGEM
-              </h3>
+            <Reveal kind="left" className="cut-corner border border-iron/70 bg-graphite p-7 sm:p-10">
+              <Reveal kind="right" as="div" className="type-tactical text-[9px] text-blood">
+                MONTE SEU PEDIDO
+              </Reveal>
+              <RevealLines
+                as="h3"
+                lines={['ORÇAMENTO EM', 'UMA MENSAGEM']}
+                className="type-brutal mt-3 text-2xl text-bone sm:text-3xl"
+                delay={120}
+              />
 
               <div className="mt-8 space-y-7">
-                <Field label="TIPO DE PEÇA">
+                <Field label="TIPO DE PEÇA" delay={260}>
                   <div className="flex flex-wrap gap-2">
                     {PIECES.map((p) => (
                       <Chip key={p} active={piece === p} onClick={() => setPiece(p)}>
@@ -100,7 +110,7 @@ export function Forja() {
                   </div>
                 </Field>
 
-                <Field label="VOLUME ESTIMADO">
+                <Field label="VOLUME ESTIMADO" delay={340}>
                   <div className="flex flex-wrap gap-2">
                     {VOLUMES.map((v) => (
                       <Chip key={v} active={volume === v} onClick={() => setVolume(v)}>
@@ -111,7 +121,7 @@ export function Forja() {
                 </Field>
 
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="BOX / MARCA">
+                  <Field label="BOX / MARCA" delay={420}>
                     <input
                       value={team}
                       onChange={(e) => setTeam(e.target.value)}
@@ -120,7 +130,7 @@ export function Forja() {
                     />
                   </Field>
 
-                  <Field label="CIDADE / UF">
+                  <Field label="CIDADE / UF" delay={480}>
                     <input
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
@@ -132,14 +142,15 @@ export function Forja() {
               </div>
 
               {/* Prévia do que será enviado — nada de caixa-preta. */}
-              <div className="mt-8 border border-iron/70 bg-void/60 p-5">
+              <Reveal kind="up" delay={560} className="mt-8 border border-iron/70 bg-void/60 p-5">
                 <div className="type-tactical mb-3 text-[9px] text-ash">PRÉVIA DA MENSAGEM</div>
                 <pre className="whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-smoke">
                   {message}
                 </pre>
-              </div>
+              </Reveal>
 
-              <Magnetic strength={0.25} className="mt-8 inline-block">
+              <Reveal kind="up" delay={640} className="mt-8 inline-block">
+                <Magnetic strength={0.25}>
                 <a
                   href={concierge(message)}
                   target="_blank"
@@ -150,8 +161,9 @@ export function Forja() {
                   ABRIR NO WHATSAPP
                   <span aria-hidden>↗</span>
                 </a>
-              </Magnetic>
-            </div>
+                </Magnetic>
+              </Reveal>
+            </Reveal>
           </div>
         </div>
       </div>
@@ -159,12 +171,22 @@ export function Forja() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+  delay = 0,
+}: {
+  label: string;
+  children: React.ReactNode;
+  delay?: number;
+}) {
   return (
-    <label className="block">
-      <span className="type-tactical mb-3 block text-[9px] text-ash">{label}</span>
-      {children}
-    </label>
+    <Reveal kind="up" delay={delay}>
+      <label className="block">
+        <span className="type-tactical mb-3 block text-[9px] text-ash">{label}</span>
+        {children}
+      </label>
+    </Reveal>
   );
 }
 

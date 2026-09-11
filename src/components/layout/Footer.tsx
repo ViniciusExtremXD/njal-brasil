@@ -1,9 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { motion, useInView } from 'motion/react';
+import { useState } from 'react';
 import { BRAND, asset, concierge } from '@/lib/brand';
 import { Magnetic } from '@/components/motion/Magnetic';
+import { Reveal, RevealLines, RevealWords } from '@/components/motion/Reveal';
 
 const COLUMNS = [
   {
@@ -28,23 +28,26 @@ const COLUMNS = [
 ];
 
 export function Footer() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-20% 0px' });
   const [sent, setSent] = useState(false);
 
   return (
-    <footer ref={ref} className="relative overflow-hidden border-t border-iron/60 bg-carbon">
+    <footer className="relative overflow-hidden border-t border-iron/60 bg-carbon">
       <div className="mx-auto max-w-[1680px] px-5 pt-20 sm:px-8 sm:pt-24">
         {/* Chamada final */}
         <div className="grid gap-12 pb-16 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <div className="type-tactical mb-5 text-[9px] text-blood">ÚLTIMO AVISO</div>
-            <p className="type-brutal text-[11vw] leading-[0.84] text-bone sm:text-[7vw] lg:text-[4.6vw]">
-              A ARMADURA NÃO
-              <br />
-              ESPERA VOCÊ.
-            </p>
+            <Reveal kind="right" as="div" className="type-tactical mb-5 text-[9px] text-blood">
+              ÚLTIMO AVISO
+            </Reveal>
+            <RevealLines
+              as="p"
+              lines={['A ARMADURA NÃO', 'ESPERA VOCÊ.']}
+              className="type-brutal text-bone"
+              lineClassName="text-[11vw] leading-[0.84] sm:text-[7vw] lg:text-[4.6vw]"
+              delay={90}
+            />
             <div className="mt-9 flex flex-wrap gap-3">
+              <Reveal kind="up" delay={320}>
               <Magnetic strength={0.3}>
                 <a
                   href={BRAND.instagram}
@@ -57,6 +60,8 @@ export function Footer() {
                   <span aria-hidden>↗</span>
                 </a>
               </Magnetic>
+              </Reveal>
+              <Reveal kind="up" delay={400}>
               <a
                 href={concierge('Olá NJAL! Quero garantir minha peça.')}
                 target="_blank"
@@ -66,17 +71,23 @@ export function Footer() {
               >
                 FALAR NO WHATSAPP
               </a>
+              </Reveal>
             </div>
           </div>
 
           {/* Aviso de drop */}
           <div className="lg:col-span-5">
-            <div className="cut-corner border border-iron/70 p-7">
-              <div className="type-tactical text-[9px] text-ash">AVISO DE DROP</div>
-              <p className="mt-3 text-sm leading-relaxed text-smoke">
-                A NJAL não dispara e-mail: o aviso de lote novo sai no story. Ative o sininho do
-                perfil e você vê antes de esgotar.
-              </p>
+            <Reveal kind="left" delay={180} className="cut-corner border border-iron/70 p-7">
+              <Reveal kind="right" delay={260} as="div" className="type-tactical text-[9px] text-ash">
+                AVISO DE DROP
+              </Reveal>
+              <RevealWords
+                as="p"
+                text="A NJAL não dispara e-mail: o aviso de lote novo sai no story. Ative o sininho do perfil e você vê antes de esgotar."
+                className="mt-3 block text-sm leading-relaxed text-smoke"
+                delay={320}
+                step={14}
+              />
 
               <form
                 onSubmit={(e) => {
@@ -106,31 +117,31 @@ export function Footer() {
                   ? 'lista local — o canal oficial continua sendo o instagram'
                   : 'o canal oficial de lançamento é o feed'}
               </p>
-            </div>
+            </Reveal>
           </div>
         </div>
 
         {/* Colunas */}
         <div className="grid gap-10 border-t border-iron/70 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          {COLUMNS.map((col) => (
-            <div key={col.title}>
+          {COLUMNS.map((col, c) => (
+            <Reveal key={col.title} kind="up" delay={c * 110}>
               <div className="type-tactical mb-5 text-[9px] text-ash">{col.title}</div>
               <ul className="space-y-3">
-                {col.links.map((link) => (
-                  <li key={link.label}>
+                {col.links.map((link, i) => (
+                  <Reveal as="li" key={link.label} kind="right" delay={c * 110 + i * 55}>
                     <a
                       href={link.href}
                       className="text-sm text-smoke transition-colors duration-300 hover:text-blood"
                     >
                       {link.label}
                     </a>
-                  </li>
+                  </Reveal>
                 ))}
               </ul>
-            </div>
+            </Reveal>
           ))}
 
-          <div>
+          <Reveal kind="up" delay={240}>
             <div className="type-tactical mb-5 text-[9px] text-ash">PONTO FÍSICO</div>
             <p className="text-sm leading-relaxed text-smoke">
               <strong className="text-bone">{BRAND.point.name}</strong>
@@ -139,32 +150,44 @@ export function Footer() {
               <br />
               {BRAND.point.city}
             </p>
-          </div>
+          </Reveal>
 
-          <div>
+          <Reveal kind="up" delay={340}>
             <div className="type-tactical mb-5 text-[9px] text-ash">PRONÚNCIA</div>
-            <p className="type-brutal text-3xl text-bone">✌ {BRAND.say}</p>
-            <p className="mt-3 text-sm leading-relaxed text-smoke">{BRAND.armor}</p>
-          </div>
+            <RevealLines
+              lines={[`✌ ${BRAND.say}`]}
+              className="type-brutal text-3xl text-bone"
+              delay={380}
+            />
+            <RevealWords
+              as="p"
+              text={BRAND.armor}
+              className="mt-3 block text-sm leading-relaxed text-smoke"
+              delay={460}
+              step={16}
+            />
+          </Reveal>
         </div>
       </div>
 
-      {/* Wordmark gigante de fechamento */}
-      <div className="relative overflow-hidden border-t border-iron/70">
-        <motion.img
-          src={asset('/assets/njal-wordmark-hd.png')}
-          alt={BRAND.full}
-          initial={{ y: '38%', opacity: 0 }}
-          animate={inView ? { y: '18%', opacity: 1 } : undefined}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto w-[112%] max-w-none px-2 opacity-90"
-        />
+      {/* Wordmark gigante de fechamento: emerge de dentro da própria borda */}
+      <div className="relative overflow-hidden border-t border-iron/70 pt-6">
+        <span className="line-mask block">
+          <img
+            data-reveal="mask"
+            style={{ '--reveal-duration': '1500ms' } as React.CSSProperties}
+            src={asset('/assets/njal-wordmark-hd.png')}
+            alt={BRAND.full}
+            className="mx-auto block w-[112%] max-w-none translate-y-[14%] px-2 opacity-90"
+          />
+        </span>
       </div>
 
       <div className="mx-auto flex max-w-[1680px] flex-col gap-3 px-5 py-7 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-        <span className="type-tactical text-[9px] text-ash">
+        <Reveal kind="right" as="span" className="type-tactical text-[9px] text-ash">
           © {new Date().getFullYear()} {BRAND.full} · {BRAND.creed}
-        </span>
+        </Reveal>
+        <Reveal kind="left" delay={120} as="span">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           data-cursor="link"
@@ -172,6 +195,7 @@ export function Footer() {
         >
           VOLTAR AO TOPO ↑
         </button>
+        </Reveal>
       </div>
     </footer>
   );

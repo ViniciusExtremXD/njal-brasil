@@ -7,6 +7,7 @@ import { useGSAP } from '@/hooks/useGSAP';
 import { asset } from '@/lib/brand';
 import { useHeavyMotion } from '@/hooks/useEnvironment';
 import { Scramble } from '@/components/motion/Scramble';
+import { Reveal, RevealLines, RevealRule } from '@/components/motion/Reveal';
 
 const CHAPTERS = [
   {
@@ -65,22 +66,43 @@ export function Legado() {
         },
       });
 
-      // Parallax interno: a foto anda mais devagar que o painel.
       panels.forEach((panel) => {
+        // A foto anda mais devagar que o painel.
         const image = panel.querySelector('[data-panel-image]');
-        if (!image) return;
+        if (image) {
+          gsap.fromTo(
+            image,
+            { xPercent: -9, scale: 1.16 },
+            {
+              xPercent: 9,
+              scale: 1.04,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: panel,
+                containerAnimation: tween,
+                start: 'left right',
+                end: 'right left',
+                scrub: true,
+              },
+            }
+          );
+        }
+
+        // O texto de cada capítulo entra quando o painel cruza o centro.
         gsap.fromTo(
-          image,
-          { xPercent: -8 },
+          panel.querySelectorAll('[data-panel-copy] > *'),
+          { yPercent: 60, opacity: 0 },
           {
-            xPercent: 8,
-            ease: 'none',
+            yPercent: 0,
+            opacity: 1,
+            stagger: 0.08,
+            ease: 'power3.out',
+            duration: 0.9,
             scrollTrigger: {
               trigger: panel,
               containerAnimation: tween,
-              start: 'left right',
-              end: 'right left',
-              scrub: true,
+              start: 'left 72%',
+              toggleActions: 'play none none reverse',
             },
           }
         );
@@ -99,11 +121,13 @@ export function Legado() {
     >
       <div className="mx-auto max-w-[1680px] px-5 pb-10 pt-24 sm:px-8 sm:pt-32">
         <div className="flex items-center gap-4">
-          <span className="type-tactical text-[10px] text-blood">03 — LEGADO</span>
-          <span className="h-px flex-1 bg-iron" />
-          <span className="type-tactical hidden text-[10px] text-ash lg:inline">
+          <Reveal kind="right" as="span" className="type-tactical text-[10px] text-blood">
+            03 — LEGADO
+          </Reveal>
+          <RevealRule delay={120} className="flex-1" />
+          <Reveal kind="left" delay={220} as="span" className="type-tactical hidden text-[10px] text-ash lg:inline">
             role para atravessar
-          </span>
+          </Reveal>
         </div>
       </div>
 
@@ -114,13 +138,9 @@ export function Legado() {
       */}
       <div
         ref={track}
-        className={
-          heavy
-            ? 'flex w-max flex-row'
-            : 'flex w-full flex-col gap-5 px-5 pb-24 sm:px-8'
-        }
+        className={heavy ? 'flex w-max flex-row' : 'flex w-full flex-col gap-5 px-5 pb-24 sm:px-8'}
       >
-        {CHAPTERS.map((chapter) => (
+        {CHAPTERS.map((chapter, i) => (
           <article
             key={chapter.id}
             data-panel
@@ -145,17 +165,46 @@ export function Legado() {
               <div className="absolute inset-0 bg-gradient-to-t from-void via-void/55 to-void/10" />
             </div>
 
-            <div className={`relative z-10 p-6 sm:p-10 ${heavy ? 'max-w-xl p-14' : ''}`}>
-              <div className="type-tactical mb-4 text-[9px] text-blood">
-                CAPÍTULO {chapter.id}
-              </div>
-              <h3 className="type-brutal text-[13vw] leading-[0.84] text-bone sm:text-[8vw] lg:text-[4.2vw]">
-                {chapter.title}
-              </h3>
-              <div className="type-tactical mt-4 text-[10px] text-bone">
-                <Scramble text={chapter.claim} />
-              </div>
-              <p className="mt-5 max-w-md text-sm leading-relaxed text-smoke">{chapter.text}</p>
+            {/* No modo pinado o GSAP anima; fora dele o observador cuida. */}
+            <div
+              data-panel-copy
+              className={`relative z-10 p-6 sm:p-10 ${heavy ? 'max-w-xl p-14' : ''}`}
+            >
+              {heavy ? (
+                <>
+                  <div className="type-tactical mb-4 text-[9px] text-blood">
+                    CAPÍTULO {chapter.id}
+                  </div>
+                  <h3 className="type-brutal text-[13vw] leading-[0.84] text-bone sm:text-[8vw] lg:text-[4.2vw]">
+                    {chapter.title}
+                  </h3>
+                  <div className="type-tactical mt-4 text-[10px] text-bone">
+                    <Scramble text={chapter.claim} />
+                  </div>
+                  <p className="mt-5 max-w-md text-sm leading-relaxed text-smoke">{chapter.text}</p>
+                </>
+              ) : (
+                <>
+                  <Reveal kind="right" as="div" className="type-tactical mb-4 text-[9px] text-blood">
+                    CAPÍTULO {chapter.id}
+                  </Reveal>
+                  <RevealLines
+                    as="h3"
+                    lines={[chapter.title]}
+                    className="type-brutal text-[13vw] leading-[0.84] text-bone sm:text-[8vw]"
+                    delay={80}
+                  />
+                  <Reveal kind="up" delay={220} as="div" className="type-tactical mt-4 text-[10px] text-bone">
+                    <Scramble text={chapter.claim} />
+                  </Reveal>
+                  <Reveal kind="up" delay={300}>
+                    <p className="mt-5 max-w-md text-sm leading-relaxed text-smoke">
+                      {chapter.text}
+                    </p>
+                  </Reveal>
+                </>
+              )}
+              <span className="sr-only">{i + 1}</span>
             </div>
           </article>
         ))}

@@ -16,11 +16,14 @@ export function DropCard({
   drop,
   eager = false,
   wide = false,
+  delay = 0,
 }: {
   drop: Drop;
   eager?: boolean;
   /** Card em destaque ocupa duas colunas — proporção deitada evita um bloco gigante. */
   wide?: boolean;
+  /** Atraso da revelação, para escalonar a grade. */
+  delay?: number;
 }) {
   const fine = useFinePointer();
   const ref = useRef<HTMLAnchorElement>(null);
@@ -64,6 +67,8 @@ export function DropCard({
       aria-label={`${drop.name} — ${drop.line}`}
     >
       <div
+        data-reveal="clip"
+        style={{ '--reveal-delay': `${delay}ms` } as React.CSSProperties}
         className={`relative w-full overflow-hidden bg-graphite ${
           wide ? 'aspect-[16/11]' : 'aspect-[4/5]'
         }`}
@@ -87,7 +92,11 @@ export function DropCard({
         <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/10 to-transparent" />
 
         {/* Faixa de status */}
-        <div className="absolute left-0 top-5 flex items-center">
+        <div
+          data-reveal="right"
+          style={{ '--reveal-delay': `${delay + 320}ms` } as React.CSSProperties}
+          className="absolute left-0 top-5 flex items-center"
+        >
           <span
             className={`type-tactical cut-badge px-3 py-1.5 text-[9px] ${
               drop.status === 'LOTE ESGOTADO'
@@ -101,14 +110,32 @@ export function DropCard({
           </span>
         </div>
 
-        <span className="type-tactical absolute right-5 top-5 text-[9px] text-bone/70">
+        <span
+          data-reveal="left"
+          style={{ '--reveal-delay': `${delay + 380}ms` } as React.CSSProperties}
+          className="type-tactical absolute right-5 top-5 text-[9px] text-bone/70"
+        >
           {drop.index}
         </span>
 
         {/* Grito de guerra revelado no hover */}
         <div className="absolute inset-x-5 bottom-5">
-          <div className="type-tactical mb-2 text-[9px] text-blood">{drop.line}</div>
-          <h3 className="type-brutal text-2xl text-bone sm:text-3xl">{drop.name}</h3>
+          <div
+            data-reveal="up"
+            style={{ '--reveal-delay': `${delay + 420}ms` } as React.CSSProperties}
+            className="type-tactical mb-2 text-[9px] text-blood"
+          >
+            {drop.line}
+          </div>
+          <span className="line-mask">
+            <h3
+              data-reveal="mask"
+              style={{ '--reveal-delay': `${delay + 480}ms` } as React.CSSProperties}
+              className="type-brutal text-2xl text-bone sm:text-3xl"
+            >
+              {drop.name}
+            </h3>
+          </span>
           <div
             className="grid transition-all duration-500 ease-brutal"
             style={{ gridTemplateRows: hover ? '1fr' : '0fr', opacity: hover ? 1 : 0 }}

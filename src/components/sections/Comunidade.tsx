@@ -1,7 +1,7 @@
 'use client';
 
 import { BRAND, asset } from '@/lib/brand';
-import { RevealLines, RevealMedia } from '@/components/motion/Reveal';
+import { Reveal, RevealLines, RevealMedia, RevealRule, RevealWords } from '@/components/motion/Reveal';
 import { Marquee } from '@/components/motion/Marquee';
 
 const FEED = [
@@ -43,12 +43,30 @@ const FEED = [
   },
 ];
 
+const VOICES = [
+  {
+    quote:
+      'Uso no box há oito meses. Não sobe no muscle-up, não assa e sai da máquina de lavar igual.',
+    who: 'Lucas M.',
+    role: 'Coach Crossfit RX',
+  },
+  {
+    quote:
+      'A rashguard aguenta pegada de faixa-preta puxando pelo ombro. Não laceou até hoje.',
+    who: 'Prof. Rodrigo',
+    role: 'Templo Jiu-Jitsu',
+  },
+  {
+    quote:
+      'Fechei 150 uniformes para o campeonato interno. Prazo batido e acabamento acima do que esperava.',
+    who: 'Renato B.',
+    role: 'Dono de box',
+  },
+];
+
 export function Comunidade() {
   return (
-    <section
-      id="comunidade"
-      className="relative border-t border-iron/60 bg-carbon py-24 sm:py-32"
-    >
+    <section id="comunidade" className="relative border-t border-iron/60 bg-carbon py-24 sm:py-32">
       <Marquee
         items={[BRAND.handle, 'COMUNIDADE', BRAND.creed, 'SIGA O FEED', BRAND.say]}
         className="mb-16 border-y border-iron/60 py-4"
@@ -59,6 +77,13 @@ export function Comunidade() {
       />
 
       <div className="mx-auto max-w-[1680px] px-5 sm:px-8">
+        <div className="mb-10 flex items-center gap-4">
+          <Reveal kind="right" as="span" className="type-tactical text-[10px] text-blood">
+            04 — COMUNIDADE
+          </Reveal>
+          <RevealRule delay={120} className="flex-1" />
+        </div>
+
         <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <RevealLines
             as="h2"
@@ -67,19 +92,21 @@ export function Comunidade() {
             lineClassName="text-[12vw] leading-[0.84] sm:text-[8vw] lg:text-[5.4vw]"
           />
 
-          <a
-            href={BRAND.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cursor="link"
-            className="type-tactical inline-flex w-fit items-center gap-3 border border-iron px-7 py-4 text-[10px] text-smoke transition-colors duration-300 hover:border-blood hover:text-bone"
-          >
-            ABRIR O FEED {BRAND.handle}
-            <span aria-hidden>↗</span>
-          </a>
+          <Reveal kind="left" delay={240}>
+            <a
+              href={BRAND.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="link"
+              className="type-tactical inline-flex w-fit items-center gap-3 border border-iron px-7 py-4 text-[10px] text-smoke transition-colors duration-300 hover:border-blood hover:text-bone"
+            >
+              ABRIR O FEED {BRAND.handle}
+              <span aria-hidden>↗</span>
+            </a>
+          </Reveal>
         </div>
 
-        {/* Grade assimétrica */}
+        {/* Grade assimétrica — cada card abre em sequência */}
         <div className="grid auto-rows-[minmax(180px,auto)] grid-cols-1 gap-4 sm:grid-cols-4">
           {FEED.map((item, i) => (
             <a
@@ -90,12 +117,13 @@ export function Comunidade() {
               data-cursor="media"
               className={`group relative overflow-hidden bg-graphite ${item.span}`}
             >
-              <RevealMedia className="h-full w-full" delay={i * 0.04}>
+              <RevealMedia className="h-full w-full" delay={i * 85} kind={i % 2 ? 'clip-x' : 'clip'}>
                 <img
+                  data-parallax="5"
                   src={item.image}
                   alt={item.caption}
                   loading="lazy"
-                  className="h-full min-h-[180px] w-full object-cover object-center transition-transform duration-[1200ms] ease-brutal group-hover:scale-105"
+                  className="h-full min-h-[180px] w-full scale-110 object-cover object-center transition-transform duration-[1200ms] ease-brutal group-hover:scale-[1.16]"
                 />
               </RevealMedia>
 
@@ -109,36 +137,29 @@ export function Comunidade() {
           ))}
         </div>
 
-        {/* Depoimentos curtos, no tom do direct */}
+        {/* Depoimentos */}
         <div className="mt-16 grid gap-4 sm:grid-cols-3">
-          {[
-            {
-              quote:
-                'Uso no box há oito meses. Não sobe no muscle-up, não assa e sai da máquina de lavar igual.',
-              who: 'Lucas M.',
-              role: 'Coach Crossfit RX',
-            },
-            {
-              quote:
-                'A rashguard aguenta pegada de faixa-preta puxando pelo ombro. Não laceou até hoje.',
-              who: 'Prof. Rodrigo',
-              role: 'Templo Jiu-Jitsu',
-            },
-            {
-              quote:
-                'Fechei 150 uniformes para o campeonato interno. Prazo batido e acabamento acima do que esperava.',
-              who: 'Renato B.',
-              role: 'Dono de box',
-            },
-          ].map((t) => (
-            <figure key={t.who} className="cut-corner border border-iron/70 bg-graphite p-7">
-              <span className="type-brutal block text-4xl leading-none text-blood">“</span>
-              <blockquote className="mt-3 text-sm leading-relaxed text-smoke">{t.quote}</blockquote>
-              <figcaption className="mt-5 border-t border-iron/70 pt-4">
-                <div className="type-brutal text-base text-bone">{t.who}</div>
-                <div className="type-tactical mt-1 text-[9px] text-ash">{t.role}</div>
-              </figcaption>
-            </figure>
+          {VOICES.map((t, i) => (
+            <Reveal key={t.who} kind="up" delay={i * 120}>
+              <figure className="cut-corner h-full border border-iron/70 bg-graphite p-7">
+                <span className="type-brutal block text-4xl leading-none text-blood">“</span>
+                <RevealWords
+                  as="blockquote"
+                  text={t.quote}
+                  className="mt-3 block text-sm leading-relaxed text-smoke"
+                  delay={i * 120 + 160}
+                  step={16}
+                />
+                <figcaption className="mt-5 border-t border-iron/70 pt-4">
+                  <Reveal kind="up" delay={i * 120 + 420} as="div" className="type-brutal text-base text-bone">
+                    {t.who}
+                  </Reveal>
+                  <Reveal kind="up" delay={i * 120 + 480} as="div" className="type-tactical mt-1 text-[9px] text-ash">
+                    {t.role}
+                  </Reveal>
+                </figcaption>
+              </figure>
+            </Reveal>
           ))}
         </div>
       </div>

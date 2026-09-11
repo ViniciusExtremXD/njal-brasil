@@ -50,6 +50,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body>
+        {/*
+          As revelações nascem invisíveis e o JS as liga. Sem script, nada
+          ligaria — então o conteúdo volta inteiro, sem gesto nenhum.
+        */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important;filter:none!important}`}</style>
+        </noscript>
         <Shell>{children}</Shell>
       </body>
     </html>
