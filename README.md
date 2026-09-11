@@ -1,55 +1,37 @@
-# NJAL BRASIL — vitrine
+# NJAL BRASIL
 
-> **FORGED FOR CHAMPIONS** · ✌ SE FALA NIJAL
-> Não são apenas roupas. São armaduras de treino.
+Repositório zerado — o site está sendo redesenhado do zero.
 
-Site oficial da [@njalbrasil](https://www.instagram.com/njalbrasil/). Não é loja:
-os drops são anunciados no feed e o pedido fecha no WhatsApp.
+## Material da marca
 
-🔗 **No ar:** https://viniciusextremxd.github.io/njal-brasil/
-
-## Stack
-
-Next.js 16 (App Router, export estático) · React 19 · TypeScript · Tailwind CSS 3 ·
-Framer Motion · GSAP + ScrollTrigger · Lenis · Three.js via React Three Fiber
-
-## Rodando
+Os logotipos em alta e as artes de campanha do feed permanecem no histórico
+do git. Para recuperá-los:
 
 ```bash
-npm install
-npm run dev     # http://localhost:3000
+git checkout 7f5194d -- public/assets
 ```
 
-`?motion=full` na URL ignora o `prefers-reduced-motion` do sistema — útil para
-revisar a experiência completa em máquina com a flag ligada.
+Isso traz de volta os 9 arquivos de logotipo (wordmark e monograma, em HD,
+branco e SVG) e as 15 imagens do feed oficial.
 
-## Publicando
+## Contexto para quem for construir
 
-```bash
-npm run deploy
-```
+- **Não é e-commerce.** Sem carrinho, sem preço, sem checkout. Os drops são
+  anunciados no Instagram e a venda fecha no WhatsApp.
+- Instagram: https://www.instagram.com/njalbrasil/
+- WhatsApp: https://wa.me/qr/SCWJ6A6MNLGHN1 — é um short link de QR, e o
+  WhatsApp descarta o parâmetro `?text=`. Mensagens pré-preenchidas não
+  chegam nesse formato.
+- Paleta: preto `#050506` · carbono `#0A0A0C` · vermelho `#E8123F` ·
+  osso `#F2F0EC`.
+- Escrituras da marca: FORGED FOR CHAMPIONS · PARA QUEM É A NJAL ·
+  ATÉ CHEGAR EM VALHALLA · NÃO SÃO APENAS ROUPAS. SÃO ARMADURAS DE TREINO ·
+  ✌ SE FALA NIJAL.
 
-Builda com `NEXT_PUBLIC_BASE_PATH=/njal-brasil` e empurra `out/` para a branch `gh-pages`.
+### Atenção com as imagens
 
-## Mapa
-
-| Caminho | O que é |
-| --- | --- |
-| `src/lib/brand.ts` | Links oficiais, escrituras da marca, `concierge()` e `asset()` |
-| `src/data/drops.ts` | Catálogo editorial dos drops (alimenta a vitrine e as rotas `/drop/[slug]`) |
-| `src/components/motion/` | Primitivos: scroll suave, cursor, revelações, magnetismo, glitch, letreiros |
-| `src/components/three/` | Shader do retrato do Hero (distorção + aberração cromática) |
-| `src/components/sections/` | Hero, Arsenal, Manifesto, Legado, Comunidade, Forja |
-| `src/hooks/useEnvironment.ts` | Decide onde os efeitos pesados podem rodar |
-
-## Camadas de degradação
-
-O site tem três níveis, escolhidos em runtime:
-
-1. **Completo** — desktop com ponteiro fino: WebGL no retrato, scroll suave via Lenis,
-   pinning horizontal do Legado, cursor próprio.
-2. **Leve** — mobile/tablet: mesmo conteúdo, seções empilhadas, sem WebGL nem pinning.
-3. **Reduzido** — `prefers-reduced-motion`: tudo entra no estado final, sem animação.
-
-Se o contexto WebGL cair (GPU reset, aba suspensa), o Hero volta sozinho para a
-foto tratada em CSS.
+As imagens do histórico são artes de Instagram já finalizadas, com
+tipografia embutida no quadro, fotografadas em low-key extremo. Sobrepor
+tipografia nova colide com a existente, e recortar para isolar o atleta
+exige ampliação de cerca de 2×, que degrada a imagem. Trate cada arte como
+peça de campanha exibida inteira — ou parta de fotografia nova.
