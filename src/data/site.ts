@@ -15,7 +15,6 @@ import artConfeccao from '../assets/images/post-confeccao-portfolio.jpg';
 import artNovidades from '../assets/images/post-athlete-blacktee.jpg';
 import feedRegata from '../assets/images/diogo-regata-reel.jpg';
 import feedEspelho from '../assets/images/post-diogo-crossfit.jpg';
-import feedCristao from '../assets/images/post-cristaofit.jpg';
 import avatar from '../assets/images/njal-profile.jpg';
 
 export const BRAND = {
@@ -247,12 +246,6 @@ export const FEED: FeedItem[] = [
     label: 'Feed · Camiseta Training Dept.',
   },
   { kind: 'point' },
-  {
-    kind: 'art',
-    art: feedCristao,
-    alt: 'Arte do feed: NJAL presente no evento da Cristão Fit, academia da família',
-    label: 'Feed · NJAL presente',
-  },
 ];
 
 export const AVATAR = avatar;
