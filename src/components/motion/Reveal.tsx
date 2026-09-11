@@ -1,8 +1,9 @@
 'use client';
 
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
 import { useRef } from 'react';
 import clsx from 'clsx';
+import { useRevealed } from '@/hooks/useRevealed';
 
 /**
  * Revelação por máscara: a linha sobe de dentro de um recorte, como cortina.
@@ -24,7 +25,7 @@ export function RevealLines({
   as?: 'div' | 'h1' | 'h2' | 'h3' | 'p';
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-12% 0px' });
+  const shown = useRevealed(ref, { margin: '-12% 0px' });
 
   return (
     <Tag ref={ref as never} className={className}>
@@ -33,10 +34,10 @@ export function RevealLines({
           <motion.span
             className={clsx('block', lineClassName)}
             initial={{ y: '110%' }}
-            animate={inView ? { y: '0%' } : undefined}
+            animate={{ y: shown ? '0%' : '110%' }}
             transition={{
               duration: 1.05,
-              delay: delay + i * stagger,
+              delay: shown ? delay + i * stagger : 0,
               ease: [0.16, 1, 0.3, 1],
             }}
           >
@@ -61,22 +62,28 @@ export function RevealBlock({
   y?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-10% 0px' });
+  const shown = useRevealed(ref);
 
   return (
     <motion.div
       ref={ref}
       className={className}
       initial={{ opacity: 0, y }}
-      animate={inView ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
+      animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y }}
+      transition={{ duration: 0.9, delay: shown ? delay : 0, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
-/** Cortina vermelha que desliza revelando a mídia por baixo. */
+/**
+ * Cortina vermelha que desliza revelando a mídia por baixo.
+ *
+ * A cortina é um elemento separado e some de vez ao terminar: enquanto ela
+ * dependesse de uma animação de transform para sair, qualquer frame perdido
+ * (ou reduced-motion desligando transforms) deixaria a imagem coberta.
+ */
 export function RevealMedia({
   children,
   className,
@@ -87,24 +94,30 @@ export function RevealMedia({
   delay?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-8% 0px' });
+  const shown = useRevealed(ref, { margin: '-8% 0px' });
 
   return (
     <div ref={ref} className={clsx('relative overflow-hidden', className)}>
       <motion.div
         initial={{ scale: 1.18 }}
-        animate={inView ? { scale: 1 } : undefined}
-        transition={{ duration: 1.6, delay, ease: [0.16, 1, 0.3, 1] }}
+        animate={{ scale: shown ? 1 : 1.18 }}
+        transition={{ duration: 1.6, delay: shown ? delay : 0, ease: [0.16, 1, 0.3, 1] }}
         className="h-full w-full"
       >
         {children}
       </motion.div>
+
       <motion.span
         aria-hidden
-        className="absolute inset-0 z-10 origin-bottom bg-blood"
+        className="pointer-events-none absolute inset-0 z-10 origin-bottom bg-blood"
         initial={{ scaleY: 1 }}
-        animate={inView ? { scaleY: 0 } : undefined}
-        transition={{ duration: 1.05, delay, ease: [0.85, 0, 0.15, 1] }}
+        animate={{ scaleY: shown ? 0 : 1, opacity: shown ? 0 : 1 }}
+        transition={{
+          scaleY: { duration: 1.05, delay: shown ? delay : 0, ease: [0.85, 0, 0.15, 1] },
+          // A opacidade é a rede de segurança: ela some mesmo se o transform
+          // for descartado (reduced-motion) ou a animação não completar.
+          opacity: { duration: 0.4, delay: shown ? delay + 0.9 : 0 },
+        }}
       />
     </div>
   );

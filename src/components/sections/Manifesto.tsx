@@ -26,8 +26,12 @@ export function Manifesto() {
       const root = section.current;
       if (!root) return;
 
-      // Palavras do parágrafo acendem conforme a leitura avança.
+      // Palavras do parágrafo acendem conforme a leitura avança. Só apagamos
+      // as palavras quando o scrub vai de fato rodar — caso contrário o texto
+      // ficaria ilegível esperando um gatilho que não vem.
       const words = root.querySelectorAll<HTMLElement>('[data-word]');
+      if (!heavy) return;
+
       gsap.fromTo(
         words,
         { opacity: 0.16 },
@@ -64,8 +68,6 @@ export function Manifesto() {
           }
         );
       });
-
-      if (!heavy) return;
 
       // Retrato com parallax longo apenas onde há folga de performance.
       gsap.to(root.querySelector('[data-portrait]'), {

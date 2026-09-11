@@ -69,8 +69,15 @@ export function Scramble({
     );
     io.observe(node);
 
+    // Rede de segurança: o texto é conteúdo, não pode ficar em branco
+    // esperando um gatilho que talvez nunca chegue.
+    const safety = window.setTimeout(() => {
+      setOutput((current) => (current ? current : text));
+    }, 1500);
+
     return () => {
       io.disconnect();
+      window.clearTimeout(safety);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
   }, [run, autoStart]);
