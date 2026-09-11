@@ -1,0 +1,114 @@
+---
+import { B2B, BRAND } from '../data/site';
+import Plate from './Plate.astro';
+import Icon from './Icon.astro';
+---
+
+<section class="b2b section section--line" id="confeccao" aria-labelledby="b2b-title">
+  <div class="wrap b2b__grid">
+    <div class="b2b__body">
+      <p class="eyebrow" data-reveal><b>06</b> — Confecção própria · B2B</p>
+      <h2 class="b2b__title d" id="b2b-title" data-reveal="clip">
+        Sua ideia.<br />
+        <span class="d--red">Nossa confecção.</span>
+      </h2>
+      <p class="lead" data-reveal>{B2B.intro}</p>
+      <ul class="b2b__list">
+        {
+          B2B.bullets.map((b, i) => (
+            <li data-reveal style={`--i:${i + 1}`}>
+              <span class="eyebrow">
+                <b>{b.label}</b>
+              </span>
+              <p class="copy">{b.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="cta-row" data-reveal style="--i:5">
+        <a class="btn btn--red" href={BRAND.whatsapp} target="_blank" rel="noopener">
+          <Icon name="whatsapp" class="btn__icon" />
+          Falar sobre confecção
+        </a>
+        <a class="btn" href={BRAND.instagram} target="_blank" rel="noopener">
+          <Icon name="instagram" class="btn__icon" />
+          Ver portfólio
+        </a>
+      </div>
+    </div>
+
+    <div class="b2b__arts">
+      {
+        B2B.arts.map((a, i) => (
+          <div class:list={['b2b__plate', { 'b2b__plate--up': i === 1 }]}>
+            <Plate src={a.art} alt={a.alt} label={a.label} sizes="(max-width: 560px) calc(100vw - 2.5rem), (max-width: 1100px) 46vw, 480px" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .b2b__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .b2b__body {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .b2b__title {
+    font-size: clamp(2.4rem, 1.2rem + 4.2vw, 5.6rem);
+  }
+
+  .b2b__list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .b2b__list li {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 0.5rem 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .b2b__arts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap);
+    align-items: end;
+  }
+
+  .b2b__plate {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 560px) {
+    .b2b__arts {
+      grid-template-columns: 1fr;
+    }
+
+    .b2b__list li {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .b2b__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.65fr);
+    }
+
+    .b2b__plate--up {
+      transform: translateY(-3rem);
+    }
+  }
+</style>

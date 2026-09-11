@@ -1,0 +1,99 @@
+---
+/** Letreiro contínuo em CSS puro. Conteúdo duplicado para o loop ser contínuo; leitores de tela recebem a lista uma vez. */
+interface Props {
+  items: readonly string[];
+  tone?: 'red' | 'carbon' | 'bone';
+  speed?: number;
+  separator?: string;
+  class?: string;
+}
+const { items, tone = 'red', speed = 38, separator = '✌', class: cls, ...rest } = Astro.props;
+---
+
+<div class:list={['marquee', `marquee--${tone}`, cls]} {...rest} style={`--marquee-speed:${speed}s`}>
+  <p class="sr-only">{items.join(' · ')}</p>
+  <div class="marquee__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <ul class="marquee__list">
+          {items.map((item) => (
+            <li class="marquee__item">
+              <span>{item}</span>
+              <span class="marquee__sep">{separator}</span>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    --marquee-bg: var(--red);
+    --marquee-fg: var(--ink);
+    position: relative;
+    overflow: hidden;
+    background: var(--marquee-bg);
+    color: var(--marquee-fg);
+    border-block: 1px solid var(--marquee-bg);
+    user-select: none;
+  }
+
+  .marquee--carbon {
+    --marquee-bg: var(--carbon);
+    --marquee-fg: var(--bone);
+    border-color: var(--line);
+  }
+
+  .marquee--bone {
+    --marquee-bg: var(--bone);
+    --marquee-fg: var(--ink);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-speed) linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__list {
+    display: flex;
+    flex: none;
+  }
+
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.9rem 0.75rem;
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 800;
+    font-size: clamp(0.95rem, 0.8rem + 0.8vw, 1.5rem);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .marquee__sep {
+    font-size: 0.85em;
+    opacity: 0.85;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

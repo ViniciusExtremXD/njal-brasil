@@ -1,0 +1,200 @@
+---
+import { Image } from 'astro:assets';
+import { AVATAR, BRAND, FEED } from '../data/site';
+import Plate from './Plate.astro';
+import Icon from './Icon.astro';
+
+const { point } = BRAND;
+---
+
+<section class="com section section--line" id="comunidade" aria-labelledby="com-title">
+  <div class="wrap">
+    <header class="sec-head com__head">
+      <p class="eyebrow" data-reveal><b>05</b> — Comunidade</p>
+      <div class="sec-head__row">
+        <h2 class="sec-head__title d" id="com-title" data-reveal="clip">Do feed<br />para o box.</h2>
+        <div class="com__profile" data-reveal style="--i:1">
+          <Image src={AVATAR} alt="" width={112} height={112} class="com__avatar" loading="lazy" />
+          <div class="com__who">
+            <p class="com__handle d">{BRAND.handle}</p>
+            <p class="eyebrow">Drops, bastidores e a comunidade</p>
+          </div>
+          <a class="btn btn--sm" href={BRAND.instagram} target="_blank" rel="noopener">
+            <Icon name="instagram" class="btn__icon" />
+            Seguir
+          </a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="com__strip" tabindex="0" aria-label="Peças do feed, com rolagem horizontal">
+    {
+      FEED.map((f, i) => {
+        if (f.kind === 'art' && f.art) {
+          return (
+            <div class="com__tile" style={`--ratio:${(f.art.width / f.art.height).toFixed(4)}`}>
+              <Plate
+                src={f.art}
+                alt={f.alt ?? ''}
+                label={f.label}
+                sizes={`(max-width: 720px) ${Math.round((400 * f.art.width) / f.art.height)}px, ${Math.round((470 * f.art.width) / f.art.height)}px`}
+                reveal="scale"
+              />
+            </div>
+          );
+        }
+        if (f.kind === 'say') {
+          return (
+            <div class="com__tile com__tile--type" data-reveal style={`--i:${i}`}>
+              <span class="com__hand" aria-hidden="true">
+                ✌
+              </span>
+              <p class="eyebrow">Se escreve NJAL.</p>
+              <p class="com__big d">
+                Se fala <span class="d--red">Nijal</span>
+              </p>
+              <p class="copy com__small">Pronúncia é bandeira. Fala certo, treina certo.</p>
+            </div>
+          );
+        }
+        return (
+          <div class="com__tile com__tile--type com__tile--point" data-reveal style={`--i:${i}`}>
+            <Icon name="pin" class="com__pin" />
+            <p class="eyebrow">
+              <b>Ponto físico</b> · {point.role.split(' · ')[0]}
+            </p>
+            <p class="com__big d">{point.name}</p>
+            <address class="com__addr copy">
+              {point.street} — {point.district}
+              <br />
+              {point.city}, {point.uf}
+            </address>
+            <a class="link" href={point.maps} target="_blank" rel="noopener">
+              Abrir no mapa
+              <Icon name="arrow" class="btn__icon" />
+            </a>
+          </div>
+        );
+      })
+    }
+  </div>
+</section>
+
+<style>
+  .com {
+    --tile-h: clamp(380px, 52vh, 470px);
+  }
+
+  .com__head {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .com__profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1rem 0.9rem 0.9rem;
+    border: 1px solid var(--line);
+    background: var(--carbon);
+    flex-wrap: wrap;
+  }
+
+  .com__avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--ink);
+  }
+
+  .com__who {
+    display: grid;
+    gap: 0.1rem;
+    margin-right: auto;
+  }
+
+  .com__handle {
+    font-size: 1.05rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .com__strip {
+    display: flex;
+    gap: var(--gap);
+    align-items: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--pad);
+    padding: 0.25rem var(--pad) 1.25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+
+  .com__strip:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .com__tile {
+    flex: none;
+    scroll-snap-align: start;
+    width: calc(var(--tile-h) * var(--ratio, 0.75));
+  }
+
+  .com__tile :global(.plate) {
+    width: 100%;
+  }
+
+  .com__tile--type {
+    width: clamp(260px, 32vw, 400px);
+    height: var(--tile-h);
+    display: grid;
+    align-content: end;
+    gap: 0.75rem;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    border: 1px solid var(--line);
+    background: var(--carbon);
+  }
+
+  .com__tile--point {
+    border-color: rgba(232, 18, 63, 0.5);
+  }
+
+  .com__hand {
+    font-size: 2.6rem;
+    line-height: 1;
+    margin-bottom: auto;
+  }
+
+  .com__pin {
+    width: 2rem;
+    height: 2rem;
+    color: var(--red);
+    margin-bottom: auto;
+  }
+
+  .com__big {
+    font-size: clamp(1.7rem, 2.6vw, 2.6rem);
+    line-height: 0.95;
+  }
+
+  .com__small {
+    font-size: 0.95rem;
+  }
+
+  .com__addr {
+    font-style: normal;
+  }
+
+  @media (max-width: 720px) {
+    .com {
+      --tile-h: 400px;
+    }
+
+    .com__profile {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+import { BRAND, DROPS } from '../data/site';
+import Plate from './Plate.astro';
+import Icon from './Icon.astro';
+
+const MONO_PATH = 'M15 15H49L111 77V31L102 15H131V170H97L32 105V149L42.5 170H15ZM32 27L111 106V155L32 76Z';
+---
+
+<section class="drops section section--line" id="drops" aria-labelledby="drops-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow" data-reveal><b>03</b> — Drops</p>
+      <div class="sec-head__row">
+        <h2 class="sec-head__title d" id="drops-title" data-reveal="clip">
+          Anunciado no feed.<br />Fechado no WhatsApp.
+        </h2>
+        <p class="copy" data-reveal style="--i:1">
+          Sem carrinho, sem checkout. Cada drop sai primeiro no <strong>{BRAND.handle}</strong> e a
+          venda acontece direto no WhatsApp. Nada entre você e a armadura.
+        </p>
+      </div>
+    </header>
+
+    <div class="drops__list">
+      {
+        DROPS.map((d) => (
+          <article
+            class:list={['drop', `drop--${d.side}`, { 'drop--type': !d.art }]}
+            id={`drop-${d.index}`}
+            aria-labelledby={`drop-${d.index}-name`}
+          >
+            <div class="drop__art">
+              {d.art ? (
+                <Plate
+                  src={d.art}
+                  alt={d.alt ?? d.name}
+                  label={d.artLabel}
+                  maxWidth={d.art.width >= 1000 ? 640 : d.art.width}
+                />
+              ) : (
+                <div class="drop__tile" data-reveal="scale" aria-hidden="true">
+                  <svg class="drop__pattern" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                    <defs>
+                      <pattern id="njal-n-pattern" width="72" height="94" patternUnits="userSpaceOnUse">
+                        <path d={MONO_PATH} transform="translate(6 7) scale(0.5)" fill-rule="evenodd" />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#njal-n-pattern)" />
+                  </svg>
+                  <div class="drop__tile-band">
+                    <span class="eyebrow">Próximo drop</span>
+                    <span class="drop__tile-big d">Oversized</span>
+                    <span class="eyebrow">Anunciado no Instagram</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div class="drop__body">
+              <p class="drop__idx eyebrow" data-reveal>
+                Drop <b>{d.index}</b>
+              </p>
+              <h3 class="drop__name d" id={`drop-${d.index}-name`} data-reveal="clip">
+                {d.name}
+              </h3>
+              <p class="drop__meta eyebrow" data-reveal style="--i:1">
+                <b>{d.arena}</b>
+                <span>{d.line}</span>
+              </p>
+              <p class="drop__text copy" data-reveal style="--i:2">
+                {d.text}
+              </p>
+              <div class="cta-row" data-reveal style="--i:3">
+                <a class="btn" href={BRAND.instagram} target="_blank" rel="noopener">
+                  <Icon name="instagram" class="btn__icon" />
+                  Ver no Instagram
+                </a>
+                <a class="btn btn--red" href={BRAND.whatsapp} target="_blank" rel="noopener">
+                  <Icon name="whatsapp" class="btn__icon" />
+                  Falar no WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .drops__list {
+    display: grid;
+  }
+
+  .drop {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 5vw, 5.5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .drop__art {
+    display: flex;
+    justify-content: center;
+  }
+
+  .drop__body {
+    display: grid;
+    gap: 1.1rem;
+    align-content: center;
+  }
+
+  .drop__name {
+    font-size: clamp(2rem, 1.2rem + 3.6vw, 4.8rem);
+  }
+
+  .drop__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+
+  .drop__text {
+    max-width: 42ch;
+  }
+
+  /* Card tipográfico (sem arte disponível): padrão de monogramas, como nas artes oficiais */
+  .drop__tile {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    aspect-ratio: 1;
+    background: var(--red);
+    border: 1px solid var(--red);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+
+  .drop__pattern {
+    position: absolute;
+    inset: 0;
+    fill: var(--ink);
+    opacity: 0.9;
+  }
+
+  .drop__tile-band {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: clamp(1.25rem, 4vw, 2.5rem) 1rem;
+    background: var(--red);
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .drop__tile-band .eyebrow {
+    color: var(--ink);
+  }
+
+  .drop__tile-big {
+    font-size: clamp(2.4rem, 8vw, 6rem);
+    line-height: 0.9;
+  }
+
+  @media (min-width: 960px) {
+    .drop {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .drop--left .drop__art {
+      grid-column: 1 / 8;
+      justify-content: flex-start;
+    }
+
+    .drop--left .drop__body {
+      grid-column: 9 / 13;
+    }
+
+    .drop--right .drop__art {
+      grid-column: 6 / 13;
+      justify-content: flex-end;
+      order: 2;
+    }
+
+    .drop--right .drop__body {
+      grid-column: 1 / 5;
+      order: 1;
+    }
+  }
+</style>

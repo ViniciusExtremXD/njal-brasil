@@ -1,37 +1,60 @@
-# NJAL BRASIL
+# NJAL BRASIL — site institucional
 
-Repositório zerado — o site está sendo redesenhado do zero.
+Vitrine editorial da NJAL BRASIL (@njalbrasil): vestuário de treino de alta intensidade, São Paulo.
+Não é e-commerce. Os drops são anunciados no Instagram e a venda fecha no WhatsApp.
 
-## Material da marca
+## Stack
 
-Os logotipos em alta e as artes de campanha do feed permanecem no histórico
-do git. Para recuperá-los:
+- [Astro](https://astro.build) 7, saída 100% estática. Zero framework no cliente.
+- CSS puro com tokens de marca (`src/styles/global.css`). Sem Tailwind, sem GSAP, sem WebGL.
+- Um único script (~1 KB): revelações por scroll com IntersectionObserver e o estado da navegação.
+  Sem JS, tudo continua visível e funcional, inclusive o menu mobile (`<details>`).
+- Fontes self-hosted no build pela Fonts API do Astro: **Tektur** (display quadrada) e **Comfortaa** (corpo).
+- Imagens otimizadas em AVIF/WebP com `astro:assets`, sempre em larguras iguais ou menores que o nativo.
+
+## Rodar
 
 ```bash
-git checkout 7f5194d -- public/assets
+npm install
+npm run dev
 ```
 
-Isso traz de volta os 9 arquivos de logotipo (wordmark e monograma, em HD,
-branco e SVG) e as 15 imagens do feed oficial.
+Build de produção em `dist/`:
 
-## Contexto para quem for construir
+```bash
+npm run build
+```
 
-- **Não é e-commerce.** Sem carrinho, sem preço, sem checkout. Os drops são
-  anunciados no Instagram e a venda fecha no WhatsApp.
+## Deploy no GitHub Pages
+
+O workflow em `.github/workflows/deploy.yml` faz build e publica a cada push na `main`.
+Como o GitHub Pages serve o site em subdiretório, o workflow exporta `BASE_PATH=/<nome-do-repo>`;
+o Astro prefixa todos os caminhos automaticamente (`astro.config.mjs`).
+Em **Settings → Pages**, escolha *Source: GitHub Actions*.
+
+Para simular o build de produção localmente:
+
+```bash
+BASE_PATH=/njal-brasil npm run build
+```
+
+## Regras das imagens (leia antes de trocar qualquer arte)
+
+As imagens em `src/assets/images` são artes de Instagram já finalizadas, com tipografia embutida e fotografadas em
+low-key extremo. Por isso o componente `Plate.astro` exibe **cada arte inteira**, na proporção nativa, sem crop,
+sem texto sobreposto e nunca acima do tamanho nativo em CSS px. Para substituir uma arte, troque o arquivo e o
+`import` em `src/data/site.ts`; o layout se adapta à proporção. Exports de 1080 px ou mais melhoram a nitidez em
+telas Retina (os posts atuais de 480–640 px são o limite).
+
+Os logos (`Wordmark.astro`, `Monogram.astro`) foram traçados a partir dos PNGs oficiais e são vetoriais puros.
+
+## Conteúdo
+
+Tudo que é texto, link e ordem de seção mora em `src/data/site.ts`. Os textos de manifesto e da seção de tecido
+estão em voz de marca e podem ser ajustados ali sem tocar nos componentes.
+
+## Canais
+
 - Instagram: https://www.instagram.com/njalbrasil/
-- WhatsApp: https://wa.me/qr/SCWJ6A6MNLGHN1 — é um short link de QR, e o
-  WhatsApp descarta o parâmetro `?text=`. Mensagens pré-preenchidas não
-  chegam nesse formato.
-- Paleta: preto `#050506` · carbono `#0A0A0C` · vermelho `#E8123F` ·
-  osso `#F2F0EC`.
-- Escrituras da marca: FORGED FOR CHAMPIONS · PARA QUEM É A NJAL ·
-  ATÉ CHEGAR EM VALHALLA · NÃO SÃO APENAS ROUPAS. SÃO ARMADURAS DE TREINO ·
-  ✌ SE FALA NIJAL.
-
-### Atenção com as imagens
-
-As imagens do histórico são artes de Instagram já finalizadas, com
-tipografia embutida no quadro, fotografadas em low-key extremo. Sobrepor
-tipografia nova colide com a existente, e recortar para isolar o atleta
-exige ampliação de cerca de 2×, que degrada a imagem. Trate cada arte como
-peça de campanha exibida inteira — ou parta de fotografia nova.
+- WhatsApp: https://wa.me/qr/SCWJ6A6MNLGHN1 (short link de QR: o WhatsApp descarta `?text=`, então nenhum fluxo
+  depende de mensagem pré-preenchida)

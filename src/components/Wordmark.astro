@@ -1,0 +1,26 @@
+---
+/** Wordmark NJAL traçado a partir do PNG oficial (930×195). Geometria pura, sem gradiente ou glow. */
+interface Props {
+  class?: string;
+  title?: string;
+  decorative?: boolean;
+}
+const { class: cls, title = 'NJAL', decorative = false, ...rest } = Astro.props;
+---
+
+<svg
+  class={cls}
+  {...rest}
+  viewBox="12 10 905 169"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="currentColor"
+  preserveAspectRatio="xMidYMid meet"
+  role={decorative ? undefined : 'img'}
+  aria-label={decorative ? undefined : title}
+  aria-hidden={decorative ? 'true' : undefined}
+>
+  <path d="M12 10H47V179H12ZM180 10H215V179H180ZM12 10H45.8L215 166.7V179H178.2L12 24.1Z"></path>
+  <path d="M423 10H458V179H423ZM255 144H458V179H255ZM255 108H290V179H255Z"></path>
+  <path fill-rule="evenodd" d="M574 10H613L692 179H495ZM595 53L658 179H620L602.5 144H549.5Z"></path>
+  <path d="M735 10H770V145H917V179H735Z"></path>
+</svg>

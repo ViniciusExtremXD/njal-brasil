@@ -1,0 +1,105 @@
+---
+import { ART, BRAND, MANIFESTO_LINES } from '../data/site';
+import Plate from './Plate.astro';
+---
+
+<section class="mani section" id="manifesto" aria-labelledby="mani-title">
+  <div class="wrap mani__grid">
+    <div class="mani__art">
+      <Plate
+        src={ART.quem}
+        alt="Arte oficial da campanha: Para quem é a NJAL. Rosto de atleta em luz baixa, wordmark NJAL em vermelho."
+        label="Campanha · Para quem é a NJAL"
+        maxWidth={620}
+        loading="eager"
+      />
+    </div>
+
+    <div class="mani__body">
+      <p class="eyebrow" data-reveal><b>01</b> — Manifesto</p>
+      <h2 class="mani__title d" id="mani-title" data-reveal="clip">
+        <span class="sr-only">{BRAND.scriptures.who}: </span>É para quem
+      </h2>
+      <ol class="mani__lines">
+        {
+          MANIFESTO_LINES.map((line, i) => (
+            <li class="mani__line d" data-reveal style={`--i:${i + 1}`}>
+              <span class="mani__tick" aria-hidden="true" />
+              {line}
+            </li>
+          ))
+        }
+      </ol>
+      <p class="copy mani__copy" data-reveal style="--i:6">
+        NJAL é vestuário de treino de alta intensidade, feito em São Paulo. Crossfit, ferro pesado,
+        jiu-jitsu no-gi e rua: quatro arenas, uma mesma armadura.
+        <strong>{BRAND.scriptures.armor}</strong>
+      </p>
+      <p class="eyebrow mani__say" data-reveal style="--i:7">
+        <span aria-hidden="true">✌</span> <b>{BRAND.say}</b>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mani__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 7rem);
+    align-items: center;
+  }
+
+  .mani__art {
+    display: flex;
+    justify-content: center;
+  }
+
+  .mani__body {
+    display: grid;
+    gap: 1.5rem;
+    align-content: center;
+  }
+
+  .mani__title {
+    font-size: clamp(2.6rem, 1.6rem + 5vw, 6.5rem);
+  }
+
+  .mani__lines {
+    display: grid;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mani__line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    padding: 0.5em 0;
+    border-top: 1px solid var(--line);
+    font-size: clamp(1.35rem, 0.9rem + 2.2vw, 3rem);
+    font-weight: 800;
+    line-height: 1.05;
+    text-wrap: pretty;
+  }
+
+  .mani__tick {
+    flex: none;
+    width: 0.4em;
+    height: 0.4em;
+    background: var(--red);
+    transform: translateY(-0.05em);
+  }
+
+  .mani__copy {
+    max-width: 46ch;
+  }
+
+  @media (min-width: 960px) {
+    .mani__grid {
+      grid-template-columns: minmax(0, 620px) minmax(0, 1fr);
+    }
+
+    .mani__art {
+      justify-content: flex-start;
+    }
+  }
+</style>

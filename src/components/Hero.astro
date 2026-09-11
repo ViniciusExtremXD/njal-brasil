@@ -1,0 +1,213 @@
+---
+import { BRAND } from '../data/site';
+import Monogram from './Monogram.astro';
+import Marquee from './Marquee.astro';
+import Icon from './Icon.astro';
+
+const { scriptures } = BRAND;
+const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scriptures.who, BRAND.say];
+---
+
+<section class="hero" id="topo">
+  <div class="hero__body wrap">
+    <p class="hero__eyebrow eyebrow">
+      <b>{BRAND.full}</b>
+      <span>{BRAND.city}</span>
+      <span>{BRAND.tagline}</span>
+    </p>
+
+    <h1 class="hero__title d">
+      <span class="hero__line"><span style="--n:0">Forged</span></span>
+      <span class="hero__line"><span style="--n:1">for</span></span>
+      <span class="hero__line hero__line--red"><span style="--n:2">Champions</span></span>
+    </h1>
+
+    <div class="hero__foot">
+      <div class="hero__lead">
+        <p class="lead">
+          Não são apenas roupas.<br />
+          <strong>São armaduras de treino.</strong>
+        </p>
+        <div class="cta-row">
+          <a class="btn btn--red" href="#drops">
+            Ver os drops
+            <Icon name="down" class="btn__icon" />
+          </a>
+          <a class="btn" href={BRAND.whatsapp} target="_blank" rel="noopener">
+            <Icon name="whatsapp" class="btn__icon" />
+            Falar no WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <aside class="hero__say" aria-label="Como se pronuncia a marca">
+        <span class="hero__hand" aria-hidden="true">✌</span>
+        <span class="hero__say-label eyebrow">Se fala</span>
+        <span class="hero__say-word d">Nijal</span>
+      </aside>
+    </div>
+
+    <div class="hero__mono" aria-hidden="true">
+      <Monogram outline strokeWidth={1} decorative />
+    </div>
+  </div>
+
+  <Marquee items={marquee} />
+</section>
+
+<style>
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--nav-h);
+  }
+
+  .hero__body {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: clamp(1.25rem, 3vh, 2.5rem);
+    padding-block: clamp(1.25rem, 3vh, 2.5rem) clamp(1.5rem, 4vh, 3rem);
+  }
+
+  .hero__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+    animation: hero-fade 1s var(--ease-out) 0.1s both;
+  }
+
+  .hero__eyebrow span::before {
+    content: '';
+    display: inline-block;
+    width: 0.45em;
+    height: 0.45em;
+    margin-right: 1rem;
+    background: var(--red);
+    vertical-align: middle;
+  }
+
+  .hero__title {
+    align-self: center;
+    font-size: clamp(3rem, min(15vw, 21vh), 16rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+  }
+
+  .hero__line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.05em;
+    margin-bottom: -0.05em;
+  }
+
+  .hero__line > span {
+    display: block;
+    transform: translateY(108%);
+    animation: hero-rise 1.1s var(--ease-out) forwards;
+    animation-delay: calc(0.12s + var(--n) * 0.13s);
+  }
+
+  .hero__line--red {
+    color: var(--red);
+  }
+
+  .hero__foot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2rem;
+    animation: hero-fade 1s var(--ease-out) 0.7s both;
+  }
+
+  .hero__lead {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .hero__say {
+    display: grid;
+    justify-items: end;
+    text-align: right;
+    gap: 0.25rem;
+  }
+
+  .hero__hand {
+    font-size: clamp(1.4rem, 3vw, 2.4rem);
+    line-height: 1;
+  }
+
+  .hero__say-word {
+    font-size: clamp(2.2rem, 5.5vw, 5.5rem);
+    color: var(--red);
+    line-height: 0.9;
+  }
+
+  .hero__mono {
+    position: absolute;
+    top: 0;
+    right: var(--pad);
+    height: clamp(120px, 30vh, 320px);
+    color: var(--bone);
+    opacity: 0;
+    pointer-events: none;
+    animation: hero-mono 1.6s var(--ease-out) 0.9s forwards;
+  }
+
+  .hero__mono :global(svg) {
+    height: 100%;
+    width: auto;
+  }
+
+  @keyframes hero-rise {
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes hero-fade {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes hero-mono {
+    to {
+      opacity: 0.22;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .hero {
+      min-height: calc(100svh - 3.25rem - env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero__eyebrow {
+      max-width: 72%;
+    }
+
+    .hero__foot {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__say {
+      justify-items: start;
+      text-align: left;
+      border-top: 1px solid var(--line);
+      padding-top: 1.25rem;
+    }
+
+    .hero__mono {
+      height: clamp(90px, 16vh, 140px);
+    }
+  }
+</style>

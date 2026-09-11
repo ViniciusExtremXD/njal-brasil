@@ -1,0 +1,67 @@
+---
+import { BRAND } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<div class="mbar" aria-label="Canais da marca">
+  <a class="mbar__a" href={BRAND.instagram} target="_blank" rel="noopener">
+    <Icon name="instagram" class="mbar__ico" />
+    Instagram
+  </a>
+  <a class="mbar__a mbar__a--red" href={BRAND.whatsapp} target="_blank" rel="noopener">
+    <Icon name="whatsapp" class="mbar__ico" />
+    WhatsApp
+  </a>
+</div>
+
+<style>
+  .mbar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--line);
+    background: rgba(5, 5, 6, 0.96);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mbar__a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: 3.25rem;
+    font-family: var(--font-display), sans-serif;
+    font-weight: 700;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--bone);
+  }
+
+  .mbar__a--red {
+    background: var(--red);
+    color: var(--ink);
+  }
+
+  .mbar__ico {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  :global(body) {
+    padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 960px) {
+    .mbar {
+      display: none;
+    }
+
+    :global(body) {
+      padding-bottom: 0;
+    }
+  }
+</style>

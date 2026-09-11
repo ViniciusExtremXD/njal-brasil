@@ -1,0 +1,148 @@
+---
+import { ART, PILLARS } from '../data/site';
+import Plate from './Plate.astro';
+---
+
+<section class="pil section section--line" id="pilares" aria-labelledby="pil-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow" data-reveal><b>02</b> — Pilares da cultura</p>
+      <div class="sec-head__row">
+        <h2 class="sec-head__title d" id="pil-title" data-reveal="clip">
+          Quatro arenas.<br />Uma armadura.
+        </h2>
+        <p class="copy" data-reveal style="--i:1">
+          Crossfit, academia, tatame e rua. E a confecção própria que faz tudo isso existir.
+          <strong>O que é a NJAL</strong> se responde no treino.
+        </p>
+      </div>
+    </header>
+
+    <div class="pil__grid">
+      <ol class="pil__list">
+        {
+          PILLARS.map((p, i) => (
+            <li class="pil__row" data-reveal style={`--i:${i}`}>
+              <span class="pil__idx d" aria-hidden="true">
+                {p.index}
+              </span>
+              <div class="pil__main">
+                <h3 class="pil__name d">{p.name}</h3>
+                <p class="pil__cat eyebrow">{p.category}</p>
+              </div>
+              <p class="pil__text copy">{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="pil__art">
+        <Plate
+          src={ART.oque}
+          alt="Arte oficial da campanha: O que é a NJAL? Navio viking na névoa e texto sobre as linhas Crossfit, Academia e Casual."
+          label="Campanha · O que é a NJAL?"
+          maxWidth={520}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pil__grid {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 6rem);
+    align-items: start;
+  }
+
+  .pil__list {
+    display: grid;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pil__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+    padding: 1.4rem 0 1.4rem 0.75rem;
+    border-top: 1px solid var(--line);
+    transition: background-color 0.3s var(--ease-out);
+  }
+
+  .pil__row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--red);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .pil__row:hover {
+    background: linear-gradient(90deg, rgba(232, 18, 63, 0.06), transparent 60%);
+  }
+
+  .pil__row:hover::before {
+    transform: scaleY(1);
+  }
+
+  .pil__idx {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--red);
+    padding-top: 0.5em;
+  }
+
+  .pil__main {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .pil__name {
+    font-size: clamp(1.6rem, 1rem + 2.4vw, 3.2rem);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .pil__row:hover .pil__name {
+    color: var(--red);
+  }
+
+  .pil__text {
+    grid-column: 2;
+    max-width: 40ch;
+  }
+
+  .pil__art {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (min-width: 820px) {
+    .pil__row {
+      grid-template-columns: 3.5rem minmax(0, 1.1fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .pil__text {
+      grid-column: 3;
+      padding-top: 0.4em;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .pil__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+    }
+
+    .pil__art {
+      position: sticky;
+      top: calc(var(--nav-h) + 2rem);
+      justify-content: flex-end;
+    }
+  }
+</style>

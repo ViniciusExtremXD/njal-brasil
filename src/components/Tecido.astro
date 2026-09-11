@@ -1,0 +1,162 @@
+---
+import { FABRIC } from '../data/site';
+---
+
+<section class="tec section section--line" id="tecido" aria-labelledby="tec-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow" data-reveal><b>04</b> — Engenharia do tecido</p>
+      <div class="sec-head__row">
+        <h2 class="sec-head__title d" id="tec-title" data-reveal="clip">
+          Não são apenas roupas.<br />
+          <span class="d--red">São armaduras de treino.</span>
+        </h2>
+        <p class="copy" data-reveal style="--i:1">
+          Cada arena cobra uma coisa diferente do tecido. A peça nasce do que o treino exige, não do
+          que a vitrine pede.
+        </p>
+      </div>
+    </header>
+
+    <div class="tec__grid">
+      {
+        FABRIC.map((f, i) => (
+          <article class="tec__card" data-reveal style={`--i:${i}`}>
+            <header class="tec__head">
+              <span class="tec__idx d" aria-hidden="true">
+                {f.index}
+              </span>
+              <h3 class="tec__name d">{f.name}</h3>
+              <span class="tec__arena eyebrow">{f.label}</span>
+            </header>
+            <dl class="tec__dl">
+              <div>
+                <dt class="eyebrow">Exigência</dt>
+                <dd class="copy">{f.demand}</dd>
+              </div>
+              <div>
+                <dt class="eyebrow">
+                  <b>Resposta NJAL</b>
+                </dt>
+                <dd>{f.answer}</dd>
+              </div>
+            </dl>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="tec__note eyebrow" data-reveal>
+      Composição, gramatura e tabela de medidas de cada peça: direto no WhatsApp, junto com o drop.
+    </p>
+  </div>
+  <span class="tec__vert d d--outline" aria-hidden="true">Armadura</span>
+</section>
+
+<style>
+  .tec {
+    overflow: hidden;
+  }
+
+  .tec__grid {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .tec__card {
+    position: relative;
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--ink);
+    transition: background-color 0.35s var(--ease-out);
+  }
+
+  .tec__card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .tec__card:hover {
+    background: var(--carbon);
+  }
+
+  .tec__card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .tec__head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+  }
+
+  .tec__idx {
+    font-size: 0.85rem;
+    color: var(--red);
+  }
+
+  .tec__name {
+    font-size: clamp(1.6rem, 1rem + 2vw, 2.8rem);
+  }
+
+  .tec__arena {
+    grid-column: 2;
+  }
+
+  .tec__dl {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+  }
+
+  .tec__dl dt {
+    margin-bottom: 0.4rem;
+  }
+
+  .tec__dl dd {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .tec__note {
+    margin-top: 1.5rem;
+    color: var(--bone-50);
+  }
+
+  .tec__vert {
+    display: none;
+  }
+
+  @media (min-width: 800px) {
+    .tec__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1560px) {
+    .tec__vert {
+      display: block;
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+      writing-mode: vertical-rl;
+      font-size: 5.5rem;
+      -webkit-text-stroke: 1px var(--bone-30);
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+</style>

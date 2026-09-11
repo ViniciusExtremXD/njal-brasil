@@ -1,0 +1,41 @@
+---
+/**
+ * Monograma "N" da NJAL traçado a partir do PNG oficial (150×180).
+ * Contorno único com furo (evenodd): serve preenchido ou só traço.
+ */
+interface Props {
+  class?: string;
+  outline?: boolean;
+  strokeWidth?: number;
+  title?: string;
+  decorative?: boolean;
+}
+const {
+  class: cls,
+  outline = false,
+  strokeWidth = 1,
+  title = 'Monograma NJAL',
+  decorative = false,
+  ...rest
+} = Astro.props;
+---
+
+<svg
+  class={cls}
+  {...rest}
+  viewBox="15 15 116 155"
+  xmlns="http://www.w3.org/2000/svg"
+  preserveAspectRatio="xMidYMid meet"
+  role={decorative ? undefined : 'img'}
+  aria-label={decorative ? undefined : title}
+  aria-hidden={decorative ? 'true' : undefined}
+  fill={outline ? 'none' : 'currentColor'}
+  stroke={outline ? 'currentColor' : 'none'}
+  stroke-width={outline ? strokeWidth : undefined}
+  stroke-linejoin="miter"
+>
+  <path
+    fill-rule="evenodd"
+    vector-effect="non-scaling-stroke"
+    d="M15 15H49L111 77V31L102 15H131V170H97L32 105V149L42.5 170H15ZM32 27L111 106V155L32 76Z"></path>
+</svg>

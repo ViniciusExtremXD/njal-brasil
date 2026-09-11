@@ -1,0 +1,68 @@
+---
+import { BRAND } from '../data/site';
+import Marquee from './Marquee.astro';
+
+const arenas = ['Crossfit RX', 'Valhalla', 'No-Gi', 'Rua', 'Confecção própria'];
+---
+
+<section class="val" aria-labelledby="val-title">
+  <h2 class="sr-only" id="val-title">{BRAND.scriptures.valhalla}</h2>
+  <div class="val__lines wrap" aria-hidden="true">
+    <p class="val__l d" data-reveal="clip">Até</p>
+    <p class="val__l val__l--mid d d--outline">Chegar em</p>
+    <p class="val__l val__l--red d d--red" data-reveal="clip" style="--i:1">Valhalla</p>
+  </div>
+  <Marquee tone="carbon" items={arenas} separator="·" speed={30} />
+</section>
+
+<style>
+  .val {
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    padding-top: clamp(4rem, 10vw, 9rem);
+  }
+
+  .val__lines {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    padding-bottom: clamp(3rem, 8vw, 7rem);
+  }
+
+  .val__l {
+    font-size: clamp(3.2rem, 13vw, 15rem);
+    line-height: 0.86;
+    white-space: nowrap;
+  }
+
+  .val__l--mid {
+    font-size: clamp(2rem, 8.6vw, 10rem);
+    -webkit-text-stroke: 1px var(--bone-70);
+    margin-block: 0.08em;
+    letter-spacing: 0.04em;
+  }
+
+  /* Tipografia cinética: a linha do meio desliza com o scroll onde houver suporte. Sem suporte, fica parada. */
+  @supports (animation-timeline: view()) {
+    .val__l--mid {
+      animation: val-slide linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+
+  @keyframes val-slide {
+    from {
+      transform: translateX(14%);
+    }
+    to {
+      transform: translateX(-14%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .val__l--mid {
+      animation: none;
+    }
+  }
+</style>
