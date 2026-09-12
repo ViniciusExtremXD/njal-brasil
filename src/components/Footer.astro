@@ -1,5 +1,5 @@
 ---
-import { BRAND, NAV } from '../data/site';
+import { BRAND, NAV, withBase } from '../data/site';
 import Wordmark from './Wordmark.astro';
 import Monogram from './Monogram.astro';
 import Icon from './Icon.astro';
@@ -7,6 +7,7 @@ import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 const { scriptures, point } = BRAND;
 const list = [scriptures.forged, scriptures.who, scriptures.valhalla, scriptures.armor];
+const lojaHref = withBase('/loja');
 ---
 
 <footer class="foot" id="rodape">
@@ -27,6 +28,9 @@ const list = [scriptures.forged, scriptures.who, scriptures.valhalla, scriptures
     <nav class="foot__col" aria-label="Seções, no rodapé">
       <p class="eyebrow foot__label">Navegar</p>
       <ul class="foot__list">
+        <li>
+          <a href={lojaHref} class="foot__loja">Loja</a>
+        </li>
         {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
       </ul>
     </nav>
@@ -34,6 +38,11 @@ const list = [scriptures.forged, scriptures.who, scriptures.valhalla, scriptures
     <div class="foot__col">
       <p class="eyebrow foot__label">Canais</p>
       <ul class="foot__list">
+        <li>
+          <a href={BRAND.shopUrl} target="_blank" rel="noopener">
+            <Icon name="arrow" class="foot__ico" /> Loja oficial · njal.com.br
+          </a>
+        </li>
         <li>
           <a href={BRAND.instagram} target="_blank" rel="noopener">
             <Icon name="instagram" class="foot__ico" /> Instagram · {BRAND.handle}
@@ -64,7 +73,7 @@ const list = [scriptures.forged, scriptures.who, scriptures.valhalla, scriptures
 
   <div class="wrap foot__bar">
     <p>© {year} {BRAND.full}. Todos os direitos reservados.</p>
-    <p>Sem carrinho: drops no Instagram, venda no WhatsApp.</p>
+    <p>Catálogo e checkout oficiais em njal.com.br.</p>
   </div>
 </footer>
 
@@ -137,6 +146,10 @@ const list = [scriptures.forged, scriptures.who, scriptures.valhalla, scriptures
 
   .foot__list a:hover {
     color: var(--red);
+  }
+
+  .foot__loja {
+    color: var(--red) !important;
   }
 
   .foot__ico {

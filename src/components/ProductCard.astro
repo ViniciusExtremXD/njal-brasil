@@ -1,0 +1,136 @@
+---
+/**
+ * Card de produto real da loja (njal.com.br). Diferente do Plate.astro (arte de campanha,
+ * nunca cortada): aqui é fotografia de produto padrão de e-commerce, fundo neutro, então
+ * um crop quadrado é normal e esperado. "Comprar" leva direto ao checkout oficial.
+ */
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { money } from '../data/shop';
+import type { Product } from '../data/shop';
+
+interface Props {
+  product: Product;
+  reveal?: string | false;
+}
+const { product, reveal = 'scale' } = Astro.props;
+---
+
+<article class="pcard" data-reveal={reveal === false ? undefined : reveal} data-cat={product.category}>
+  <a class="pcard__link" href={product.href} target="_blank" rel="noopener">
+    <span class="pcard__frame">
+      <Image
+        src={product.image}
+        alt={product.name}
+        widths={[280, 360, 480, 600]}
+        sizes="(max-width: 640px) 44vw, (max-width: 1000px) 30vw, 330px"
+        formats={['avif', 'webp']}
+        fallbackFormat="png"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+    <span class="pcard__body">
+      <span class="pcard__name">{product.name}</span>
+      <span class="pcard__row">
+        <span class="pcard__price">{money(product.price)}</span>
+        <span class="pcard__cta">
+          Comprar
+          <Icon name="arrow" class="pcard__ico" />
+        </span>
+      </span>
+    </span>
+  </a>
+</article>
+
+<style>
+  .pcard {
+    list-style: none;
+  }
+
+  .pcard__link {
+    display: grid;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .pcard__frame {
+    display: block;
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--bone);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-out);
+  }
+
+  .pcard__link:hover .pcard__frame,
+  .pcard__link:focus-visible .pcard__frame {
+    border-color: var(--red);
+  }
+
+  .pcard__frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .pcard__link:hover .pcard__frame :global(img) {
+    transform: scale(1.04);
+  }
+
+  .pcard__body {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .pcard__name {
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    line-height: 1.25;
+    color: var(--bone);
+  }
+
+  .pcard__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .pcard__price {
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--bone);
+  }
+
+  .pcard__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    white-space: nowrap;
+    transition: gap 0.25s var(--ease-out);
+  }
+
+  .pcard__link:hover .pcard__cta {
+    gap: 0.55em;
+  }
+
+  .pcard__ico {
+    width: 0.85em;
+    height: 0.85em;
+  }
+</style>

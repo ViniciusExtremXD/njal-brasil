@@ -1,7 +1,9 @@
 # NJAL BRASIL — site institucional
 
 Vitrine editorial da NJAL BRASIL (@njalbrasil): vestuário de treino de alta intensidade, São Paulo.
-Não é e-commerce. Os drops são anunciados no Instagram e a venda fecha no WhatsApp.
+Este site não processa pagamento nem mantém estoque próprio: é a vitrine de marca, e a página
+`/loja` mostra o catálogo real com "Comprar" levando direto ao checkout oficial em
+[njal.com.br](https://www.njal.com.br/) — carrinho, frete, parcelamento e pagamento acontecem lá.
 
 ## Stack
 
@@ -48,6 +50,12 @@ telas Retina (os posts atuais de 480–640 px são o limite).
 
 Os logos (`Wordmark.astro`, `Monogram.astro`) foram traçados a partir dos PNGs oficiais e são vetoriais puros.
 
+As fotos de produto em `src/assets/shop` são fotografia de e-commerce padrão (fundo neutro, sem
+tipografia embutida), extraídas de njal.com.br em 2026-09-12 — diferente das artes de campanha
+acima, aqui o crop quadrado do `ProductCard.astro` é normal. O catálogo (nome, preço, link) mora em
+`src/data/shop.ts`; para atualizar preço ou adicionar produto, edite esse arquivo e baixe a imagem
+em alta resolução trocando `300x300` por `1500x1500` na URL do CDN (`cdn.awsli.com.br`).
+
 ## Conteúdo
 
 Tudo que é texto, link e ordem de seção mora em `src/data/site.ts`. Os textos de manifesto e da seção de tecido
@@ -55,6 +63,8 @@ estão em voz de marca e podem ser ajustados ali sem tocar nos componentes.
 
 ## Canais
 
+- Loja oficial (catálogo, carrinho e checkout reais): https://www.njal.com.br/
 - Instagram: https://www.instagram.com/njalbrasil/
-- WhatsApp: https://wa.me/qr/SCWJ6A6MNLGHN1 (short link de QR: o WhatsApp descarta `?text=`, então nenhum fluxo
-  depende de mensagem pré-preenchida)
+- WhatsApp: número real `55 11 98825-6454` (`waLink()` em `src/data/site.ts`), encontrado no site
+  oficial. Mensagem pré-preenchida funciona normalmente neste formato — diferente do antigo short
+  link de QR (`wa.me/qr/...`), que descartava `?text=`.

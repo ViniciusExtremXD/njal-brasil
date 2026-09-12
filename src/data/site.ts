@@ -17,6 +17,17 @@ import feedRegata from '../assets/images/diogo-regata-reel.jpg';
 import feedEspelho from '../assets/images/post-diogo-crossfit.jpg';
 import avatar from '../assets/images/njal-profile.jpg';
 
+/** Caminho base do deploy (GitHub Pages serve em subdiretório). Use para qualquer link de página interna. */
+export const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+export const withBase = (path: string) => `${BASE}${path.startsWith('/') ? path : `/${path}`}`;
+
+/**
+ * Número real de WhatsApp da loja oficial (encontrado em njal.com.br). Ao contrário do antigo
+ * short link de QR, este formato NÃO descarta `?text=`: a mensagem pré-preenchida chega de verdade.
+ */
+const WA_NUMBER = '5511988256454';
+export const waLink = (msg?: string) => `https://wa.me/${WA_NUMBER}${msg ? `?text=${encodeURIComponent(msg)}` : ''}`;
+
 export const BRAND = {
   name: 'NJAL',
   full: 'NJAL BRASIL',
@@ -24,8 +35,9 @@ export const BRAND = {
   city: 'São Paulo',
   tagline: 'Vestuário de treino de alta intensidade',
   instagram: 'https://www.instagram.com/njalbrasil/',
-  /** Short link de QR: o WhatsApp descarta `?text=`. Nunca dependa de mensagem pré-preenchida. */
-  whatsapp: 'https://wa.me/qr/SCWJ6A6MNLGHN1',
+  whatsapp: waLink('Olá! Vim pelo site da NJAL, quero saber mais.'),
+  /** Loja oficial (njal.com.br): catálogo com preço, tamanho, frete e checkout real. */
+  shopUrl: 'https://www.njal.com.br/',
   say: 'Se fala NIJAL',
   scriptures: {
     forged: 'Forged for Champions',

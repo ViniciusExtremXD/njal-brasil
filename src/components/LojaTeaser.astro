@@ -1,0 +1,71 @@
+---
+/** Vitrine da loja na home: recorte curado do catálogo real, empurrando pra /loja e pro checkout oficial. */
+import { withBase } from '../data/site';
+import { FEATURED } from '../data/shop';
+import ProductCard from './ProductCard.astro';
+import Kicker from './Kicker.astro';
+import Icon from './Icon.astro';
+---
+
+<section class="loja-teaser section section--tight section--line" id="loja" aria-labelledby="loja-teaser-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <Kicker index="00" label="Loja oficial" />
+      <div class="sec-head__row">
+        <h2 class="sec-head__title d loja-teaser__title" id="loja-teaser-title" data-reveal="forge">
+          Vista a armadura.<br />
+          <span class="d--red" data-reveal="forge-red" style="--i:1">Compre agora.</span>
+        </h2>
+        <p class="copy" data-reveal style="--i:1">
+          Preço, tamanho e frete de verdade. Escolha a peça aqui e finalize a compra no checkout
+          oficial da NJAL, em <strong>njal.com.br</strong>.
+        </p>
+      </div>
+    </header>
+
+    <ul class="loja-teaser__grid">
+      {FEATURED.map((p) => <ProductCard product={p} />)}
+    </ul>
+
+    <div class="loja-teaser__foot" data-reveal>
+      <a class="btn btn--red" href={withBase('/loja')}>
+        Ver loja completa
+        <Icon name="arrow" class="btn__icon" />
+      </a>
+      <p class="eyebrow loja-teaser__note">Catálogo e checkout em <b>njal.com.br</b></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .loja-teaser__title {
+    font-size: clamp(2.2rem, 1.3rem + 4.4vw, 5rem);
+  }
+
+  .loja-teaser__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem clamp(1rem, 2.5vw, 2rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .loja-teaser__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .loja-teaser__note {
+    color: var(--bone-50);
+  }
+
+  @media (min-width: 640px) {
+    .loja-teaser__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

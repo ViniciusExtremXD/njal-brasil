@@ -1,8 +1,10 @@
 ---
-import { BRAND, NAV } from '../data/site';
+import { BRAND, NAV, withBase } from '../data/site';
 import Monogram from './Monogram.astro';
 import Wordmark from './Wordmark.astro';
 import Icon from './Icon.astro';
+
+const lojaHref = withBase('/loja');
 ---
 
 <header class="nav" data-nav>
@@ -14,14 +16,14 @@ import Icon from './Icon.astro';
     </a>
 
     <nav class="nav__links" aria-label="Seções do site">
+      <a href={lojaHref} class="nav__loja">Loja</a>
       {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
 
     <div class="nav__right">
       <span class="nav__say eyebrow"><span aria-hidden="true">✌</span> <b>{BRAND.say}</b></span>
-      <a class="btn btn--red btn--sm nav__wa" href={BRAND.whatsapp} target="_blank" rel="noopener">
-        <Icon name="whatsapp" class="btn__icon" />
-        WhatsApp
+      <a class="btn btn--red btn--sm nav__wa" href={lojaHref}>
+        Loja
       </a>
 
       <details class="nav__menu" data-menu>
@@ -31,9 +33,14 @@ import Icon from './Icon.astro';
         </summary>
         <div class="nav__sheet">
           <ul class="nav__sheet-list">
+            <li style="--n:0">
+              <a class="d nav__sheet-loja" href={lojaHref}>
+                Loja
+              </a>
+            </li>
             {
               NAV.map((item, i) => (
-                <li style={`--n:${i}`}>
+                <li style={`--n:${i + 1}`}>
                   <a class="d" href={item.href}>
                     {item.label}
                   </a>
@@ -43,7 +50,10 @@ import Icon from './Icon.astro';
           </ul>
           <div class="nav__sheet-foot">
             <div class="cta-row">
-              <a class="btn btn--red" href={BRAND.whatsapp} target="_blank" rel="noopener">
+              <a class="btn btn--red" href={lojaHref}>
+                Ver a loja
+              </a>
+              <a class="btn" href={BRAND.whatsapp} target="_blank" rel="noopener">
                 <Icon name="whatsapp" class="btn__icon" /> WhatsApp
               </a>
               <a class="btn" href={BRAND.instagram} target="_blank" rel="noopener">
@@ -142,6 +152,10 @@ import Icon from './Icon.astro';
   .nav__links a:hover {
     color: var(--bone);
     background-size: 100% 2px;
+  }
+
+  .nav__loja {
+    color: var(--red) !important;
   }
 
   .nav__right {
@@ -257,6 +271,10 @@ import Icon from './Icon.astro';
   }
 
   .nav__sheet-list a:hover {
+    color: var(--red);
+  }
+
+  .nav__sheet-loja {
     color: var(--red);
   }
 

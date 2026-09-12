@@ -1,5 +1,5 @@
 ---
-import { BRAND } from '../data/site';
+import { BRAND, withBase } from '../data/site';
 import Monogram from './Monogram.astro';
 import Marquee from './Marquee.astro';
 import Icon from './Icon.astro';
@@ -29,13 +29,13 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
           <strong>São armaduras de treino.</strong>
         </p>
         <div class="cta-row">
-          <a class="btn btn--red" href="#drops">
+          <a class="btn btn--red" href={withBase('/loja')}>
+            Ver a loja
+            <Icon name="arrow" class="btn__icon" />
+          </a>
+          <a class="btn" href="#drops">
             Ver os drops
             <Icon name="down" class="btn__icon" />
-          </a>
-          <a class="btn" href={BRAND.whatsapp} target="_blank" rel="noopener">
-            <Icon name="whatsapp" class="btn__icon" />
-            Falar no WhatsApp
           </a>
         </div>
       </div>

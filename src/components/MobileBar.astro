@@ -1,5 +1,5 @@
 ---
-import { BRAND } from '../data/site';
+import { BRAND, withBase } from '../data/site';
 import Icon from './Icon.astro';
 ---
 
@@ -8,9 +8,12 @@ import Icon from './Icon.astro';
     <Icon name="instagram" class="mbar__ico" />
     Instagram
   </a>
-  <a class="mbar__a mbar__a--red" href={BRAND.whatsapp} target="_blank" rel="noopener">
+  <a class="mbar__a" href={BRAND.whatsapp} target="_blank" rel="noopener">
     <Icon name="whatsapp" class="mbar__ico" />
     WhatsApp
+  </a>
+  <a class="mbar__a mbar__a--red" href={withBase('/loja')}>
+    Loja
   </a>
 </div>
 
@@ -20,7 +23,7 @@ import Icon from './Icon.astro';
     inset: auto 0 0 0;
     z-index: 40;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     border-top: 1px solid var(--line);
     background: rgba(5, 5, 6, 0.96);
     padding-bottom: env(safe-area-inset-bottom);
@@ -30,15 +33,22 @@ import Icon from './Icon.astro';
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6em;
+    gap: 0.4em;
     min-height: 3.25rem;
+    padding-inline: 0.35rem;
     font-family: var(--font-display), sans-serif;
     font-weight: 700;
-    font-size: 0.74rem;
-    letter-spacing: 0.16em;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
+    text-align: center;
     color: var(--bone);
+    border-left: 1px solid var(--line);
+  }
+
+  .mbar__a:first-child {
+    border-left: none;
   }
 
   .mbar__a--red {

@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Icon from '../components/Icon.astro';
+import { BRAND } from '../data/site';
+import { CATEGORIES, PRODUCTS } from '../data/shop';
+---
+
+<Base
+  title="Loja — NJAL BRASIL"
+  description="Catálogo oficial da NJAL: camisetas, moletons, regatas, shorts e acessórios. Escolha a peça e finalize a compra no checkout oficial em njal.com.br."
+  path="/loja"
+>
+  <Nav />
+  <main id="conteudo">
+    <section class="loja-hero section--tight">
+      <div class="wrap">
+        <p class="eyebrow" data-reveal><b>Loja oficial</b> · njal.com.br</p>
+        <h1 class="loja-hero__title d" data-reveal="forge">
+          A armadura tem<br />
+          <span class="d--red" data-reveal="forge-red" style="--i:1">tamanho e preço.</span>
+        </h1>
+        <p class="lead" data-reveal style="--i:1">
+          Este é o catálogo real da NJAL. Escolha a peça, o tamanho e finalize a compra no
+          checkout oficial — frete, parcelamento e pagamento acontecem lá, em
+          <strong>njal.com.br</strong>.
+        </p>
+        <div class="cta-row" data-reveal style="--i:2">
+          <a class="btn btn--red" href={BRAND.shopUrl} target="_blank" rel="noopener">
+            Abrir njal.com.br
+            <Icon name="arrow" class="btn__icon" />
+          </a>
+          <a class="btn" href={BRAND.whatsapp} target="_blank" rel="noopener">
+            <Icon name="whatsapp" class="btn__icon" />
+            Tirar dúvida no WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="loja section section--tight section--line" aria-label="Catálogo de produtos">
+      <div class="wrap">
+        {
+          CATEGORIES.map((c, i) => (
+            <input
+              type="radio"
+              name="loja-cat"
+              id={`cat-${c.id}`}
+              class="sr-only loja__radio"
+              checked={i === 0}
+            />
+          ))
+        }
+
+        <div class="loja__tabs" role="tablist" aria-label="Filtrar por categoria">
+          {CATEGORIES.map((c) => <label for={`cat-${c.id}`}>{c.label}</label>)}
+        </div>
+
+        <ul class="loja__grid">
+          {PRODUCTS.map((p) => <ProductCard product={p} />)}
+        </ul>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <MobileBar />
+</Base>
+
+<style>
+  .loja-hero {
+    padding-top: calc(var(--nav-h) + clamp(2rem, 6vw, 5rem));
+  }
+
+  .loja-hero__title {
+    margin-top: 1rem;
+    font-size: clamp(2.4rem, 1.4rem + 5.2vw, 6rem);
+  }
+
+  .loja-hero .lead {
+    margin-top: 1.5rem;
+    max-width: 46ch;
+  }
+
+  .loja-hero .cta-row {
+    margin-top: 2rem;
+  }
+
+  .loja__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .loja__tabs label {
+    cursor: pointer;
+    padding: 0.6em 1.2em;
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bone-70);
+    border: 1px solid var(--line-strong);
+    transition:
+      background-color 0.2s var(--ease-out),
+      color 0.2s var(--ease-out),
+      border-color 0.2s var(--ease-out);
+  }
+
+  .loja__tabs label:hover {
+    border-color: var(--bone);
+    color: var(--bone);
+  }
+
+  .loja__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem clamp(1rem, 2.5vw, 2rem);
+  }
+
+  /* Filtro por categoria: puro CSS, funciona sem JS */
+  #cat-feminino:checked ~ .loja__tabs label[for='cat-feminino'],
+  #cat-masculino:checked ~ .loja__tabs label[for='cat-masculino'],
+  #cat-sale:checked ~ .loja__tabs label[for='cat-sale'],
+  #cat-todos:checked ~ .loja__tabs label[for='cat-todos'] {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--ink);
+  }
+
+  #cat-feminino:checked ~ .loja__grid :global(.pcard:not([data-cat='feminino'])),
+  #cat-masculino:checked ~ .loja__grid :global(.pcard:not([data-cat='masculino'])),
+  #cat-sale:checked ~ .loja__grid :global(.pcard:not([data-cat='sale'])) {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .loja__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .loja__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>
