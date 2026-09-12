@@ -56,7 +56,7 @@ export const PRODUCTS: Product[] = [
   // Feminino
   {
     slug: 'camiseta-feminina-branca',
-    name: 'Camiseta Irmã Marluce — Branca',
+    name: 'Camiseta Feminina Irmã Marluce — Branca',
     price: 100,
     category: 'feminino',
     href: SHOP + 'camiseta-feminina-irma-marluce-dale-bicuda-branca',
@@ -64,7 +64,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'camiseta-feminina-rosa',
-    name: 'Camiseta Irmã Marluce — Rosa',
+    name: 'Camiseta Feminina Irmã Marluce — Rosa',
     price: 100,
     category: 'feminino',
     href: SHOP + 'camiseta-feminina-irma-marluce-dale-bicuda-rosa',
@@ -72,7 +72,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'oversized-feminina-treino-abencoado',
-    name: 'Oversized Treino Abençoado',
+    name: 'Oversized Feminina — Treino Abençoado',
     price: 120,
     category: 'feminino',
     href: SHOP + 'camiseta-oversized-feminina-treino-abencoado',
@@ -80,7 +80,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'moletom-feminino-preto',
-    name: 'Moletom Dale Bicuda — Preto',
+    name: 'Moletom Feminino Dale Bicuda — Preto',
     price: 157,
     category: 'feminino',
     href: SHOP + 'moleton-feminino-dale-bicuda-preto',
@@ -88,15 +88,15 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'oversized-feminina-branca',
-    name: 'Oversized Irmã Marluce — Branca',
+    name: 'Oversized Feminina Irmã Marluce — Branca',
     price: 120,
     category: 'feminino',
     href: SHOP + 'camiseta-oversized-feminina-branca-irma-marluce-dale-bicuda',
     image: camisetaOversizedFemininaBranca,
   },
   {
-    slug: 'camiseta-feminina-oversized',
-    name: 'Oversized Irmã Marluce',
+    slug: 'oversized-feminina-preta',
+    name: 'Oversized Feminina Irmã Marluce — Preta',
     price: 120,
     category: 'feminino',
     href: SHOP + 'camiseta-feminina-oversized-irma-marluce-dale-bicuda',
@@ -137,7 +137,7 @@ export const PRODUCTS: Product[] = [
   // Masculino
   {
     slug: 'oversized-masculina-treino-abencoado',
-    name: 'Oversized Treino Abençoado',
+    name: 'Oversized Masculina — Treino Abençoado',
     price: 120,
     category: 'masculino',
     href: SHOP + 'camiseta-oversized-masculina-treino-abencoado',
@@ -145,7 +145,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'moletom-masculino-preto',
-    name: 'Moletom Dale Bicuda — Preto',
+    name: 'Moletom Masculino Dale Bicuda — Preto',
     price: 157,
     category: 'masculino',
     href: SHOP + 'moleton-masculino-dale-bicuda-preto',
@@ -153,7 +153,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'oversized-masculina-branca',
-    name: 'Oversized Irmã Marluce — Branca',
+    name: 'Oversized Masculina Irmã Marluce — Branca',
     price: 120,
     category: 'masculino',
     href: SHOP + 'camiseta-oversized-masculina-branca-irma-marluce-dale-bicuda',
@@ -161,7 +161,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'camiseta-masculina-rosa',
-    name: 'Camiseta Irmã Marluce — Rosa',
+    name: 'Camiseta Masculina Irmã Marluce — Rosa',
     price: 100,
     category: 'masculino',
     href: SHOP + 'camiseta-masculina-irma-marluce-dale-bicuda-rosa',
@@ -169,7 +169,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'camiseta-masculina-branca',
-    name: 'Camiseta Irmã Marluce — Branca',
+    name: 'Camiseta Masculina Irmã Marluce — Branca',
     price: 100,
     category: 'masculino',
     href: SHOP + 'camiseta-marculina-irma-marluce-dale-bicuda',
@@ -200,8 +200,8 @@ export const PRODUCTS: Product[] = [
     image: camisetaDryfitBlack,
   },
   {
-    slug: 'camiseta-oversized-unissex',
-    name: 'Oversized Irmã Marluce',
+    slug: 'oversized-masculina-preta',
+    name: 'Oversized Masculina Irmã Marluce — Preta',
     price: 120,
     category: 'masculino',
     href: SHOP + 'camiseta-oversized-irma-marluce-dale-bicuda',

@@ -30,7 +30,7 @@ import Monogram from './Monogram.astro';
     </header>
 
     <ul class="loja-teaser__grid">
-      {FEATURED.map((p) => <ProductCard product={p} />)}
+      {FEATURED.map((p, i) => <ProductCard product={p} index={i} />)}
     </ul>
 
     <div class="loja-teaser__foot" data-reveal>

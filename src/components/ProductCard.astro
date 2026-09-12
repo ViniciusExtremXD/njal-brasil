@@ -12,11 +12,17 @@ import type { Product } from '../data/shop';
 interface Props {
   product: Product;
   reveal?: string | false;
+  index?: number;
 }
-const { product, reveal = 'scale' } = Astro.props;
+const { product, reveal = 'scale', index = 0 } = Astro.props;
 ---
 
-<article class="pcard" data-reveal={reveal === false ? undefined : reveal} data-cat={product.category}>
+<article
+  class="pcard"
+  data-reveal={reveal === false ? undefined : reveal}
+  data-cat={product.category}
+  style={reveal === false ? undefined : `--i:${index % 4}`}
+>
   <a class="pcard__link" href={product.href} target="_blank" rel="noopener">
     <span class="pcard__frame">
       <Image

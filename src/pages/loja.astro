@@ -65,7 +65,7 @@ import { CATEGORIES, PRODUCTS } from '../data/shop';
         </div>
 
         <ul class="loja__grid">
-          {PRODUCTS.map((p) => <ProductCard product={p} />)}
+          {PRODUCTS.map((p, i) => <ProductCard product={p} index={i} />)}
         </ul>
       </div>
     </section>

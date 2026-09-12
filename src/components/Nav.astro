@@ -5,11 +5,12 @@ import Wordmark from './Wordmark.astro';
 import Icon from './Icon.astro';
 
 const lojaHref = withBase('/loja');
+const homeHref = `${withBase('/')}#topo`;
 ---
 
 <header class="nav" data-nav>
   <div class="nav__in wrap">
-    <a class="nav__brand" href="#topo" aria-label="NJAL BRASIL — voltar ao início">
+    <a class="nav__brand" href={homeHref} aria-label="NJAL BRASIL — voltar ao início">
       <Monogram class="nav__mono" decorative />
       <Wordmark class="nav__word" decorative />
       <span class="nav__brasil">Brasil</span>
