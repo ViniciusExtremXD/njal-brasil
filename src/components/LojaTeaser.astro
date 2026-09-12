@@ -5,9 +5,15 @@ import { FEATURED } from '../data/shop';
 import ProductCard from './ProductCard.astro';
 import Kicker from './Kicker.astro';
 import Icon from './Icon.astro';
+import Monogram from './Monogram.astro';
 ---
 
 <section class="loja-teaser section section--tight section--line" id="loja" aria-labelledby="loja-teaser-title">
+  <div class="loja-teaser__glow" aria-hidden="true"></div>
+  <div class="loja-teaser__mono" aria-hidden="true">
+    <Monogram outline strokeWidth={1} decorative />
+  </div>
+
   <div class="wrap">
     <header class="sec-head">
       <Kicker index="00" label="Loja oficial" />
@@ -38,6 +44,53 @@ import Icon from './Icon.astro';
 </section>
 
 <style>
+  .loja-teaser {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loja-teaser > .wrap {
+    position: relative;
+    z-index: 1;
+  }
+
+  .loja-teaser__glow {
+    position: absolute;
+    inset: -15% -10% auto -10%;
+    height: 65%;
+    background: radial-gradient(closest-side, rgba(232, 18, 63, 0.2), rgba(232, 18, 63, 0.05) 55%, transparent 78%);
+    pointer-events: none;
+    animation: loja-glow-pulse 9s var(--ease-in-out) infinite;
+  }
+
+  .loja-teaser__mono {
+    position: absolute;
+    top: 50%;
+    right: clamp(-3rem, -2vw, 3rem);
+    transform: translateY(-50%);
+    height: clamp(280px, 48vw, 640px);
+    color: var(--bone);
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  .loja-teaser__mono :global(svg) {
+    height: 100%;
+    width: auto;
+  }
+
+  @keyframes loja-glow-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
   .loja-teaser__title {
     font-size: clamp(2.2rem, 1.3rem + 4.4vw, 5rem);
   }

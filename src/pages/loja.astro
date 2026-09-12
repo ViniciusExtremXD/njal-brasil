@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import MobileBar from '../components/MobileBar.astro';
 import ProductCard from '../components/ProductCard.astro';
 import Icon from '../components/Icon.astro';
+import Monogram from '../components/Monogram.astro';
 import { BRAND } from '../data/site';
 import { CATEGORIES, PRODUCTS } from '../data/shop';
 ---
@@ -17,6 +18,10 @@ import { CATEGORIES, PRODUCTS } from '../data/shop';
   <Nav />
   <main id="conteudo">
     <section class="loja-hero section--tight">
+      <div class="loja-hero__glow" aria-hidden="true"></div>
+      <div class="loja-hero__mono" aria-hidden="true">
+        <Monogram outline strokeWidth={1} decorative />
+      </div>
       <div class="wrap">
         <p class="eyebrow" data-reveal><b>Loja oficial</b> · njal.com.br</p>
         <h1 class="loja-hero__title d" data-reveal="forge">
@@ -71,7 +76,50 @@ import { CATEGORIES, PRODUCTS } from '../data/shop';
 
 <style>
   .loja-hero {
+    position: relative;
+    overflow: hidden;
     padding-top: calc(var(--nav-h) + clamp(2rem, 6vw, 5rem));
+  }
+
+  .loja-hero > .wrap {
+    position: relative;
+    z-index: 1;
+  }
+
+  .loja-hero__glow {
+    position: absolute;
+    inset: -20% -10% auto -10%;
+    height: 75%;
+    background: radial-gradient(closest-side, rgba(232, 18, 63, 0.22), rgba(232, 18, 63, 0.05) 55%, transparent 78%);
+    pointer-events: none;
+    animation: loja-glow-pulse 9s var(--ease-in-out) infinite;
+  }
+
+  .loja-hero__mono {
+    position: absolute;
+    top: 0;
+    right: clamp(-3rem, -1vw, 3rem);
+    height: clamp(260px, 42vw, 560px);
+    color: var(--bone);
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .loja-hero__mono :global(svg) {
+    height: 100%;
+    width: auto;
+  }
+
+  @keyframes loja-glow-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
   }
 
   .loja-hero__title {
