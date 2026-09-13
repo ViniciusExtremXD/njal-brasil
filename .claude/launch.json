@@ -4,8 +4,9 @@
     {
       "name": "njal-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--host", "127.0.0.1", "--port", "4321"],
-      "port": 4321
+      "runtimeArgs": ["run", "dev", "--", "--host", "127.0.0.1"],
+      "port": 4321,
+      "autoPort": true
     }
   ]
 }

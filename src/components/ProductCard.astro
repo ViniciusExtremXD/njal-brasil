@@ -6,8 +6,9 @@
  * onde o "Chamar no WhatsApp" de fato inicia a conversa de venda.
  *
  * Peças com mais de uma cor (`line.variants.length > 1`) ganham um seletor de cor em CSS
- * puro (radio + sibling, igual ao filtro de categoria da página da loja): só a variante da
- * cor marcada fica visível.
+ * puro (radio + sibling, igual ao filtro de categoria da página da loja). As variantes ficam
+ * empilhadas na mesma célula de grid e trocam com crossfade — só a da cor marcada fica
+ * visível e clicável.
  */
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
@@ -46,34 +47,36 @@ const pdpHref = withBase(`/loja/${line.slug}`);
       ))
   }
 
-  {
-    line.variants.map((v, i) => (
-      <a class="pcard__variant" data-variant={i} href={pdpHref}>
-        <span class="pcard__frame">
-          <Image
-            src={v.image}
-            alt={v.color ? `${line.name} — ${v.color}` : line.name}
-            widths={[280, 360, 480, 600]}
-            sizes="(max-width: 640px) 44vw, (max-width: 1000px) 30vw, 330px"
-            formats={['avif', 'webp']}
-            fallbackFormat="png"
-            loading="lazy"
-            decoding="async"
-          />
-        </span>
-        <span class="pcard__body">
-          <span class="pcard__name">{line.name}{v.color ? ` — ${v.color}` : ''}</span>
-          <span class="pcard__row">
-            <span class="pcard__price">{money(v.price)}</span>
-            <span class="pcard__cta">
-              Ver produto
-              <Icon name="arrow" class="pcard__ico" />
+  <div class="pcard__stack">
+    {
+      line.variants.map((v, i) => (
+        <a class="pcard__variant" data-variant={i} href={pdpHref}>
+          <span class="pcard__frame">
+            <Image
+              src={v.image}
+              alt={v.color ? `${line.name} — ${v.color}` : line.name}
+              widths={[280, 360, 480, 600]}
+              sizes="(max-width: 640px) 44vw, (max-width: 1000px) 30vw, 330px"
+              formats={['avif', 'webp']}
+              fallbackFormat="png"
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+          <span class="pcard__body">
+            <span class="pcard__name">{line.name}{v.color ? ` — ${v.color}` : ''}</span>
+            <span class="pcard__row">
+              <span class="pcard__price">{money(v.price)}</span>
+              <span class="pcard__cta">
+                Ver produto
+                <Icon name="arrow" class="pcard__ico" />
+              </span>
             </span>
           </span>
-        </span>
-      </a>
-    ))
-  }
+        </a>
+      ))
+    }
+  </div>
 
   {
     multi && (
@@ -94,22 +97,38 @@ const pdpHref = withBase(`/loja/${line.slug}`);
     list-style: none;
   }
 
+  .pcard__stack {
+    display: grid;
+  }
+
+  /* Todas as variantes na mesma célula; a marcada fica por cima, com crossfade */
   .pcard__variant {
-    display: none;
+    grid-area: 1 / 1;
+    display: grid;
     gap: 0.75rem;
     text-decoration: none;
     color: inherit;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.985);
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 0.6s var(--ease-out),
+      visibility 0s linear 0.5s;
   }
 
-  .pcard--solo .pcard__variant {
-    display: grid;
-  }
-
-  .pcard__vradio[data-variant='0']:checked ~ .pcard__variant[data-variant='0'],
-  .pcard__vradio[data-variant='1']:checked ~ .pcard__variant[data-variant='1'],
-  .pcard__vradio[data-variant='2']:checked ~ .pcard__variant[data-variant='2'],
-  .pcard__vradio[data-variant='3']:checked ~ .pcard__variant[data-variant='3'] {
-    display: grid;
+  .pcard--solo .pcard__variant,
+  .pcard__vradio[data-variant='0']:checked ~ .pcard__stack .pcard__variant[data-variant='0'],
+  .pcard__vradio[data-variant='1']:checked ~ .pcard__stack .pcard__variant[data-variant='1'],
+  .pcard__vradio[data-variant='2']:checked ~ .pcard__stack .pcard__variant[data-variant='2'],
+  .pcard__vradio[data-variant='3']:checked ~ .pcard__stack .pcard__variant[data-variant='3'] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 0.6s var(--ease-out),
+      visibility 0s linear 0s;
   }
 
   .pcard__frame {
@@ -119,12 +138,17 @@ const pdpHref = withBase(`/loja/${line.slug}`);
     background: var(--bone);
     border: 1px solid var(--line);
     overflow: hidden;
-    transition: border-color 0.3s var(--ease-out);
+    transition:
+      border-color 0.3s var(--ease-out),
+      transform 0.6s var(--ease-out),
+      box-shadow 0.6s var(--ease-out);
   }
 
   .pcard__variant:hover .pcard__frame,
   .pcard__variant:focus-visible .pcard__frame {
     border-color: var(--red);
+    transform: translateY(-5px);
+    box-shadow: 0 26px 50px -26px rgba(232, 18, 63, 0.5);
   }
 
   .pcard__frame :global(img) {
@@ -132,11 +156,40 @@ const pdpHref = withBase(`/loja/${line.slug}`);
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
-    transition: transform 0.5s var(--ease-out);
+    transition:
+      transform 1.4s var(--ease-out),
+      opacity 0.9s var(--ease-out),
+      filter 0.9s var(--ease-out);
   }
 
+  /* Em cena: cortina vermelha sobe e a foto assenta de um leve zoom */
+  :global(.js) .pcard__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: var(--red);
+    transform: scaleY(1);
+    transform-origin: top;
+    transition: transform 0.9s var(--ease-in-out) calc(var(--i, 0) * var(--stagger) + 0.1s);
+    pointer-events: none;
+  }
+
+  :global(.js) .pcard.in .pcard__frame::before {
+    transform: scaleY(0);
+  }
+
+  :global(.js) .pcard__frame :global(img) {
+    transform: scale(1.14);
+  }
+
+  :global(.js) .pcard.in .pcard__frame :global(img) {
+    transform: none;
+  }
+
+  :global(.js) .pcard.in .pcard__variant:hover .pcard__frame :global(img),
   .pcard__variant:hover .pcard__frame :global(img) {
-    transform: scale(1.04);
+    transform: scale(1.05);
   }
 
   .pcard__body {
@@ -152,6 +205,11 @@ const pdpHref = withBase(`/loja/${line.slug}`);
     text-transform: uppercase;
     line-height: 1.25;
     color: var(--bone);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .pcard__variant:hover .pcard__name {
+    color: var(--red);
   }
 
   .pcard__row {
@@ -189,6 +247,11 @@ const pdpHref = withBase(`/loja/${line.slug}`);
   .pcard__ico {
     width: 0.85em;
     height: 0.85em;
+    transition: transform 0.35s var(--ease-spring);
+  }
+
+  .pcard__variant:hover .pcard__ico {
+    transform: translateX(3px);
   }
 
   .pcard__swatches {
@@ -205,11 +268,13 @@ const pdpHref = withBase(`/loja/${line.slug}`);
     border: 1px solid rgba(5, 5, 6, 0.3);
     box-shadow: 0 0 0 1px rgba(242, 240, 236, 0.5);
     cursor: pointer;
-    transition: transform 0.2s var(--ease-out);
+    transition:
+      transform 0.3s var(--ease-spring),
+      box-shadow 0.3s var(--ease-out);
   }
 
   .pcard__swatch:hover {
-    transform: scale(1.12);
+    transform: scale(1.18);
   }
 
   .pcard__vradio[data-variant='0']:checked ~ .pcard__swatches .pcard__swatch:nth-child(1),
@@ -220,4 +285,5 @@ const pdpHref = withBase(`/loja/${line.slug}`);
       0 0 0 2px var(--ink),
       0 0 0 4px var(--red);
   }
+
 </style>

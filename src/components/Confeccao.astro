@@ -9,12 +9,12 @@ import Kicker from './Kicker.astro';
   <div class="wrap b2b__grid">
     <div class="b2b__body">
       <Kicker index="06" label="Confecção própria · B2B" />
-      <h2 class="b2b__title d" id="b2b-title">
-        <span data-reveal="forge">Sua ideia.</span><br />
-        <span class="d--red" data-reveal="forge-red" style="--i:1">Nossa confecção.</span>
+      <h2 class="b2b__title d" id="b2b-title" data-reveal="forge" data-split="forge">
+        Sua ideia.<br />
+        <span class="d--red">Nossa confecção.</span>
       </h2>
-      <p class="lead" data-reveal>{B2B.intro}</p>
-      <ul class="b2b__list">
+      <p class="lead" data-reveal="fade" data-split="words" style="--i:1">{B2B.intro}</p>
+      <ul class="b2b__list" data-inview>
         {
           B2B.bullets.map((b, i) => (
             <li data-reveal style={`--i:${i + 1}`}>
@@ -43,33 +43,33 @@ import Kicker from './Kicker.astro';
           Pedir orçamento
         </summary>
         <form class="b2b__form" data-quote-form>
-          <label>
+          <label style="--n:0">
             <span class="eyebrow">Seu nome</span>
             <input type="text" name="nome" required placeholder="Como podemos te chamar" />
           </label>
-          <label>
+          <label style="--n:1">
             <span class="eyebrow">Marca ou negócio</span>
             <input type="text" name="marca" placeholder="Se for pra uma marca, academia, box..." />
           </label>
           <div class="b2b__form-row">
-            <label>
+            <label style="--n:2">
               <span class="eyebrow">Peça</span>
               <input type="text" name="peca" required placeholder="Camiseta, moletom, uniforme..." />
             </label>
-            <label>
+            <label style="--n:3">
               <span class="eyebrow">Quantidade</span>
               <input type="number" name="quantidade" min="10" required placeholder="A partir de 10" />
             </label>
           </div>
-          <label>
+          <label style="--n:4">
             <span class="eyebrow">Detalhes</span>
             <textarea name="detalhes" rows="3" placeholder="Cores, prazo, referência de peça..." />
           </label>
-          <button type="submit" class="btn btn--red">
+          <button type="submit" class="btn btn--red" style="--n:5">
             <Icon name="whatsapp" class="btn__icon" />
             Enviar pelo WhatsApp
           </button>
-          <p class="eyebrow b2b__form-note">
+          <p class="eyebrow b2b__form-note" style="--n:6">
             Abre o WhatsApp com os dados já preenchidos — nada é enviado por aqui.
           </p>
         </form>
@@ -79,8 +79,15 @@ import Kicker from './Kicker.astro';
     <div class="b2b__arts">
       {
         B2B.arts.map((a, i) => (
-          <div class:list={['b2b__plate', { 'b2b__plate--up': i === 1 }]}>
-            <Plate src={a.art} alt={a.alt} label={a.label} sizes="(max-width: 560px) calc(100vw - 2.5rem), (max-width: 1100px) 46vw, 480px" />
+          <div class:list={['b2b__plate', { 'b2b__plate--up': i === 1 }]} data-parallax={i === 0 ? '0.05' : '0.09'}>
+            <Plate
+              src={a.art}
+              alt={a.alt}
+              label={a.label}
+              sizes="(max-width: 560px) calc(100vw - 2.5rem), (max-width: 1100px) 46vw, 480px"
+              reveal={i === 0 ? 'left' : 'right'}
+              index={i * 2}
+            />
           </div>
         ))
       }
@@ -105,9 +112,54 @@ import Kicker from './Kicker.astro';
   }
 
   .b2b__list {
+    position: relative;
     display: grid;
     gap: 0;
     border-top: 1px solid var(--line);
+  }
+
+  /* Linhas da lista se desenham da esquerda pra direita, uma por item */
+  :global(.js) .b2b__list {
+    border-top-color: transparent;
+  }
+
+  :global(.js) .b2b__list::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s var(--ease-out);
+  }
+
+  :global(.js) .b2b__list.in::before {
+    transform: scaleX(1);
+  }
+
+  :global(.js) .b2b__list li {
+    position: relative;
+    border-bottom-color: transparent;
+  }
+
+  :global(.js) .b2b__list li::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s var(--ease-out) calc(var(--i, 0) * var(--stagger) + 0.2s);
+  }
+
+  :global(.js) .b2b__list li.in::after {
+    transform: scaleX(1);
   }
 
   .b2b__list li {
@@ -116,6 +168,26 @@ import Kicker from './Kicker.astro';
     gap: 0.5rem 1rem;
     padding: 0.9rem 0;
     border-bottom: 1px solid var(--line);
+  }
+
+  :global(.js) .b2b__list li {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      padding-left 0.4s var(--ease-out);
+  }
+
+  .b2b__list li:hover {
+    padding-left: 0.5rem;
+  }
+
+  .b2b__list li .eyebrow b {
+    display: inline-block;
+    transition: transform 0.4s var(--ease-spring);
+  }
+
+  .b2b__list li:hover .eyebrow b {
+    transform: translateX(3px);
   }
 
   .b2b__arts {
@@ -174,6 +246,38 @@ import Kicker from './Kicker.astro';
     border-top: 1px solid var(--line);
   }
 
+  /* O formulário desdobra suave: campos entram um a um */
+  .b2b__quote[open] .b2b__form {
+    animation: form-in 0.6s var(--ease-out) both;
+  }
+
+  .b2b__quote[open] .b2b__form > * {
+    animation: form-field-in 0.6s var(--ease-out) both;
+    animation-delay: calc(0.1s + var(--n, 0) * 70ms);
+  }
+
+  @keyframes form-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes form-field-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   .b2b__form label {
     display: grid;
     gap: 0.4rem;
@@ -189,12 +293,23 @@ import Kicker from './Kicker.astro';
     background: var(--carbon);
     border: 1px solid var(--line-strong);
     resize: vertical;
+    transition:
+      border-color 0.3s var(--ease-out),
+      box-shadow 0.4s var(--ease-out),
+      background-color 0.3s var(--ease-out);
+  }
+
+  .b2b__form input:hover,
+  .b2b__form textarea:hover {
+    border-color: var(--bone-50);
   }
 
   .b2b__form input:focus-visible,
   .b2b__form textarea:focus-visible {
-    outline: 2px solid var(--red);
-    outline-offset: 2px;
+    outline: none;
+    border-color: var(--red);
+    background: var(--carbon-2);
+    box-shadow: 0 0 0 3px rgba(232, 18, 63, 0.25);
   }
 
   .b2b__form-row {
@@ -212,6 +327,7 @@ import Kicker from './Kicker.astro';
       grid-template-columns: 2fr 1fr;
     }
   }
+
 </style>
 
 <script>

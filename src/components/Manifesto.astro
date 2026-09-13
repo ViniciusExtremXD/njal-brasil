@@ -6,7 +6,7 @@ import Kicker from './Kicker.astro';
 
 <section class="mani section" id="manifesto" aria-labelledby="mani-title">
   <div class="wrap mani__grid">
-    <div class="mani__art">
+    <div class="mani__art" data-parallax="0.06">
       <Plate
         src={ART.quem}
         alt="Arte oficial da campanha: Para quem é a NJAL. Rosto de atleta em luz baixa, wordmark NJAL em vermelho."
@@ -18,15 +18,15 @@ import Kicker from './Kicker.astro';
 
     <div class="mani__body">
       <Kicker index="01" label="Manifesto" />
-      <h2 class="mani__title d" id="mani-title" data-reveal="forge">
+      <h2 class="mani__title d" id="mani-title" data-reveal="forge" data-split="forge">
         <span class="sr-only">{BRAND.scriptures.who}: </span>É para quem
       </h2>
       <ol class="mani__lines">
         {
           MANIFESTO_LINES.map((line, i) => (
-            <li class="mani__line d" data-reveal style={`--i:${i + 1}`}>
+            <li class="mani__line d rule-draw" data-reveal style={`--i:${i + 1}`}>
               <span class="mani__tick" aria-hidden="true" />
-              {line}
+              <span class="mani__text" data-split="forge">{line}</span>
             </li>
           ))
         }
@@ -79,12 +79,39 @@ import Kicker from './Kicker.astro';
     text-wrap: pretty;
   }
 
+  .mani__text {
+    min-width: 0;
+  }
+
   .mani__tick {
     flex: none;
     width: 0.4em;
     height: 0.4em;
     background: var(--red);
     transform: translateY(-0.05em);
+    transition: transform 0.5s var(--ease-spring) 0.25s;
+  }
+
+  :global(.js) .mani__tick {
+    transform: translateY(-0.05em) scale(0);
+  }
+
+  :global(.js) .mani__line.in .mani__tick {
+    transform: translateY(-0.05em) scale(1);
+  }
+
+  /* Mesma revelação de [data-reveal] (com o atraso por --i) + hover próprio */
+  :global(.js) .mani__line {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      padding-left 0.4s var(--ease-out),
+      color 0.3s var(--ease-out);
+  }
+
+  .mani__line:hover {
+    padding-left: 0.4em;
+    color: var(--red);
   }
 
   .mani__copy {

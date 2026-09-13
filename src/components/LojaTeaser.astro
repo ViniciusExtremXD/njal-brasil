@@ -10,7 +10,7 @@ import Monogram from './Monogram.astro';
 
 <section class="loja-teaser section section--tight section--line" id="loja" aria-labelledby="loja-teaser-title">
   <div class="loja-teaser__glow" aria-hidden="true"></div>
-  <div class="loja-teaser__mono" aria-hidden="true">
+  <div class="loja-teaser__mono" aria-hidden="true" data-parallax="0.1">
     <Monogram outline strokeWidth={1} decorative />
   </div>
 
@@ -18,9 +18,9 @@ import Monogram from './Monogram.astro';
     <header class="sec-head">
       <Kicker index="00" label="Loja oficial" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d loja-teaser__title" id="loja-teaser-title" data-reveal="forge">
+        <h2 class="sec-head__title d loja-teaser__title" id="loja-teaser-title" data-reveal="forge" data-split="forge">
           Vista a armadura.<br />
-          <span class="d--red" data-reveal="forge-red" style="--i:1">Compre agora.</span>
+          <span class="d--red">Compre agora.</span>
         </h2>
         <p class="copy" data-reveal style="--i:1">
           Peça real, foto real. Escolha aqui e chame no WhatsApp pra fechar — sem carrinho, sem
@@ -65,13 +65,15 @@ import Monogram from './Monogram.astro';
 
   .loja-teaser__mono {
     position: absolute;
-    top: 50%;
+    top: 0;
+    bottom: 0;
+    margin-block: auto;
     right: clamp(-3rem, -2vw, 3rem);
-    transform: translateY(-50%);
     height: clamp(280px, 48vw, 640px);
     color: var(--bone);
     opacity: 0.05;
     pointer-events: none;
+    animation: float-slow 14s var(--ease-in-out) infinite;
   }
 
   .loja-teaser__mono :global(svg) {

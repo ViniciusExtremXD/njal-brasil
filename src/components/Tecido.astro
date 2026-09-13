@@ -8,9 +8,9 @@ import Kicker from './Kicker.astro';
     <header class="sec-head">
       <Kicker index="04" label="Engenharia do tecido" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="tec-title">
-          <span data-reveal="forge">Cada exigência.</span><br />
-          <span class="d--red" data-reveal="forge-red" style="--i:1">Uma resposta.</span>
+        <h2 class="sec-head__title d" id="tec-title" data-reveal="forge" data-split="forge">
+          Cada exigência.<br />
+          <span class="d--red">Uma resposta.</span>
         </h2>
         <p class="copy" data-reveal style="--i:1">
           Cada arena cobra uma coisa diferente do tecido. A peça nasce do que o treino exige, não do
@@ -33,10 +33,10 @@ import Kicker from './Kicker.astro';
           >
             <span class="tec__bar" aria-hidden="true" />
             <header class="tec__head">
-              <span class="tec__idx d" aria-hidden="true">
+              <span class="tec__idx d forge-num" aria-hidden="true">
                 {f.index}
               </span>
-              <h3 class="tec__name d">{f.name}</h3>
+              <h3 class="tec__name d" data-split="forge">{f.name}</h3>
               <span class="tec__arena eyebrow">{f.label}</span>
             </header>
             <dl class="tec__dl">
@@ -60,12 +60,13 @@ import Kicker from './Kicker.astro';
       Composição, gramatura e tabela de medidas de cada peça: direto no WhatsApp, junto com o drop.
     </p>
   </div>
-  <span class="tec__vert d d--outline" aria-hidden="true">Armadura</span>
+  <span class="tec__vert d d--outline" aria-hidden="true" data-parallax="0.12">Armadura</span>
 </section>
 
 <style>
   .tec {
-    overflow: hidden;
+    /* clip, não hidden: hidden viraria "scroller" e travaria o view() do texto vertical */
+    overflow: clip;
   }
 
   .tec__grid {
@@ -83,6 +84,14 @@ import Kicker from './Kicker.astro';
     background: var(--ink);
     cursor: pointer;
     transition: background-color 0.35s var(--ease-out);
+  }
+
+  /* Revelação de [data-reveal] (com atraso por --i) + hover/expansão próprios */
+  :global(.js) .tec__card {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      background-color 0.35s var(--ease-out);
   }
 
   .tec__card::before {
@@ -148,6 +157,18 @@ import Kicker from './Kicker.astro';
 
   .tec__name {
     font-size: clamp(1.6rem, 1rem + 2vw, 2.8rem);
+    transition:
+      color 0.35s var(--ease-out),
+      transform 0.5s var(--ease-out);
+  }
+
+  .tec__card:hover .tec__name,
+  .tec__card[aria-expanded='true'] .tec__name {
+    color: var(--red);
+  }
+
+  .tec__card:hover .tec__name {
+    transform: translateX(4px);
   }
 
   .tec__arena {
@@ -169,6 +190,28 @@ import Kicker from './Kicker.astro';
   .tec__card[aria-expanded='true'] .tec__dl {
     max-height: 16rem;
     opacity: 1;
+  }
+
+  /* Exigência e resposta entram uma depois da outra ao expandir */
+  .tec__dl > div {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    transition:
+      opacity 0.45s var(--ease-out),
+      transform 0.55s var(--ease-out);
+  }
+
+  .tec__card[aria-expanded='true'] .tec__dl > div {
+    opacity: 1;
+    transform: none;
+  }
+
+  .tec__card[aria-expanded='true'] .tec__dl > div:nth-child(1) {
+    transition-delay: 0.12s;
+  }
+
+  .tec__card[aria-expanded='true'] .tec__dl > div:nth-child(2) {
+    transition-delay: 0.26s;
   }
 
   .tec__dl dt {
@@ -201,12 +244,14 @@ import Kicker from './Kicker.astro';
       position: absolute;
       right: 0.75rem;
       top: 50%;
-      transform: translateY(-50%) rotate(180deg);
+      transform: translateY(-50%);
+      rotate: 180deg;
       writing-mode: vertical-rl;
       font-size: 5.5rem;
       -webkit-text-stroke: 1px var(--bone-30);
       pointer-events: none;
       user-select: none;
+      /* deriva com o scroll via data-parallax (motor) */
     }
   }
 </style>

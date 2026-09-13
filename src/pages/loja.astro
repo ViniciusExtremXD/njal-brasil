@@ -22,16 +22,16 @@ const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
   <main id="conteudo">
     <section class="loja-hero section--tight">
       <div class="loja-hero__glow" aria-hidden="true"></div>
-      <div class="loja-hero__mono" aria-hidden="true">
+      <div class="loja-hero__mono" aria-hidden="true" data-parallax="0.1">
         <Monogram outline strokeWidth={1} decorative />
       </div>
       <div class="wrap">
         <p class="eyebrow" data-reveal><b>Loja oficial</b> · njal.com.br</p>
-        <h1 class="loja-hero__title d" data-reveal="forge">
+        <h1 class="loja-hero__title d" data-reveal="forge" data-split="forge">
           Veja o seu<br />
-          <span class="d--red" data-reveal="forge-red" style="--i:1">próximo equipamento.</span>
+          <span class="d--red">próximo equipamento.</span>
         </h1>
-        <p class="lead" data-reveal style="--i:1">
+        <p class="lead" data-reveal="fade" data-split="words" style="--i:2">
           Escolha a peça e chame no WhatsApp pra fechar — sem carrinho, sem checkout por aqui.
           Tamanho, cor e forma de pagamento se acertam direto na conversa.
         </p>
@@ -51,13 +51,21 @@ const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
     <section class="loja section section--tight section--line" aria-label="Catálogo de produtos">
       <div class="wrap">
         <nav class="loja__jump" aria-label="Ir para categoria">
-          {shopCats.map((c) => <a href={`#cat-${c.id}`}>{c.label}</a>)}
+          {
+            shopCats.map((c, i) => (
+              <a href={`#cat-${c.id}`} data-reveal="scale" style={`--i:${i}`}>
+                {c.label}
+              </a>
+            ))
+          }
         </nav>
 
         {
-          shopCats.map((c) => (
-            <div class="loja__cat" id={`cat-${c.id}`}>
-              <h2 class="loja__cat-title d">{c.label}</h2>
+          shopCats.map((c, i) => (
+            <div class:list={['loja__cat', { 'rule-draw': i > 0 }]} id={`cat-${c.id}`} data-inview>
+              <h2 class="loja__cat-title d" data-reveal="forge" data-split="forge">
+                {c.label}
+              </h2>
               <ul class="loja__grid">
                 {LINES.filter((l) => l.category === c.id).map((l, i) => (
                   <ProductCard line={l} index={i} />
@@ -155,14 +163,24 @@ const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
     color: var(--bone-70);
     border: 1px solid var(--line-strong);
     transition:
-      background-color 0.2s var(--ease-out),
-      color 0.2s var(--ease-out),
-      border-color 0.2s var(--ease-out);
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 0.9s var(--ease-spring) calc(var(--i, 0) * var(--stagger)),
+      background-color 0.25s var(--ease-out),
+      color 0.25s var(--ease-out),
+      border-color 0.25s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
   }
 
   .loja__jump a:hover {
     border-color: var(--red);
     color: var(--red);
+    background-color: rgba(232, 18, 63, 0.08);
+    box-shadow: 0 10px 24px -14px rgba(232, 18, 63, 0.6);
+  }
+
+  :global(.js) .loja__jump a.in:hover {
+    transform: translateY(-2px);
+    transition-delay: 0s;
   }
 
   .loja__cat {

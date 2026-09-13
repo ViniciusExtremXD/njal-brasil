@@ -13,7 +13,7 @@ const { point } = BRAND;
     <header class="sec-head com__head">
       <Kicker index="05" label="Comunidade" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="com-title" data-reveal="forge">Do feed<br />para o box.</h2>
+        <h2 class="sec-head__title d" id="com-title" data-reveal="forge" data-split="forge">Do feed<br />para o box.</h2>
         <div class="com__profile" data-reveal style="--i:1">
           <Image src={AVATAR} alt="" width={112} height={112} class="com__avatar" loading="lazy" />
           <div class="com__who">
@@ -118,6 +118,37 @@ const { point } = BRAND;
     border-radius: 50%;
     border: 1px solid var(--line-strong);
     background: var(--ink);
+    transition:
+      transform 0.9s var(--ease-spring) 0.35s,
+      opacity 0.6s var(--ease-out) 0.35s,
+      filter 0.6s var(--ease-out) 0.35s,
+      border-color 0.3s var(--ease-out);
+  }
+
+  /* Avatar "pinga" na tela depois do card */
+  :global(.js) .com__profile .com__avatar {
+    opacity: 0;
+    transform: scale(0.5) rotate(-14deg);
+  }
+
+  :global(.js) .com__profile.in .com__avatar {
+    opacity: 1;
+    transform: none;
+  }
+
+  .com__profile:hover .com__avatar {
+    border-color: var(--red);
+  }
+
+  .com__profile {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      border-color 0.35s var(--ease-out);
+  }
+
+  .com__profile:hover {
+    border-color: var(--line-strong);
   }
 
   .com__who {
@@ -168,6 +199,50 @@ const { point } = BRAND;
     padding: clamp(1.25rem, 2.5vw, 2rem);
     border: 1px solid var(--line);
     background: var(--carbon);
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      border-color 0.4s var(--ease-out),
+      box-shadow 0.6s var(--ease-out);
+  }
+
+  .com__tile--type:hover {
+    border-color: var(--line-strong);
+    box-shadow: 0 30px 60px -30px rgba(232, 18, 63, 0.35);
+  }
+
+  /* Conteúdo dos cards tipográficos entra escalonado depois do card */
+  :global(.js) .com__tile--type > * {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    transition:
+      opacity 0.7s var(--ease-out),
+      transform 0.8s var(--ease-out);
+  }
+
+  :global(.js) .com__tile--type.in > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(.js) .com__tile--type.in > :nth-child(1) {
+    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.25s);
+  }
+
+  :global(.js) .com__tile--type.in > :nth-child(2) {
+    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.35s);
+  }
+
+  :global(.js) .com__tile--type.in > :nth-child(3) {
+    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.45s);
+  }
+
+  :global(.js) .com__tile--type.in > :nth-child(4) {
+    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.55s);
+  }
+
+  :global(.js) .com__tile--type.in > :nth-child(5) {
+    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.65s);
   }
 
   .com__tile--point {
@@ -178,6 +253,16 @@ const { point } = BRAND;
     font-size: 2.6rem;
     line-height: 1;
     margin-bottom: auto;
+    width: fit-content;
+    transform-origin: 70% 90%;
+  }
+
+  :global(.js) .com__tile--type.in .com__hand {
+    animation: wave 1.4s var(--ease-in-out) 1.7s 1;
+  }
+
+  .com__tile--type:hover .com__hand {
+    animation: wave 1.2s var(--ease-in-out) infinite;
   }
 
   .com__pin {
@@ -185,6 +270,23 @@ const { point } = BRAND;
     height: 2rem;
     color: var(--red);
     margin-bottom: auto;
+  }
+
+  :global(.js) .com__tile--point.in .com__pin {
+    animation: pin-drop 0.9s var(--ease-spring) 0.9s both;
+  }
+
+  @keyframes pin-drop {
+    from {
+      transform: translateY(-18px) scale(0.8);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  .com__tile--point:hover .com__pin {
+    animation: bounce-y 1.2s var(--ease-in-out) infinite;
   }
 
   .com__big {
@@ -209,6 +311,7 @@ const { point } = BRAND;
       width: 100%;
     }
   }
+
 </style>
 
 <script>

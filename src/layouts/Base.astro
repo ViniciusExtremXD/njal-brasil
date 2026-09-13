@@ -71,7 +71,17 @@ const ld = {
     <Font cssVariable="--font-body" />
 
     <script is:inline>
-      document.documentElement.classList.add('js');
+      /* Antes da primeira pintura: liga o modo "com JS" (revelações escondem até entrar em cena),
+         restaura a preferência de movimento salva e arma um seguro — se o motor de movimento
+         não carregar em 4s, tudo aparece sem animação em vez de ficar invisível. */
+      var h = document.documentElement;
+      h.classList.add('js');
+      try {
+        if (localStorage.getItem('njal-motion') === 'reduced') h.classList.add('motion-reduced');
+      } catch (e) {}
+      setTimeout(function () {
+        if (!window.__njalMotion) h.classList.add('motion-failed');
+      }, 4000);
     </script>
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
   </head>
@@ -80,68 +90,7 @@ const ld = {
     <slot />
 
     <script>
-      /* Revelações por scroll. Sem JS, nada é escondido (ver global.css). */
-      const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
-      const show = (el: Element) => el.classList.add('in');
-
-      if (!('IntersectionObserver' in window)) {
-        els.forEach(show);
-      } else {
-        const io = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                show(entry.target);
-                io.unobserve(entry.target);
-              }
-            }
-          },
-          { threshold: 0.08, rootMargin: '0px 0px -6% 0px' },
-        );
-        els.forEach((el) => io.observe(el));
-
-        // Seguro: o que já está perto do viewport aparece mesmo que o observer falhe.
-        const safety = () => {
-          const limit = window.innerHeight * 1.3;
-          for (const el of els) {
-            if (!el.classList.contains('in') && el.getBoundingClientRect().top < limit) show(el);
-          }
-        };
-        window.setTimeout(safety, 1200);
-        window.addEventListener('load', () => window.setTimeout(safety, 250), { once: true });
-      }
-
-      /* Navegação: fundo sólido depois do primeiro scroll, some ao descer, volta ao subir. */
-      const nav = document.querySelector<HTMLElement>('[data-nav]');
-      if (nav) {
-        const menu = nav.querySelector<HTMLDetailsElement>('[data-menu]');
-        let lastY = window.scrollY;
-
-        const onScroll = () => {
-          const y = window.scrollY;
-          nav.classList.toggle('is-scrolled', y > 24);
-
-          if (!menu?.open) {
-            if (y > lastY && y > nav.offsetHeight * 1.5) {
-              nav.classList.add('nav--hidden');
-            } else if (y < lastY) {
-              nav.classList.remove('nav--hidden');
-            }
-          }
-
-          lastY = y;
-        };
-        onScroll();
-        window.addEventListener('scroll', onScroll, { passive: true });
-      }
-
-      /* Menu mobile fecha ao escolher uma seção. */
-      document.querySelectorAll<HTMLAnchorElement>('[data-menu] a').forEach((a) => {
-        a.addEventListener('click', () => {
-          const details = a.closest('details');
-          if (details) details.open = false;
-        });
-      });
+      import '../scripts/motion';
     </script>
   </body>
 </html>

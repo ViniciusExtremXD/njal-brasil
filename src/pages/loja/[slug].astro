@@ -72,14 +72,14 @@ const price = money(line.variants[0].price);
           </div>
 
           <div class="pdp__info">
-            <h1 class="pdp__title d" data-reveal="forge">
+            <h1 class="pdp__title d" data-reveal="forge" data-split="forge">
               {line.name}
             </h1>
-            <p class="pdp__price d">{price}</p>
+            <p class="pdp__price d forge-num" data-reveal style="--i:1">{price}</p>
 
             {
               multi && (
-                <div class="pdp__swatches" role="group" aria-label={`Cor — ${line.name}`}>
+                <div class="pdp__swatches" role="group" aria-label={`Cor — ${line.name}`} data-reveal style="--i:2">
                   {line.variants.map((v, i) => (
                     <label for={`pdp-v-${i}`} class="pdp__swatch" style={`--sw:${v.swatch}`}>
                       <span class="sr-only">{v.color}</span>
@@ -89,11 +89,12 @@ const price = money(line.variants[0].price);
               )
             }
 
-            <p class="copy pdp__note">
+            <p class="copy pdp__note" data-reveal style="--i:3">
               Peça real do catálogo oficial da NJAL. Preço, tamanho e forma de pagamento se
               acertam direto na conversa — sem carrinho, sem checkout por aqui.
             </p>
 
+            <div class="pdp__actions-stack" data-reveal style="--i:4">
             {
               line.variants.map((v, i) => (
                 <div class="pdp__actions" data-variant={i}>
@@ -114,6 +115,7 @@ const price = money(line.variants[0].price);
                 </div>
               ))
             }
+            </div>
           </div>
         </div>
       </div>
@@ -149,25 +151,39 @@ const price = money(line.variants[0].price);
 
   .pdp__gallery {
     position: relative;
+    display: grid;
   }
 
+  /* Variantes empilhadas na mesma célula, trocam com crossfade + leve zoom */
   .pdp__frame {
-    display: none;
+    grid-area: 1 / 1;
+    display: block;
+    position: relative;
     aspect-ratio: 1;
     background: var(--bone);
     border: 1px solid var(--line);
     overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.98);
+    transition:
+      opacity 0.55s var(--ease-out),
+      transform 0.7s var(--ease-out),
+      visibility 0s linear 0.55s;
   }
 
-  .pdp--solo .pdp__frame {
-    display: block;
-  }
-
+  .pdp--solo .pdp__frame,
   .pdp__vradio[data-variant='0']:checked ~ .pdp__gallery .pdp__frame[data-variant='0'],
   .pdp__vradio[data-variant='1']:checked ~ .pdp__gallery .pdp__frame[data-variant='1'],
   .pdp__vradio[data-variant='2']:checked ~ .pdp__gallery .pdp__frame[data-variant='2'],
   .pdp__vradio[data-variant='3']:checked ~ .pdp__gallery .pdp__frame[data-variant='3'] {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.55s var(--ease-out),
+      transform 0.7s var(--ease-out),
+      visibility 0s linear 0s;
   }
 
   .pdp__frame :global(img) {
@@ -175,6 +191,40 @@ const price = money(line.variants[0].price);
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
+    transition:
+      transform 1.4s var(--ease-out),
+      opacity 0.9s var(--ease-out),
+      filter 0.9s var(--ease-out);
+  }
+
+  /* Em cena: cortina vermelha sobe e a foto assenta de um leve zoom */
+  :global(.js) .pdp__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: var(--red);
+    transform: scaleY(1);
+    transform-origin: top;
+    transition: transform 1s var(--ease-in-out) 0.15s;
+    pointer-events: none;
+  }
+
+  :global(.js) .pdp__gallery.in .pdp__frame::before {
+    transform: scaleY(0);
+  }
+
+  :global(.js) .pdp__frame :global(img) {
+    transform: scale(1.12);
+  }
+
+  :global(.js) .pdp__gallery.in .pdp__frame :global(img) {
+    transform: none;
+  }
+
+  :global(.js) .pdp__gallery.in:hover .pdp__frame :global(img),
+  .pdp__gallery:hover .pdp__frame :global(img) {
+    transform: scale(1.04);
   }
 
   .pdp__info {
@@ -209,7 +259,7 @@ const price = money(line.variants[0].price);
   }
 
   .pdp__swatch:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
   }
 
   .pdp__vradio[data-variant='0']:checked ~ .pdp__info .pdp__swatches .pdp__swatch:nth-child(1),
@@ -225,25 +275,37 @@ const price = money(line.variants[0].price);
     max-width: 46ch;
   }
 
-  .pdp__actions {
-    display: none;
-    gap: 1rem;
-  }
-
-  .pdp--solo .pdp__actions {
+  .pdp__actions-stack {
     display: grid;
+    margin-top: 0.5rem;
   }
 
+  .pdp__actions {
+    grid-area: 1 / 1;
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition:
+      opacity 0.45s var(--ease-out),
+      transform 0.55s var(--ease-out),
+      visibility 0s linear 0.45s;
+  }
+
+  .pdp--solo .pdp__actions,
   .pdp__vradio[data-variant='0']:checked ~ .pdp__info .pdp__actions[data-variant='0'],
   .pdp__vradio[data-variant='1']:checked ~ .pdp__info .pdp__actions[data-variant='1'],
   .pdp__vradio[data-variant='2']:checked ~ .pdp__info .pdp__actions[data-variant='2'],
   .pdp__vradio[data-variant='3']:checked ~ .pdp__info .pdp__actions[data-variant='3'] {
-    display: grid;
-  }
-
-  .pdp__actions {
-    justify-items: start;
-    margin-top: 0.5rem;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.45s var(--ease-out),
+      transform 0.55s var(--ease-out),
+      visibility 0s linear 0s;
   }
 
   @media (min-width: 800px) {

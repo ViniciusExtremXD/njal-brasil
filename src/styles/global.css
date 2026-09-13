@@ -25,6 +25,15 @@
 
   --ease-out: cubic-bezier(0.16, 0.84, 0.28, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Movimento: tudo entra suave, com escalonamento por --i */
+  --dur-fast: 0.28s;
+  --dur: 0.7s;
+  --dur-slow: 1.05s;
+  --stagger: 85ms;
+  --reveal-y: 34px;
+  --reveal-x: 56px;
 
   color-scheme: dark;
 }
@@ -188,7 +197,30 @@ button {
 }
 
 .section--line {
+  position: relative;
   border-top: 1px solid var(--line);
+}
+
+/* Com JS a linha da seção se desenha da esquerda pra direita ao entrar em cena */
+.js .section--line {
+  border-top-color: transparent;
+}
+
+.js .section--line::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.4s var(--ease-out);
+}
+
+.js .section--line.in::before {
+  transform: scaleX(1);
 }
 
 .sec-head {
@@ -239,21 +271,44 @@ button {
   border-radius: 0;
   cursor: pointer;
   white-space: nowrap;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   transition:
-    background-color 0.25s var(--ease-out),
-    color 0.25s var(--ease-out),
-    border-color 0.25s var(--ease-out),
-    transform 0.25s var(--ease-out);
+    background-color 0.3s var(--ease-out),
+    color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    transform 0.3s var(--ease-spring),
+    box-shadow 0.4s var(--ease-out);
+}
+
+/* Preenchimento que desliza da esquerda no hover */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  background: var(--bone);
+  transform: translate3d(-102%, 0, 0) skewX(-14deg);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: translate3d(0, 0, 0) skewX(0deg);
 }
 
 .btn:hover {
-  --btn-bg: var(--bone);
   --btn-fg: var(--ink);
   --btn-bd: var(--bone);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -12px rgba(242, 240, 236, 0.35);
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
+  transition-duration: 0.1s;
 }
 
 .btn--red {
@@ -263,8 +318,20 @@ button {
 }
 
 .btn--red:hover {
-  --btn-bg: var(--bone);
   --btn-bd: var(--bone);
+  box-shadow: 0 14px 34px -12px rgba(232, 18, 63, 0.55);
+}
+
+.btn__icon {
+  transition: transform 0.35s var(--ease-spring);
+}
+
+.btn:hover .btn__icon {
+  transform: translateX(3px);
+}
+
+.btn:hover .btn__icon--down {
+  transform: translateY(3px);
 }
 
 .btn--sm {
@@ -277,6 +344,14 @@ button {
   width: 1.05em;
   height: 1.05em;
   flex: none;
+}
+
+.link .btn__icon {
+  transition: transform 0.35s var(--ease-spring);
+}
+
+.link:hover .btn__icon {
+  transform: translateX(4px);
 }
 
 .link {
@@ -306,6 +381,15 @@ button {
   color: var(--red);
 }
 
+/* .link revelado por scroll: mantém o sublinhado animado além da revelação */
+.js .link[data-reveal] {
+  transition:
+    opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+    transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+    background-size 0.3s var(--ease-out),
+    color 0.2s;
+}
+
 .cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -329,12 +413,34 @@ button {
   background: var(--carbon);
   border: 1px solid var(--line);
   overflow: hidden;
-  transition: border-color 0.35s var(--ease-out);
+  transition:
+    border-color 0.4s var(--ease-out),
+    transform 0.7s var(--ease-out),
+    box-shadow 0.7s var(--ease-out);
 }
 
+/* Hover: a moldura flutua e ganha brilho vermelho. A arte em si nunca é ampliada nem cortada. */
 .plate:hover .plate__frame,
 .plate:focus-within .plate__frame {
   border-color: var(--line-strong);
+  transform: translateY(-6px);
+  box-shadow:
+    0 30px 70px -30px rgba(232, 18, 63, 0.45),
+    0 18px 40px -24px rgba(0, 0, 0, 0.8);
+}
+
+.plate__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(242, 240, 236, 0.07) 50%, transparent 65%);
+  transform: translate3d(-100%, 0, 0);
+  pointer-events: none;
+  transition: transform 1.1s var(--ease-out);
+}
+
+.plate:hover .plate__frame::after {
+  transform: translate3d(100%, 0, 0);
 }
 
 .plate__frame img {
@@ -342,6 +448,15 @@ button {
   height: 100%;
   object-fit: contain;
   object-position: center;
+}
+
+.plate__cap b,
+.plate__cap span {
+  transition: color 0.35s var(--ease-out);
+}
+
+.plate:hover .plate__cap b {
+  color: var(--red);
 }
 
 .plate__cap {
@@ -365,64 +480,82 @@ button {
 
 /* --------------------------------------------------------------------------
    Movimento: revelações por scroll. Sem JS, tudo é visível desde o início.
+   Variantes de data-reveal:  "" (sobe) · left · right · scale · fade ·
+   blur · clip (sobe de dentro de um pai com overflow hidden) · forge · forge-red
+   Escalonamento: style="--i:n"  →  atraso de n × --stagger
+   Texto por palavra: data-split="forge" (brasa vermelha esfria) · "words" (sobe suave)
    -------------------------------------------------------------------------- */
 
-.js [data-reveal] {
+.js [data-reveal]:not([data-split]) {
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
+  transform: translate3d(0, var(--reveal-y), 0);
   transition:
-    opacity 0.8s var(--ease-out),
-    transform 1s var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 90ms);
+    opacity var(--dur-slow) var(--ease-out),
+    transform 1.2s var(--ease-out),
+    filter var(--dur-slow) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
 }
 
-.js [data-reveal='left'] {
-  transform: translate3d(-40px, 0, 0);
+.js [data-reveal='left']:not([data-split]) {
+  transform: translate3d(calc(var(--reveal-x) * -1), 0, 0);
 }
 
-.js [data-reveal='scale'] {
-  transform: translate3d(0, 0, 0) scale(0.97);
+.js [data-reveal='right']:not([data-split]) {
+  transform: translate3d(var(--reveal-x), 0, 0);
 }
 
-.js [data-reveal].in {
-  opacity: 1;
+.js [data-reveal='scale']:not([data-split]) {
+  transform: translate3d(0, 12px, 0) scale(0.94);
+}
+
+.js [data-reveal='fade']:not([data-split]) {
   transform: none;
 }
 
-/* --------------------------------------------------------------------------
-   Titulos "forjados": em vez de clip-path (instavel em alguns Android, ficava
-   travado invisivel), o titulo entra com um brilho vermelho que esfria ate a
-   cor final — eco de "Forged for Champions". Só opacity/transform/color,
-   nunca clip-path.
-   -------------------------------------------------------------------------- */
+.js [data-reveal='blur']:not([data-split]) {
+  transform: translate3d(0, 14px, 0);
+  filter: blur(10px);
+}
 
-.js [data-reveal^='forge'] {
-  transform: translate3d(0, 0.3em, 0);
+.js [data-reveal='clip']:not([data-split]) {
+  transform: translate3d(0, 70%, 0);
+}
+
+.js [data-reveal^='forge']:not([data-split]) {
+  transform: translate3d(0, 0.35em, 0);
 }
 
 .js [data-reveal='forge-red'] {
   --forge-final: var(--red);
 }
 
-.js [data-reveal^='forge'].in {
-  animation: forge-in 0.9s var(--ease-out) both;
-  animation-delay: calc(var(--i, 0) * 90ms);
+.js [data-reveal].in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Titulos "forjados": entram com um brilho vermelho que esfria até a cor final —
+   eco de "Forged for Champions". Só opacity/transform/color, nunca clip-path. */
+.js [data-reveal^='forge']:not([data-split]).in {
+  animation: forge-in 1s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
 }
 
 @keyframes forge-in {
   0% {
     opacity: 0;
-    transform: translate3d(0, 0.3em, 0);
+    transform: translate3d(0, 0.35em, 0) skewY(2deg);
     color: var(--red);
     text-shadow:
-      0 0 34px rgba(232, 18, 63, 0.8),
-      0 0 6px rgba(255, 255, 255, 0.35);
+      0 0 40px rgba(232, 18, 63, 0.85),
+      0 0 8px rgba(255, 255, 255, 0.4);
   }
-  55% {
+  50% {
     opacity: 1;
-    transform: translate3d(0, 0.04em, 0);
+    transform: translate3d(0, 0.04em, 0) skewY(0deg);
     color: var(--red);
-    text-shadow: 0 0 16px rgba(232, 18, 63, 0.4);
+    text-shadow: 0 0 18px rgba(232, 18, 63, 0.45);
   }
   100% {
     opacity: 1;
@@ -430,6 +563,97 @@ button {
     color: var(--forge-final, var(--bone));
     text-shadow: 0 0 0 rgba(232, 18, 63, 0);
   }
+}
+
+/* --------------------------------------------------------------------------
+   Texto por palavra: cada .w (gerado pelo motor) sobe, desembaça e — no modo
+   forge — nasce em brasa vermelha e esfria até a cor herdada.
+   -------------------------------------------------------------------------- */
+
+.js [data-split] .w {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.6em, 0) skewY(1.5deg);
+  filter: blur(8px);
+  transform-origin: left bottom;
+  transition:
+    opacity 0.75s var(--ease-out),
+    transform 1.05s var(--ease-out),
+    filter 0.75s var(--ease-out),
+    color 1.2s var(--ease-out),
+    text-shadow 1.3s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger) + var(--w, 0) * 55ms);
+}
+
+.js [data-split='forge'] .w {
+  color: var(--red);
+  text-shadow:
+    0 0 34px rgba(232, 18, 63, 0.85),
+    0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+.js [data-split].in .w,
+.js [data-reveal].in [data-split] .w {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  color: inherit;
+  text-shadow: 0 0 0 rgba(232, 18, 63, 0);
+}
+
+/* Imagens: entram com fade quando terminam de carregar (classe is-loaded via JS) */
+.js img {
+  transition:
+    opacity 0.9s var(--ease-out),
+    filter 0.9s var(--ease-out);
+}
+
+.js img:not(.is-loaded) {
+  opacity: 0;
+  filter: saturate(0.4);
+}
+
+.js img.is-loaded {
+  opacity: 1;
+  filter: none;
+}
+
+/* --------------------------------------------------------------------------
+   Moldura de arte em cena: uma cortina vermelha sobe e revela a peça, que
+   "respira" de 94% até o tamanho final — nunca cortada, nunca ampliada.
+   -------------------------------------------------------------------------- */
+
+.plate__frame {
+  isolation: isolate;
+}
+
+.js .plate__frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--red);
+  transform: scaleY(1);
+  transform-origin: top;
+  transition: transform 1s var(--ease-in-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger) + 0.1s);
+  pointer-events: none;
+}
+
+.js .plate.in .plate__frame::before {
+  transform: scaleY(0);
+}
+
+.js .plate__frame img {
+  transform: scale(0.94);
+  transition:
+    opacity 0.9s var(--ease-out),
+    filter 0.9s var(--ease-out),
+    transform 1.6s var(--ease-out) calc(var(--i, 0) * var(--stagger) + 0.2s);
+}
+
+.js .plate.in .plate__frame img {
+  transform: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -450,8 +674,11 @@ button {
   color: var(--red);
 }
 
-.js [data-reveal].in .kicker__num {
-  animation: forge-num 0.9s var(--ease-out) both;
+.js [data-reveal].in .kicker__num,
+.js [data-reveal].in .forge-num,
+.js .in.forge-num {
+  animation: forge-num 1s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
 }
 
 @keyframes forge-num {
@@ -477,7 +704,7 @@ button {
   background: var(--red);
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform 0.7s var(--ease-out) 0.18s;
+  transition: transform 0.8s var(--ease-out) calc(var(--i, 0) * var(--stagger) + 0.2s);
 }
 
 .js [data-reveal].in .kicker__bar {
@@ -493,36 +720,256 @@ button {
   color: var(--bone-70);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+.js .kicker__label {
+  opacity: 0;
+  transform: translate3d(-8px, 0, 0);
+  transition:
+    opacity 0.6s var(--ease-out) calc(var(--i, 0) * var(--stagger) + 0.45s),
+    transform 0.6s var(--ease-out) calc(var(--i, 0) * var(--stagger) + 0.45s);
+}
 
-  *:not(.marquee__track),
-  *:not(.marquee__track)::before,
-  *:not(.marquee__track)::after {
-    animation-duration: 0.001s !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001s !important;
-    transition-delay: 0s !important;
-  }
+.js [data-reveal].in .kicker__label {
+  opacity: 1;
+  transform: none;
+}
 
-  .js [data-reveal] {
+/* --------------------------------------------------------------------------
+   Linhas que se desenham: qualquer elemento com .rule-draw ganha a borda
+   superior desenhada da esquerda pra direita quando recebe .in (ou o pai .in).
+   -------------------------------------------------------------------------- */
+
+.js .rule-draw {
+  position: relative;
+  border-top-color: transparent !important;
+}
+
+.js .rule-draw::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+  pointer-events: none;
+}
+
+.js .rule-draw.in::after,
+.js .in .rule-draw::after {
+  transform: scaleX(1);
+}
+
+/* --------------------------------------------------------------------------
+   Ambiente: flutuação lenta pra monogramas decorativos e brilhos
+   -------------------------------------------------------------------------- */
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(-1.5deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
     opacity: 1;
-    transform: none;
+    transform: scale(1.1);
   }
+}
 
-  .js [data-reveal^='forge'] {
-    color: var(--forge-final, inherit);
-    text-shadow: none;
+@keyframes glow-drift {
+  0% {
+    translate: 0 0;
+    scale: 1;
   }
+  33% {
+    translate: -6% 8%;
+    scale: 1.12;
+  }
+  66% {
+    translate: 5% -6%;
+    scale: 0.94;
+  }
+  100% {
+    translate: 0 0;
+    scale: 1;
+  }
+}
 
-  .js [data-reveal].in .kicker__num {
-    color: var(--red);
-    text-shadow: none;
+@keyframes bounce-y {
+  0%,
+  100% {
+    transform: translateY(0);
   }
+  50% {
+    transform: translateY(4px);
+  }
+}
 
-  .js [data-reveal].in .kicker__bar {
-    transform: scaleX(1);
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
   }
+  20% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-8deg);
+  }
+  60% {
+    transform: rotate(10deg);
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
+}
+
+/* Brilho ambiente reutilizável: <div class="glow" aria-hidden> dentro de um pai relativo */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(232, 18, 63, 0.26), rgba(232, 18, 63, 0.07) 50%, transparent 74%);
+  pointer-events: none;
+  animation: glow-drift 16s var(--ease-in-out) infinite;
+}
+
+/* Barra de progresso de leitura (ver Nav.astro): --scroll-p é setado pelo JS */
+html {
+  --scroll-p: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Ponteiro: brilho vermelho que segue o mouse (criado pelo motor, só pointer: fine).
+   Some sobre as artes pra nunca tingir a peça do cliente.
+   -------------------------------------------------------------------------- */
+
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(232, 18, 63, 0.3), rgba(232, 18, 63, 0.08) 45%, transparent 72%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 45;
+  opacity: 0;
+  scale: 1;
+  transition:
+    opacity 0.5s var(--ease-out),
+    scale 0.6s var(--ease-out);
+  will-change: transform;
+}
+
+.cursor-glow.is-on {
+  opacity: 1;
+}
+
+.cursor-glow.is-hot {
+  scale: 1.45;
+}
+
+.cursor-glow.is-off {
+  opacity: 0;
+}
+
+@media (pointer: coarse) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Transição entre páginas (home ↔ loja ↔ produto): a página velha sobe e
+   esmaece, a nova entra de baixo. Nav e barra mobile ficam paradas.
+   -------------------------------------------------------------------------- */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-out 0.35s var(--ease-in-out) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 0.6s var(--ease-out) both;
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Movimento reduzido — SÓ por escolha explícita no site (toggle no rodapé).
+   Zera durações, mostra tudo, mantém a página inteira legível e clicável.
+   -------------------------------------------------------------------------- */
+
+html.motion-reduced {
+  scroll-behavior: auto;
+}
+
+html.motion-reduced *,
+html.motion-reduced *::before,
+html.motion-reduced *::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0s !important;
+  scroll-behavior: auto !important;
+}
+
+html.motion-reduced .marquee__track {
+  animation: none !important;
+  transform: none !important;
+}
+
+html.motion-reduced .cursor-glow {
+  display: none;
+}
+
+/* Seguro: se o motor não carregar, nada fica escondido (classe motion-failed, ver Base.astro) */
+html.motion-failed [data-reveal],
+html.motion-failed .w,
+html.motion-failed img,
+html.motion-failed .kicker__label,
+html.motion-failed .kicker__bar,
+html.motion-failed .plate__frame img {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+html.motion-failed .plate__frame::before {
+  display: none;
+}
+
+html.motion-failed .section--line::before,
+html.motion-failed .rule-draw::after {
+  transform: scaleX(1) !important;
 }

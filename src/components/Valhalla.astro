@@ -7,22 +7,56 @@ const arenas = ['Crossfit RX', 'Valhalla', 'No-Gi', 'Rua', 'Confecção própria
 
 <section class="val" aria-labelledby="val-title">
   <h2 class="sr-only" id="val-title">{BRAND.scriptures.valhalla}</h2>
+  <div class="val__glow glow" aria-hidden="true"></div>
   <div class="val__lines wrap" aria-hidden="true">
     <p class="val__l d" data-reveal="clip">Até</p>
-    <p class="val__l val__l--mid d d--outline">Chegar em</p>
-    <p class="val__l val__l--red d d--red" data-reveal="clip" style="--i:1">Valhalla</p>
+    <p class="val__l val__l--mid d d--outline" data-reveal="fade" style="--i:1" data-parallax-x="0.08">Chegar em</p>
+    <p class="val__l val__l--red d d--red" data-reveal="clip" style="--i:2">Valhalla</p>
   </div>
   <Marquee tone="carbon" items={arenas} separator="·" speed={30} />
 </section>
 
 <style>
   .val {
-    overflow: hidden;
+    position: relative;
+    /* clip, não hidden: hidden viraria "scroller" */
+    overflow: clip;
     border-top: 1px solid var(--line);
     padding-top: clamp(4rem, 10vw, 9rem);
   }
 
+  /* Brilho atrás de "Valhalla": acende quando a seção entra e fica pulsando */
+  .val__glow {
+    left: 50%;
+    top: 55%;
+    width: clamp(320px, 60vw, 1100px);
+    aspect-ratio: 2 / 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 2s var(--ease-out) 0.6s;
+    animation: glow-pulse 6s var(--ease-in-out) infinite;
+  }
+
+  :global(.js) .val.in .val__glow {
+    opacity: 0.7;
+  }
+
+  .val__l--red {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      text-shadow 0.6s var(--ease-out),
+      letter-spacing 0.8s var(--ease-out);
+  }
+
+  .val__lines:hover .val__l--red {
+    text-shadow: 0 0 60px rgba(232, 18, 63, 0.55);
+    letter-spacing: 0.02em;
+  }
+
   .val__lines {
+    position: relative;
     display: grid;
     justify-items: center;
     text-align: center;
@@ -35,34 +69,18 @@ const arenas = ['Crossfit RX', 'Valhalla', 'No-Gi', 'Rua', 'Confecção própria
     white-space: nowrap;
   }
 
+  /* A linha do meio desliza no eixo X com o scroll (data-parallax-x, via motor) */
   .val__l--mid {
     font-size: clamp(2rem, 8.6vw, 10rem);
     -webkit-text-stroke: 1px var(--bone-70);
     margin-block: 0.08em;
     letter-spacing: 0.04em;
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      -webkit-text-stroke-color 0.6s var(--ease-out);
   }
 
-  /* Tipografia cinética: a linha do meio desliza com o scroll onde houver suporte. Sem suporte, fica parada. */
-  @supports (animation-timeline: view()) {
-    .val__l--mid {
-      animation: val-slide linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-    }
-  }
-
-  @keyframes val-slide {
-    from {
-      transform: translateX(14%);
-    }
-    to {
-      transform: translateX(-14%);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .val__l--mid {
-      animation: none;
-    }
+  .val__lines:hover .val__l--mid {
+    -webkit-text-stroke-color: var(--bone);
   }
 </style>

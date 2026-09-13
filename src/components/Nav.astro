@@ -17,8 +17,14 @@ const homeHref = `${withBase('/')}#topo`;
     </a>
 
     <nav class="nav__links" aria-label="Seções do site">
-      <a href={lojaHref} class="nav__loja">Loja</a>
-      {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href={lojaHref} class="nav__loja" style="--n:0"><span class="nav__t" data-t="Loja"><span>Loja</span></span></a>
+      {
+        NAV.map((item, i) => (
+          <a href={item.href} style={`--n:${i + 1}`}>
+            <span class="nav__t" data-t={item.label}><span>{item.label}</span></span>
+          </a>
+        ))
+      }
     </nav>
 
     <div class="nav__right">
@@ -67,6 +73,7 @@ const homeHref = `${withBase('/')}#topo`;
       </details>
     </div>
   </div>
+  <span class="nav__progress" aria-hidden="true"></span>
 </header>
 
 <style>
@@ -74,13 +81,30 @@ const homeHref = `${withBase('/')}#topo`;
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 50;
+    view-transition-name: nav;
     height: var(--nav-h);
     background: rgba(5, 5, 6, 0.94);
     border-bottom: 1px solid var(--line);
     transition:
       background-color 0.4s var(--ease-out),
       border-color 0.4s var(--ease-out),
-      transform 0.35s var(--ease-out);
+      transform 0.45s var(--ease-out);
+  }
+
+  /* Entrada: a barra desce suave no carregamento */
+  :global(.js) .nav {
+    animation: nav-in 0.9s var(--ease-out) 0.05s backwards;
+  }
+
+  @keyframes nav-in {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   :global(.js) .nav:not(.is-scrolled) {
@@ -90,6 +114,43 @@ const homeHref = `${withBase('/')}#topo`;
 
   :global(.js) .nav.nav--hidden {
     transform: translateY(-100%);
+  }
+
+  /* Progresso de leitura: linha vermelha que cresce com o scroll */
+  .nav__progress {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+    background: var(--red);
+    transform: scaleX(var(--scroll-p, 0));
+    transform-origin: left;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out);
+    pointer-events: none;
+  }
+
+  .nav.is-scrolled .nav__progress {
+    opacity: 1;
+  }
+
+  .nav__brand {
+    transition: transform 0.4s var(--ease-spring);
+  }
+
+  .nav__brand:hover {
+    transform: translateX(2px);
+  }
+
+  .nav__brand:hover .nav__mono {
+    animation: mono-tilt 0.6s var(--ease-spring);
+  }
+
+  @keyframes mono-tilt {
+    30% {
+      transform: rotate(-8deg) scale(1.08);
+    }
   }
 
   .nav__in {
@@ -155,9 +216,58 @@ const homeHref = `${withBase('/')}#topo`;
       background-size 0.35s var(--ease-out);
   }
 
-  .nav__links a:hover {
+  .nav__links a:hover,
+  .nav__links a.is-active {
     color: var(--bone);
     background-size: 100% 2px;
+  }
+
+  /* Texto desliza pra cima no hover e a cópia vermelha entra por baixo (máscara no .nav__t) */
+  .nav__t {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    line-height: 1.2;
+  }
+
+  .nav__t > span {
+    display: block;
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .nav__t::after {
+    content: attr(data-t);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    color: var(--red);
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .nav__links a:hover .nav__t > span,
+  .nav__links a:hover .nav__t::after {
+    transform: translateY(-100%);
+  }
+
+  /* Links entram escalonados depois da barra */
+  :global(.js) .nav__links a {
+    animation: nav-link-in 0.7s var(--ease-out) backwards;
+    animation-delay: calc(0.35s + var(--n, 0) * 60ms);
+  }
+
+  @keyframes nav-link-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  :global(.js) .nav__right {
+    animation: nav-link-in 0.7s var(--ease-out) 0.5s backwards;
   }
 
   .nav__loja {
@@ -315,4 +425,5 @@ const homeHref = `${withBase('/')}#topo`;
       display: inline;
     }
   }
+
 </style>

@@ -9,11 +9,14 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
 ---
 
 <section class="hero" id="topo">
-  <div class="hero__body wrap">
+  <div class="hero__glow glow" aria-hidden="true"></div>
+  <div class="hero__glow hero__glow--2 glow" aria-hidden="true"></div>
+
+  <div class="hero__body wrap" data-hero-exit>
     <p class="hero__eyebrow eyebrow">
-      <b>{BRAND.full}</b>
-      <span>{BRAND.city}</span>
-      <span>{BRAND.tagline}</span>
+      <b style="--n:0">{BRAND.full}</b>
+      <span style="--n:1">{BRAND.city}</span>
+      <span style="--n:2">{BRAND.tagline}</span>
     </p>
 
     <h1 class="hero__title d">
@@ -24,14 +27,14 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
 
     <div class="hero__foot">
       <div class="hero__lead">
-        <p class="lead">
+        <p class="lead hero__lead-text" data-reveal="fade" data-split="words" style="--i:7">
           Não são apenas roupas.<br />
           <strong>São armaduras de treino.</strong>
         </p>
-        <div class="cta-row">
+        <div class="cta-row hero__cta" data-reveal style="--i:10">
           <a class="btn btn--red" href="#drops">
             Ver os drops
-            <Icon name="down" class="btn__icon" />
+            <Icon name="down" class="btn__icon btn__icon--down hero__cue" />
           </a>
           <a class="btn" href={withBase('/loja')}>
             Ver a loja
@@ -40,16 +43,21 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
         </div>
       </div>
 
-      <aside class="hero__say" aria-label="Como se pronuncia a marca">
+      <aside class="hero__say" aria-label="Como se pronuncia a marca" data-reveal="right" style="--i:12">
         <span class="hero__hand" aria-hidden="true">✌</span>
         <span class="hero__say-label eyebrow">Se fala</span>
         <span class="hero__say-word d">Nijal</span>
       </aside>
     </div>
 
-    <div class="hero__mono" aria-hidden="true">
+    <div class="hero__mono" aria-hidden="true" data-parallax="0.08">
       <Monogram outline strokeWidth={1} decorative />
     </div>
+
+    <a class="hero__scroll" href="#manifesto" aria-label="Rolar para o manifesto">
+      <span class="hero__scroll-line" aria-hidden="true"><i></i></span>
+      <span class="hero__scroll-label eyebrow">Scroll</span>
+    </a>
   </div>
 
   <Marquee items={marquee} />
@@ -57,26 +65,64 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
 
 <style>
   .hero {
+    position: relative;
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     padding-top: var(--nav-h);
+    /* clip, não hidden: overflow hidden viraria "scroller" */
+    overflow: clip;
+  }
+
+  /* Brilhos ambiente: duas manchas vermelhas derivando devagar atrás do título */
+  .hero__glow {
+    top: -10%;
+    right: -10%;
+    width: clamp(320px, 55vw, 900px);
+    aspect-ratio: 1;
+    opacity: 0;
+    animation:
+      hero-glow-in 2.4s var(--ease-out) 0.3s forwards,
+      glow-drift 18s var(--ease-in-out) infinite;
+  }
+
+  .hero__glow--2 {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: -15%;
+    width: clamp(260px, 40vw, 640px);
+    animation-delay: 0.9s, 3s;
+    animation-duration: 2.4s, 24s;
+    animation-direction: normal, reverse;
+  }
+
+  @keyframes hero-glow-in {
+    to {
+      opacity: 0.8;
+    }
   }
 
   .hero__body {
     position: relative;
+    z-index: 1;
     flex: 1;
     display: grid;
     grid-template-rows: auto 1fr auto;
     gap: clamp(1.25rem, 3vh, 2.5rem);
     padding-block: clamp(1.25rem, 3vh, 2.5rem) clamp(1.5rem, 4vh, 3rem);
+    will-change: transform, opacity;
   }
 
   .hero__eyebrow {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.4rem;
-    animation: hero-fade 1s var(--ease-out) 0.1s both;
+  }
+
+  .hero__eyebrow > * {
+    animation: hero-fade 0.9s var(--ease-out) backwards;
+    animation-delay: calc(0.15s + var(--n, 0) * 0.12s);
   }
 
   .hero__eyebrow span::before {
@@ -87,6 +133,17 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
     margin-right: 1rem;
     background: var(--red);
     vertical-align: middle;
+    animation: hero-dot 1.2s var(--ease-spring) backwards;
+    animation-delay: calc(0.4s + var(--n, 0) * 0.12s);
+  }
+
+  @keyframes hero-dot {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
   }
 
   .hero__title {
@@ -105,13 +162,45 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
 
   .hero__line > span {
     display: block;
-    transform: translateY(108%);
-    animation: hero-rise 1.1s var(--ease-out) forwards;
-    animation-delay: calc(0.12s + var(--n) * 0.13s);
+    transform: translateY(108%) skewY(3deg);
+    transform-origin: left bottom;
+    animation: hero-rise 1.2s var(--ease-out) forwards;
+    animation-delay: calc(0.2s + var(--n) * 0.14s);
+    transition:
+      letter-spacing 0.6s var(--ease-out),
+      text-shadow 0.6s var(--ease-out);
+  }
+
+  /* Hover: a palavra respira e acende */
+  .hero__title:hover .hero__line > span {
+    letter-spacing: 0.01em;
   }
 
   .hero__line--red {
     color: var(--red);
+  }
+
+  .hero__line--red > span {
+    animation:
+      hero-rise 1.2s var(--ease-out) forwards,
+      hero-glow 1.6s var(--ease-out) 0.7s both;
+    animation-delay: calc(0.2s + var(--n) * 0.14s), 0.9s;
+  }
+
+  .hero__title:hover .hero__line--red > span {
+    text-shadow: 0 0 50px rgba(232, 18, 63, 0.6);
+  }
+
+  @keyframes hero-glow {
+    0% {
+      text-shadow: 0 0 0 rgba(232, 18, 63, 0);
+    }
+    40% {
+      text-shadow: 0 0 60px rgba(232, 18, 63, 0.75);
+    }
+    100% {
+      text-shadow: 0 0 0 rgba(232, 18, 63, 0);
+    }
   }
 
   .hero__foot {
@@ -119,12 +208,19 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
     gap: 2rem;
-    animation: hero-fade 1s var(--ease-out) 0.7s both;
   }
 
   .hero__lead {
     display: grid;
     gap: 1.5rem;
+  }
+
+  .hero__cue {
+    animation: bounce-y 1.6s var(--ease-in-out) 2s infinite;
+  }
+
+  .btn:hover .hero__cue {
+    animation-play-state: paused;
   }
 
   .hero__say {
@@ -137,12 +233,27 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
   .hero__hand {
     font-size: clamp(1.4rem, 3vw, 2.4rem);
     line-height: 1;
+    display: inline-block;
+    transform-origin: 70% 90%;
+    animation: wave 1.4s var(--ease-in-out) 2.2s 1;
+  }
+
+  .hero__say:hover .hero__hand {
+    animation: wave 1.2s var(--ease-in-out) infinite;
   }
 
   .hero__say-word {
     font-size: clamp(2.2rem, 5.5vw, 5.5rem);
     color: var(--red);
     line-height: 0.9;
+    transition:
+      text-shadow 0.5s var(--ease-out),
+      letter-spacing 0.5s var(--ease-out);
+  }
+
+  .hero__say:hover .hero__say-word {
+    text-shadow: 0 0 34px rgba(232, 18, 63, 0.6);
+    letter-spacing: 0.04em;
   }
 
   .hero__mono {
@@ -153,12 +264,65 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
     color: var(--bone);
     opacity: 0;
     pointer-events: none;
-    animation: hero-mono 1.6s var(--ease-out) 0.9s forwards;
+    animation:
+      hero-mono 1.6s var(--ease-out) 0.9s forwards,
+      float-slow 9s var(--ease-in-out) 2.5s infinite;
   }
 
   .hero__mono :global(svg) {
     height: 100%;
     width: auto;
+  }
+
+  /* Pista de scroll: uma linha vertical com um pulso vermelho descendo em loop */
+  .hero__scroll {
+    position: absolute;
+    right: var(--pad);
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--bone-50);
+    animation: hero-fade 1s var(--ease-out) 1.6s both;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .hero__scroll:hover {
+    color: var(--bone);
+  }
+
+  .hero__scroll-line {
+    position: relative;
+    width: 1px;
+    height: 3.5rem;
+    background: var(--line-strong);
+    overflow: hidden;
+  }
+
+  .hero__scroll-line i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 40%;
+    background: var(--red);
+    animation: hero-scroll-pulse 1.8s var(--ease-in-out) infinite;
+  }
+
+  @keyframes hero-scroll-pulse {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(260%);
+    }
+  }
+
+  .hero__scroll-label {
+    writing-mode: vertical-rl;
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
   }
 
   @keyframes hero-rise {
@@ -170,7 +334,7 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
   @keyframes hero-fade {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(14px);
     }
     to {
       opacity: 1;
@@ -181,6 +345,16 @@ const marquee = [scriptures.armor, scriptures.valhalla, scriptures.forged, scrip
   @keyframes hero-mono {
     to {
       opacity: 0.22;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .hero__scroll {
+      display: flex;
+    }
+
+    .hero__say {
+      padding-right: 4rem;
     }
   }
 

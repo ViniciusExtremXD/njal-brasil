@@ -12,10 +12,13 @@ const home = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
   <Nav />
   <main id="conteudo" class="nf">
     <div class="wrap nf__in">
-      <p class="eyebrow"><b>404</b> — Página não encontrada</p>
-      <h1 class="nf__title d">Essa rota<br /><span class="d--red">não chegou em Valhalla.</span></h1>
-      <p class="copy">O endereço não existe ou mudou de lugar. Os drops continuam no Instagram e a venda, no WhatsApp.</p>
-      <div class="cta-row">
+      <p class="eyebrow" data-reveal><b class="forge-num">404</b> — Página não encontrada</p>
+      <h1 class="nf__title d" data-reveal="forge" data-split="forge">
+        Essa rota<br />
+        <span class="d--red">não chegou em Valhalla.</span>
+      </h1>
+      <p class="copy" data-reveal style="--i:2">O endereço não existe ou mudou de lugar. Os drops continuam no Instagram e a venda, no WhatsApp.</p>
+      <div class="cta-row" data-reveal style="--i:3">
         <a class="btn btn--red" href={home}>Voltar ao início</a>
         <a class="btn" href={BRAND.instagram} target="_blank" rel="noopener">
           <Icon name="instagram" class="btn__icon" /> Instagram

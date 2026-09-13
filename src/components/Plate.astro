@@ -18,6 +18,8 @@ interface Props {
   loading?: 'lazy' | 'eager';
   class?: string;
   reveal?: string | false;
+  /** Posição no escalonamento da revelação (atraso = index × --stagger). */
+  index?: number;
 }
 
 const {
@@ -30,6 +32,7 @@ const {
   loading = 'lazy',
   class: cls,
   reveal = 'scale',
+  index = 0,
   ...rest
 } = Astro.props;
 
@@ -42,7 +45,7 @@ const sizesAttr = sizes ?? `(max-width: 720px) calc(100vw - 2.5rem), ${max}px`;
 <figure
   class:list={['plate', cls]}
   {...rest}
-  style={`--plate-max:${max}px; --plate-ratio:${src.width} / ${src.height};`}
+  style={`--plate-max:${max}px; --plate-ratio:${src.width} / ${src.height}; --i:${index};`}
   data-reveal={reveal === false ? undefined : reveal}
 >
   <div class="plate__frame">

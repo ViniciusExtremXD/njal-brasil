@@ -10,6 +10,8 @@ const base = process.env.BASE_PATH || '/';
 export default defineConfig({
   site: process.env.SITE_URL || 'https://viniciusextremxd.github.io',
   base,
+  /* Porta do dev server: respeita PORT (preview do app) e cai em 4321 fora dele. */
+  server: { port: Number(process.env.PORT) || 4321 },
   trailingSlash: 'ignore',
   compressHTML: true,
   build: { assets: '_astro', inlineStylesheets: 'auto' },

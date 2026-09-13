@@ -9,7 +9,7 @@ import Kicker from './Kicker.astro';
     <header class="sec-head">
       <Kicker index="02" label="Pilares da cultura" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="pil-title" data-reveal="forge">
+        <h2 class="sec-head__title d" id="pil-title" data-reveal="forge" data-split="forge">
           Quatro arenas.<br />Uma armadura.
         </h2>
         <p class="copy" data-reveal style="--i:1">
@@ -23,12 +23,12 @@ import Kicker from './Kicker.astro';
       <ol class="pil__list">
         {
           PILLARS.map((p, i) => (
-            <li class="pil__row" data-reveal style={`--i:${i}`}>
-              <span class="pil__idx d" aria-hidden="true">
+            <li class="pil__row rule-draw" data-reveal style={`--i:${i}`}>
+              <span class="pil__idx d forge-num" aria-hidden="true">
                 {p.index}
               </span>
               <div class="pil__main">
-                <h3 class="pil__name d">{p.name}</h3>
+                <h3 class="pil__name d" data-split="forge">{p.name}</h3>
                 <p class="pil__cat eyebrow">{p.category}</p>
               </div>
               <p class="pil__text copy">{p.text}</p>
@@ -69,6 +69,27 @@ import Kicker from './Kicker.astro';
     padding: 1.4rem 0 1.4rem 0.75rem;
     border-top: 1px solid var(--line);
     transition: background-color 0.3s var(--ease-out);
+  }
+
+  /* Revelação de [data-reveal] (com atraso por --i) + hover próprio, sem perder o atraso */
+  :global(.js) .pil__row {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      background-color 0.3s var(--ease-out);
+  }
+
+  .pil__main,
+  .pil__text {
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .pil__row:hover .pil__main {
+    transform: translateX(6px);
+  }
+
+  .pil__row:hover .pil__text {
+    transform: translateX(3px);
   }
 
   .pil__row::before {

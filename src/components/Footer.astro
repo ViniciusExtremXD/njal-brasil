@@ -17,69 +17,89 @@ const lojaHref = withBase('/loja');
 ---
 
 <footer class:list={['foot', { 'foot--compact': compact }]} id="rodape">
-  <div class="wrap foot__mark" data-reveal="clip">
-    <Wordmark class="foot__word" title="NJAL" />
+  <div class="wrap foot__mark">
+    <div data-reveal="clip">
+      <Wordmark class="foot__word" title="NJAL" />
+    </div>
   </div>
 
-  <div class="wrap foot__grid">
-    <div class="foot__col foot__col--brand">
+  <div class="wrap foot__grid" data-inview>
+    <div class="foot__col foot__col--brand" data-reveal>
       <Monogram class="foot__mono" decorative />
       <p class="eyebrow"><b>{BRAND.full}</b> — {BRAND.city}</p>
       <p class="copy">{BRAND.tagline}. {scriptures.armor}</p>
       <p class="foot__say d">
-        <span aria-hidden="true">✌</span> Se fala <span class="d--red">Nijal</span>
+        <span class="foot__hand" aria-hidden="true">✌</span> Se fala <span class="d--red">Nijal</span>
       </p>
     </div>
 
     <nav class="foot__col" aria-label="Seções, no rodapé">
-      <p class="eyebrow foot__label">Navegar</p>
+      <p class="eyebrow foot__label" data-reveal style="--i:1">Navegar</p>
       <ul class="foot__list">
-        <li>
+        <li data-reveal="left" style="--i:2">
           <a href={lojaHref} class="foot__loja">Loja</a>
         </li>
-        {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        {
+          NAV.map((item, i) => (
+            <li data-reveal="left" style={`--i:${i + 3}`}>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
     <div class="foot__col">
-      <p class="eyebrow foot__label">Canais</p>
+      <p class="eyebrow foot__label" data-reveal style="--i:2">Canais</p>
       <ul class="foot__list">
-        <li>
+        <li data-reveal="left" style="--i:3">
           <a href={BRAND.shopUrl} target="_blank" rel="noopener">
             <Icon name="arrow" class="foot__ico" /> Loja oficial · njal.com.br
           </a>
         </li>
-        <li>
+        <li data-reveal="left" style="--i:4">
           <a href={BRAND.instagram} target="_blank" rel="noopener">
             <Icon name="instagram" class="foot__ico" /> Instagram · {BRAND.handle}
           </a>
         </li>
-        <li>
+        <li data-reveal="left" style="--i:5">
           <a href={BRAND.whatsapp} target="_blank" rel="noopener">
             <Icon name="whatsapp" class="foot__ico" /> WhatsApp
           </a>
         </li>
       </ul>
-      <p class="eyebrow foot__label">Ponto físico</p>
-      <address class="foot__addr copy">
+      <p class="eyebrow foot__label" data-reveal style="--i:6">Ponto físico</p>
+      <address class="foot__addr copy" data-reveal style="--i:7">
         {point.name}<br />
         {point.street} — {point.district}<br />
         {point.city}, {point.uf}
       </address>
-      <a class="link" href={point.maps} target="_blank" rel="noopener">Abrir no mapa <Icon name="arrow" class="btn__icon" /></a>
+      <a class="link" href={point.maps} target="_blank" rel="noopener" data-reveal style="--i:8">
+        Abrir no mapa <Icon name="arrow" class="btn__icon" />
+      </a>
     </div>
 
     <div class="foot__col">
-      <p class="eyebrow foot__label">Escrituras</p>
+      <p class="eyebrow foot__label" data-reveal style="--i:3">Escrituras</p>
       <ul class="foot__scr">
-        {list.map((s) => <li class="d">{s}</li>)}
+        {
+          list.map((s, i) => (
+            <li class="d" data-reveal="blur" style={`--i:${i + 4}`}>
+              {s}
+            </li>
+          ))
+        }
       </ul>
     </div>
   </div>
 
   <div class="wrap foot__bar">
-    <p>© {year} {BRAND.full}. Todos os direitos reservados.</p>
-    <p>Catálogo e checkout oficiais em njal.com.br.</p>
+    <p data-reveal="fade">© {year} {BRAND.full}. Todos os direitos reservados.</p>
+    <p data-reveal="fade" style="--i:1">Catálogo e checkout oficiais em njal.com.br.</p>
+    <button class="foot__motion" type="button" data-motion-toggle aria-pressed="true" data-reveal="fade" style="--i:2">
+      <span class="foot__motion-dot" aria-hidden="true"></span>
+      Movimento: <b data-motion-state>ligado</b>
+    </button>
   </div>
 </footer>
 
@@ -92,12 +112,58 @@ const lojaHref = withBase('/loja');
 
   .foot__mark {
     margin-bottom: clamp(2.5rem, 6vw, 5rem);
+    overflow: hidden; /* máscara: o wordmark sobe de dentro do próprio recorte */
   }
 
   .foot__word {
     width: 100%;
     height: auto;
     color: var(--bone);
+    transition: color 0.5s var(--ease-out);
+  }
+
+  /* O wordmark se desenha em traço e depois preenche, letra por letra */
+  :global(.js) .foot__word :global(path) {
+    fill: currentColor;
+    fill-opacity: 0;
+    stroke: currentColor;
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition:
+      stroke-dashoffset 1.6s var(--ease-in-out) calc(var(--p, 0) * 0.18s + 0.2s),
+      fill-opacity 0.9s var(--ease-out) calc(var(--p, 0) * 0.18s + 1.3s);
+  }
+
+  :global(.js) .foot__word :global(path:nth-child(2)) {
+    --p: 1;
+  }
+
+  :global(.js) .foot__word :global(path:nth-child(3)) {
+    --p: 2;
+  }
+
+  :global(.js) .foot__word :global(path:nth-child(4)) {
+    --p: 3;
+  }
+
+  :global(.js) .in .foot__word :global(path) {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+
+  .foot__mark:hover .foot__word {
+    color: var(--red);
+  }
+
+  .foot__hand {
+    display: inline-block;
+    transform-origin: 70% 90%;
+  }
+
+  .foot__say:hover .foot__hand {
+    animation: wave 1.2s var(--ease-in-out) infinite;
   }
 
   /* Rodapé compacto (loja): o wordmark gigante compete com a vitrine de produtos. */
@@ -108,10 +174,33 @@ const lojaHref = withBase('/loja');
   }
 
   .foot__grid {
+    position: relative;
     display: grid;
     gap: 2.5rem var(--gap);
     padding-bottom: clamp(2.5rem, 5vw, 4rem);
     border-bottom: 1px solid var(--line);
+  }
+
+  /* A linha de baixo se desenha quando o rodapé entra em cena */
+  :global(.js) .foot__grid {
+    border-bottom-color: transparent;
+  }
+
+  :global(.js) .foot__grid::after {
+    content: '';
+    position: absolute;
+    left: var(--pad);
+    right: var(--pad);
+    bottom: -1px;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.4s var(--ease-out) 0.3s;
+  }
+
+  :global(.js) .foot__grid.in::after {
+    transform: scaleX(1);
   }
 
   .foot__col {
@@ -154,11 +243,26 @@ const lojaHref = withBase('/loja');
     gap: 0.5em;
     text-decoration: none;
     color: var(--bone-70);
-    transition: color 0.2s;
+    transition:
+      color 0.25s var(--ease-out),
+      transform 0.35s var(--ease-spring);
   }
 
   .foot__list a:hover {
     color: var(--red);
+    transform: translateX(4px);
+  }
+
+  .foot__scr li {
+    transition:
+      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      filter var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      color 0.3s var(--ease-out);
+  }
+
+  .foot__scr li:hover {
+    color: var(--bone);
   }
 
   .foot__loja {
@@ -188,11 +292,57 @@ const lojaHref = withBase('/loja');
   .foot__bar {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     gap: 0.5rem 2rem;
     padding-block: 1.5rem;
     font-size: 0.8rem;
     color: var(--bone-50);
+  }
+
+  /* Toggle de movimento: acessibilidade por escolha, não pelo flag do sistema */
+  .foot__motion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.35em 0.7em;
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 600;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bone-50);
+    background: transparent;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition:
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out);
+  }
+
+  .foot__motion:hover {
+    color: var(--bone);
+    border-color: var(--line-strong);
+  }
+
+  .foot__motion b {
+    font-weight: 700;
+    color: var(--bone-70);
+  }
+
+  .foot__motion-dot {
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 10px rgba(232, 18, 63, 0.8);
+    animation: glow-pulse 2s var(--ease-in-out) infinite;
+  }
+
+  .foot__motion[aria-pressed='false'] .foot__motion-dot {
+    background: var(--bone-30);
+    box-shadow: none;
+    animation: none;
   }
 
   @media (min-width: 720px) {
