@@ -1,0 +1,255 @@
+---
+/**
+ * Página de produto (vitrine): uma por peça do catálogo. Mostra a peça de verdade (foto,
+ * cor, preço) e termina em "Chamar no WhatsApp" — a venda de fato acontece na conversa,
+ * como já acontece com os drops. Sem carrinho, sem checkout simulado.
+ */
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import MobileBar from '../../components/MobileBar.astro';
+import Icon from '../../components/Icon.astro';
+import { Image } from 'astro:assets';
+import { LINES, CATEGORIES, money } from '../../data/shop';
+import { withBase, waLink } from '../../data/site';
+
+export function getStaticPaths() {
+  return LINES.map((line) => ({ params: { slug: line.slug }, props: { line } }));
+}
+
+const { line } = Astro.props;
+const multi = line.variants.length > 1;
+const catLabel = CATEGORIES.find((c) => c.id === line.category)?.label ?? line.category;
+const lojaHref = withBase('/loja');
+const price = money(line.variants[0].price);
+---
+
+<Base
+  title={`${line.name} — NJAL BRASIL`}
+  description={`${line.name}, ${price}. Peça real do catálogo NJAL. Chame no WhatsApp pra fechar a compra.`}
+  path={`/loja/${line.slug}`}
+>
+  <Nav />
+  <main id="conteudo">
+    <section class={`pdp section--tight${multi ? '' : ' pdp--solo'}`}>
+      <div class="wrap">
+        <p class="eyebrow pdp__crumb" data-reveal>
+          <a href={lojaHref}>Loja</a> <span aria-hidden="true">/</span> {catLabel}
+        </p>
+
+        <div class="pdp__grid">
+          {
+            multi &&
+              line.variants.map((v, i) => (
+                <input
+                  type="radio"
+                  name="pdp-v"
+                  id={`pdp-v-${i}`}
+                  class="sr-only pdp__vradio"
+                  data-variant={i}
+                  checked={i === 0}
+                />
+              ))
+          }
+
+          <div class="pdp__gallery" data-reveal="scale">
+            {
+              line.variants.map((v, i) => (
+                <span class="pdp__frame" data-variant={i}>
+                  <Image
+                    src={v.image}
+                    alt={v.color ? `${line.name} — ${v.color}` : line.name}
+                    widths={[420, 560, 720, 900]}
+                    sizes="(max-width: 800px) 92vw, 46vw"
+                    formats={['avif', 'webp']}
+                    fallbackFormat="png"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </span>
+              ))
+            }
+          </div>
+
+          <div class="pdp__info">
+            <h1 class="pdp__title d" data-reveal="forge">
+              {line.name}
+            </h1>
+            <p class="pdp__price d">{price}</p>
+
+            {
+              multi && (
+                <div class="pdp__swatches" role="group" aria-label={`Cor — ${line.name}`}>
+                  {line.variants.map((v, i) => (
+                    <label for={`pdp-v-${i}`} class="pdp__swatch" style={`--sw:${v.swatch}`}>
+                      <span class="sr-only">{v.color}</span>
+                    </label>
+                  ))}
+                </div>
+              )
+            }
+
+            <p class="copy pdp__note">
+              Peça real do catálogo oficial da NJAL. Preço, tamanho e forma de pagamento se
+              acertam direto na conversa — sem carrinho, sem checkout por aqui.
+            </p>
+
+            {
+              line.variants.map((v, i) => (
+                <div class="pdp__actions" data-variant={i}>
+                  <a
+                    class="btn btn--red"
+                    href={waLink(
+                      `Olá! Tenho interesse na peça "${line.name}${v.color ? ` — ${v.color}` : ''}" (${money(v.price)}), vi no site da NJAL.`,
+                    )}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <Icon name="whatsapp" class="btn__icon" />
+                    Chamar no WhatsApp
+                  </a>
+                  <a class="link" href={v.href} target="_blank" rel="noopener">
+                    Ver produto oficial em njal.com.br
+                  </a>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer compact />
+  <MobileBar />
+</Base>
+
+<style>
+  .pdp {
+    padding-top: calc(var(--nav-h) + clamp(1.5rem, 4vw, 3rem));
+  }
+
+  .pdp__crumb {
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .pdp__crumb a {
+    color: var(--bone-70);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .pdp__crumb a:hover {
+    color: var(--red);
+  }
+
+  .pdp__grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  .pdp__gallery {
+    position: relative;
+  }
+
+  .pdp__frame {
+    display: none;
+    aspect-ratio: 1;
+    background: var(--bone);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .pdp--solo .pdp__frame {
+    display: block;
+  }
+
+  .pdp__vradio[data-variant='0']:checked ~ .pdp__gallery .pdp__frame[data-variant='0'],
+  .pdp__vradio[data-variant='1']:checked ~ .pdp__gallery .pdp__frame[data-variant='1'],
+  .pdp__vradio[data-variant='2']:checked ~ .pdp__gallery .pdp__frame[data-variant='2'],
+  .pdp__vradio[data-variant='3']:checked ~ .pdp__gallery .pdp__frame[data-variant='3'] {
+    display: block;
+  }
+
+  .pdp__frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+  }
+
+  .pdp__info {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+
+  .pdp__title {
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 3.4rem);
+  }
+
+  .pdp__price {
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2rem);
+    color: var(--red);
+  }
+
+  .pdp__swatches {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .pdp__swatch {
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: var(--sw);
+    border: 1px solid rgba(5, 5, 6, 0.3);
+    box-shadow: 0 0 0 1px rgba(242, 240, 236, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease-out);
+  }
+
+  .pdp__swatch:hover {
+    transform: scale(1.1);
+  }
+
+  .pdp__vradio[data-variant='0']:checked ~ .pdp__info .pdp__swatches .pdp__swatch:nth-child(1),
+  .pdp__vradio[data-variant='1']:checked ~ .pdp__info .pdp__swatches .pdp__swatch:nth-child(2),
+  .pdp__vradio[data-variant='2']:checked ~ .pdp__info .pdp__swatches .pdp__swatch:nth-child(3),
+  .pdp__vradio[data-variant='3']:checked ~ .pdp__info .pdp__swatches .pdp__swatch:nth-child(4) {
+    box-shadow:
+      0 0 0 2px var(--ink),
+      0 0 0 4px var(--red);
+  }
+
+  .pdp__note {
+    max-width: 46ch;
+  }
+
+  .pdp__actions {
+    display: none;
+    gap: 1rem;
+  }
+
+  .pdp--solo .pdp__actions {
+    display: grid;
+  }
+
+  .pdp__vradio[data-variant='0']:checked ~ .pdp__info .pdp__actions[data-variant='0'],
+  .pdp__vradio[data-variant='1']:checked ~ .pdp__info .pdp__actions[data-variant='1'],
+  .pdp__vradio[data-variant='2']:checked ~ .pdp__info .pdp__actions[data-variant='2'],
+  .pdp__vradio[data-variant='3']:checked ~ .pdp__info .pdp__actions[data-variant='3'] {
+    display: grid;
+  }
+
+  .pdp__actions {
+    justify-items: start;
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 800px) {
+    .pdp__grid {
+      grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+</style>

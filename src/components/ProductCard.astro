@@ -2,16 +2,18 @@
 /**
  * Card de produto real da loja (njal.com.br). Diferente do Plate.astro (arte de campanha,
  * nunca cortada): aqui é fotografia de produto padrão de e-commerce, fundo neutro, então
- * um crop quadrado é normal e esperado. "Comprar" leva direto ao checkout oficial.
+ * um crop quadrado é normal e esperado. O card leva pra página do produto (/loja/[slug]),
+ * onde o "Chamar no WhatsApp" de fato inicia a conversa de venda.
  *
  * Peças com mais de uma cor (`line.variants.length > 1`) ganham um seletor de cor em CSS
  * puro (radio + sibling, igual ao filtro de categoria da página da loja): só a variante da
- * cor marcada fica visível, cada uma com seu próprio link real de compra.
+ * cor marcada fica visível.
  */
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { money } from '../data/shop';
 import type { Line } from '../data/shop';
+import { withBase } from '../data/site';
 
 interface Props {
   line: Line;
@@ -21,6 +23,7 @@ interface Props {
 const { line, reveal = 'scale', index = 0 } = Astro.props;
 const multi = line.variants.length > 1;
 const group = `v-${line.slug}`;
+const pdpHref = withBase(`/loja/${line.slug}`);
 ---
 
 <article
@@ -45,7 +48,7 @@ const group = `v-${line.slug}`;
 
   {
     line.variants.map((v, i) => (
-      <a class="pcard__variant" data-variant={i} href={v.href} target="_blank" rel="noopener">
+      <a class="pcard__variant" data-variant={i} href={pdpHref}>
         <span class="pcard__frame">
           <Image
             src={v.image}
@@ -63,7 +66,7 @@ const group = `v-${line.slug}`;
           <span class="pcard__row">
             <span class="pcard__price">{money(v.price)}</span>
             <span class="pcard__cta">
-              Comprar
+              Ver produto
               <Icon name="arrow" class="pcard__ico" />
             </span>
           </span>
