@@ -19,10 +19,19 @@ import Kicker from './Kicker.astro';
       </div>
     </header>
 
-    <div class="tec__grid">
+    <div class="tec__grid" data-tec-carousel>
       {
         FABRIC.map((f, i) => (
-          <article class="tec__card" data-reveal style={`--i:${i}`}>
+          <article
+            class="tec__card"
+            data-reveal
+            style={`--i:${i}`}
+            data-index={i}
+            role="button"
+            tabindex="0"
+            aria-expanded={i === 0 ? 'true' : 'false'}
+          >
+            <span class="tec__bar" aria-hidden="true" />
             <header class="tec__head">
               <span class="tec__idx d" aria-hidden="true">
                 {f.index}
@@ -72,6 +81,7 @@ import Kicker from './Kicker.astro';
     gap: 1.5rem;
     padding: clamp(1.5rem, 3vw, 2.5rem);
     background: var(--ink);
+    cursor: pointer;
     transition: background-color 0.35s var(--ease-out);
   }
 
@@ -88,12 +98,40 @@ import Kicker from './Kicker.astro';
     transition: transform 0.5s var(--ease-out);
   }
 
-  .tec__card:hover {
+  .tec__card:hover,
+  .tec__card[aria-expanded='true'] {
     background: var(--carbon);
   }
 
-  .tec__card:hover::before {
+  .tec__card:hover::before,
+  .tec__card[aria-expanded='true']::before {
     transform: scaleX(1);
+  }
+
+  .tec__bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--bone);
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0;
+  }
+
+  .tec__bar.is-running {
+    opacity: 1;
+    animation: tec-bar 5s linear forwards;
+  }
+
+  @keyframes tec-bar {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
   }
 
   .tec__head {
@@ -120,6 +158,17 @@ import Kicker from './Kicker.astro';
     display: grid;
     gap: 1.25rem;
     margin: 0;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition:
+      max-height 0.4s var(--ease-out),
+      opacity 0.3s var(--ease-out);
+  }
+
+  .tec__card[aria-expanded='true'] .tec__dl {
+    max-height: 16rem;
+    opacity: 1;
   }
 
   .tec__dl dt {
@@ -161,3 +210,52 @@ import Kicker from './Kicker.astro';
     }
   }
 </style>
+
+<script>
+  /* Mosaico do tecido: expande um card por vez, 5s cada, com barra de progresso.
+     Clicar em qualquer card assume o controle e reinicia o ciclo a partir dele. */
+  const CYCLE_MS = 5000;
+
+  document.querySelectorAll<HTMLElement>('[data-tec-carousel]').forEach((grid) => {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.tec__card'));
+    if (cards.length < 2) return;
+
+    let active = 0;
+    let timer: ReturnType<typeof setInterval>;
+
+    const activate = (index: number) => {
+      active = index;
+      cards.forEach((card, i) => {
+        const isActive = i === index;
+        card.setAttribute('aria-expanded', String(isActive));
+        const bar = card.querySelector<HTMLElement>('.tec__bar');
+        if (!bar) return;
+        bar.classList.remove('is-running');
+        void bar.offsetWidth;
+        if (isActive) bar.classList.add('is-running');
+      });
+    };
+
+    const restart = () => {
+      clearInterval(timer);
+      timer = setInterval(() => activate((active + 1) % cards.length), CYCLE_MS);
+    };
+
+    cards.forEach((card, i) => {
+      card.addEventListener('click', () => {
+        activate(i);
+        restart();
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activate(i);
+          restart();
+        }
+      });
+    });
+
+    activate(0);
+    restart();
+  });
+</script>

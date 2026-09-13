@@ -1,0 +1,47 @@
+---
+/** Faixa de mapa de largura cheia, com o ponto físico da NJAL. Usada na home e na /loja. */
+import { BRAND } from '../data/site';
+import Icon from './Icon.astro';
+
+const { point } = BRAND;
+---
+
+<section class="mapa-band section--line" aria-labelledby="mapa-band-title">
+  <div class="wrap mapa-band__head">
+    <p class="eyebrow" id="mapa-band-title">Ponto físico · {point.name}</p>
+    <a class="link" href={point.maps} target="_blank" rel="noopener">
+      Abrir no mapa <Icon name="arrow" class="btn__icon" />
+    </a>
+  </div>
+  <iframe
+    class="mapa-band__frame"
+    src={point.mapsEmbed}
+    title={`Mapa — ${point.name}`}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+  />
+</section>
+
+<style>
+  .mapa-band {
+    padding-block: clamp(2rem, 4vw, 3rem) 0;
+  }
+
+  .mapa-band__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .mapa-band__frame {
+    display: block;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: clamp(320px, 42vw, 480px);
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+</style>

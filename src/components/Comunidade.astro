@@ -29,7 +29,7 @@ const { point } = BRAND;
     </header>
   </div>
 
-  <div class="com__strip" tabindex="0" aria-label="Peças do feed, com rolagem horizontal">
+  <div class="com__strip" data-com-carousel tabindex="0" aria-label="Peças do feed, em carrossel">
     {
       FEED.map((f, i) => {
         if (f.kind === 'art' && f.art) {
@@ -59,22 +59,33 @@ const { point } = BRAND;
             </div>
           );
         }
+        if (f.kind === 'point') {
+          return (
+            <div class="com__tile com__tile--type com__tile--point" data-reveal style={`--i:${i}`}>
+              <Icon name="pin" class="com__pin" />
+              <p class="eyebrow">
+                <b>Ponto físico</b> · {point.role.split(' · ')[0]}
+              </p>
+              <p class="com__big d">{point.name}</p>
+              <address class="com__addr copy">
+                {point.street} — {point.district}
+                <br />
+                {point.city}, {point.uf}
+              </address>
+              <a class="link" href={point.maps} target="_blank" rel="noopener">
+                Abrir no mapa
+                <Icon name="arrow" class="btn__icon" />
+              </a>
+            </div>
+          );
+        }
         return (
-          <div class="com__tile com__tile--type com__tile--point" data-reveal style={`--i:${i}`}>
-            <Icon name="pin" class="com__pin" />
-            <p class="eyebrow">
-              <b>Ponto físico</b> · {point.role.split(' · ')[0]}
-            </p>
-            <p class="com__big d">{point.name}</p>
-            <address class="com__addr copy">
-              {point.street} — {point.district}
-              <br />
-              {point.city}, {point.uf}
-            </address>
-            <a class="link" href={point.maps} target="_blank" rel="noopener">
-              Abrir no mapa
-              <Icon name="arrow" class="btn__icon" />
-            </a>
+          <div class="com__tile com__tile--type" data-reveal style={`--i:${i}`}>
+            <span class="com__hand" aria-hidden="true">
+              ⚔
+            </span>
+            <p class="eyebrow">Escritura NJAL</p>
+            <p class="com__big d">{BRAND.scriptures.valhalla}</p>
           </div>
         );
       })
@@ -199,3 +210,42 @@ const { point } = BRAND;
     }
   }
 </style>
+
+<script>
+  /* Feed em carrossel: avança sozinho de peça em peça, volta ao início ao chegar no fim.
+     Pausa com o mouse em cima, no toque ou com foco (teclado) -- o visitante sempre pode navegar na mão. */
+  const ADVANCE_MS = 4000;
+
+  document.querySelectorAll<HTMLElement>('[data-com-carousel]').forEach((strip) => {
+    const tiles = Array.from(strip.querySelectorAll<HTMLElement>('.com__tile'));
+    if (tiles.length < 2) return;
+
+    let index = 0;
+    let paused = false;
+    let resumeTimer: ReturnType<typeof setTimeout>;
+
+    const next = () => {
+      if (paused) return;
+      index = (index + 1) % tiles.length;
+      strip.scrollTo({ left: tiles[index].offsetLeft, behavior: 'smooth' });
+    };
+
+    setInterval(next, ADVANCE_MS);
+
+    const pause = () => {
+      paused = true;
+      clearTimeout(resumeTimer);
+    };
+    const resumeSoon = () => {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => (paused = false), 1500);
+    };
+
+    strip.addEventListener('mouseenter', pause);
+    strip.addEventListener('mouseleave', resumeSoon);
+    strip.addEventListener('touchstart', pause, { passive: true });
+    strip.addEventListener('touchend', resumeSoon, { passive: true });
+    strip.addEventListener('focusin', pause);
+    strip.addEventListener('focusout', resumeSoon);
+  });
+</script>

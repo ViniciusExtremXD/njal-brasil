@@ -27,7 +27,7 @@ import Kicker from './Kicker.astro';
         }
       </ul>
       <div class="cta-row" data-reveal style="--i:5">
-        <a class="btn btn--red" href={BRAND.whatsapp} target="_blank" rel="noopener">
+        <a class="btn" href={BRAND.whatsapp} target="_blank" rel="noopener">
           <Icon name="whatsapp" class="btn__icon" />
           Falar sobre confecção
         </a>
@@ -36,6 +36,44 @@ import Kicker from './Kicker.astro';
           Ver portfólio
         </a>
       </div>
+
+      <details class="b2b__quote" data-reveal style="--i:6">
+        <summary class="btn btn--red">
+          <Icon name="whatsapp" class="btn__icon" />
+          Pedir orçamento
+        </summary>
+        <form class="b2b__form" data-quote-form>
+          <label>
+            <span class="eyebrow">Seu nome</span>
+            <input type="text" name="nome" required placeholder="Como podemos te chamar" />
+          </label>
+          <label>
+            <span class="eyebrow">Marca ou negócio</span>
+            <input type="text" name="marca" placeholder="Se for pra uma marca, academia, box..." />
+          </label>
+          <div class="b2b__form-row">
+            <label>
+              <span class="eyebrow">Peça</span>
+              <input type="text" name="peca" required placeholder="Camiseta, moletom, uniforme..." />
+            </label>
+            <label>
+              <span class="eyebrow">Quantidade</span>
+              <input type="number" name="quantidade" min="10" required placeholder="A partir de 10" />
+            </label>
+          </div>
+          <label>
+            <span class="eyebrow">Detalhes</span>
+            <textarea name="detalhes" rows="3" placeholder="Cores, prazo, referência de peça..." />
+          </label>
+          <button type="submit" class="btn btn--red">
+            <Icon name="whatsapp" class="btn__icon" />
+            Enviar pelo WhatsApp
+          </button>
+          <p class="eyebrow b2b__form-note">
+            Abre o WhatsApp com os dados já preenchidos — nada é enviado por aqui.
+          </p>
+        </form>
+      </details>
     </div>
 
     <div class="b2b__arts">
@@ -112,4 +150,89 @@ import Kicker from './Kicker.astro';
       transform: translateY(-3rem);
     }
   }
+
+  .b2b__quote {
+    margin-top: -0.5rem;
+  }
+
+  .b2b__quote summary {
+    list-style: none;
+    cursor: pointer;
+    width: fit-content;
+  }
+
+  .b2b__quote summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .b2b__form {
+    display: grid;
+    gap: 1rem;
+    max-width: 34rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .b2b__form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .b2b__form input,
+  .b2b__form textarea {
+    width: 100%;
+    padding: 0.75em 0.9em;
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.95rem;
+    color: var(--bone);
+    background: var(--carbon);
+    border: 1px solid var(--line-strong);
+    resize: vertical;
+  }
+
+  .b2b__form input:focus-visible,
+  .b2b__form textarea:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .b2b__form-row {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .b2b__form-note {
+    color: var(--bone-50);
+  }
+
+  @media (min-width: 480px) {
+    .b2b__form-row {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
 </style>
+
+<script>
+  import { waLink } from '../data/site';
+
+  document.querySelectorAll<HTMLFormElement>('[data-quote-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const field = (name: string) => String(data.get(name) ?? '').trim();
+
+      const lines = [
+        'Olá! Quero pedir um orçamento de confecção.',
+        `Nome: ${field('nome')}`,
+        field('marca') && `Marca/negócio: ${field('marca')}`,
+        `Peça: ${field('peca')}`,
+        `Quantidade: ${field('quantidade')}`,
+        field('detalhes') && `Detalhes: ${field('detalhes')}`,
+      ].filter(Boolean);
+
+      window.open(waLink(lines.join('\n')), '_blank', 'noopener');
+    });
+  });
+</script>

@@ -241,7 +241,7 @@ export const FABRIC: FabricSpec[] = [
 ];
 
 export interface FeedItem {
-  kind: 'art' | 'say' | 'point';
+  kind: 'art' | 'say' | 'point' | 'valhalla';
   art?: ImageMetadata;
   alt?: string;
   label?: string;
@@ -262,6 +262,7 @@ export const FEED: FeedItem[] = [
     label: 'Feed · Camiseta Training Dept.',
   },
   { kind: 'point' },
+  { kind: 'valhalla' },
 ];
 
 export const AVATAR = avatar;
