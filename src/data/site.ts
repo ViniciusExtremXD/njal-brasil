@@ -55,6 +55,10 @@ export const BRAND = {
     maps:
       'https://www.google.com/maps/search/?api=1&query=' +
       encodeURIComponent('R. Curupá, 328 - Vila Formosa, São Paulo - SP'),
+    mapsEmbed:
+      'https://www.google.com/maps?q=' +
+      encodeURIComponent('R. Curupá, 328 - Vila Formosa, São Paulo - SP') +
+      '&output=embed',
   },
 } as const;
 

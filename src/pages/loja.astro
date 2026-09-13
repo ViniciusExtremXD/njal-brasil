@@ -7,7 +7,7 @@ import ProductCard from '../components/ProductCard.astro';
 import Icon from '../components/Icon.astro';
 import Monogram from '../components/Monogram.astro';
 import { BRAND } from '../data/site';
-import { CATEGORIES, PRODUCTS } from '../data/shop';
+import { CATEGORIES, LINES } from '../data/shop';
 ---
 
 <Base
@@ -65,12 +65,12 @@ import { CATEGORIES, PRODUCTS } from '../data/shop';
         </div>
 
         <ul class="loja__grid">
-          {PRODUCTS.map((p, i) => <ProductCard product={p} index={i} />)}
+          {LINES.map((l, i) => <ProductCard line={l} index={i} />)}
         </ul>
       </div>
     </section>
   </main>
-  <Footer />
+  <Footer compact />
   <MobileBar />
 </Base>
 

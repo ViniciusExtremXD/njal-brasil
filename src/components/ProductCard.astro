@@ -3,62 +3,110 @@
  * Card de produto real da loja (njal.com.br). Diferente do Plate.astro (arte de campanha,
  * nunca cortada): aqui é fotografia de produto padrão de e-commerce, fundo neutro, então
  * um crop quadrado é normal e esperado. "Comprar" leva direto ao checkout oficial.
+ *
+ * Peças com mais de uma cor (`line.variants.length > 1`) ganham um seletor de cor em CSS
+ * puro (radio + sibling, igual ao filtro de categoria da página da loja): só a variante da
+ * cor marcada fica visível, cada uma com seu próprio link real de compra.
  */
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { money } from '../data/shop';
-import type { Product } from '../data/shop';
+import type { Line } from '../data/shop';
 
 interface Props {
-  product: Product;
+  line: Line;
   reveal?: string | false;
   index?: number;
 }
-const { product, reveal = 'scale', index = 0 } = Astro.props;
+const { line, reveal = 'scale', index = 0 } = Astro.props;
+const multi = line.variants.length > 1;
+const group = `v-${line.slug}`;
 ---
 
 <article
-  class="pcard"
+  class={`pcard${multi ? '' : ' pcard--solo'}`}
   data-reveal={reveal === false ? undefined : reveal}
-  data-cat={product.category}
+  data-cat={line.category}
   style={reveal === false ? undefined : `--i:${index % 4}`}
 >
-  <a class="pcard__link" href={product.href} target="_blank" rel="noopener">
-    <span class="pcard__frame">
-      <Image
-        src={product.image}
-        alt={product.name}
-        widths={[280, 360, 480, 600]}
-        sizes="(max-width: 640px) 44vw, (max-width: 1000px) 30vw, 330px"
-        formats={['avif', 'webp']}
-        fallbackFormat="png"
-        loading="lazy"
-        decoding="async"
-      />
-    </span>
-    <span class="pcard__body">
-      <span class="pcard__name">{product.name}</span>
-      <span class="pcard__row">
-        <span class="pcard__price">{money(product.price)}</span>
-        <span class="pcard__cta">
-          Comprar
-          <Icon name="arrow" class="pcard__ico" />
+  {
+    multi &&
+      line.variants.map((v, i) => (
+        <input
+          type="radio"
+          name={group}
+          id={`${group}-${i}`}
+          class="sr-only pcard__vradio"
+          data-variant={i}
+          checked={i === 0}
+        />
+      ))
+  }
+
+  {
+    line.variants.map((v, i) => (
+      <a class="pcard__variant" data-variant={i} href={v.href} target="_blank" rel="noopener">
+        <span class="pcard__frame">
+          <Image
+            src={v.image}
+            alt={v.color ? `${line.name} — ${v.color}` : line.name}
+            widths={[280, 360, 480, 600]}
+            sizes="(max-width: 640px) 44vw, (max-width: 1000px) 30vw, 330px"
+            formats={['avif', 'webp']}
+            fallbackFormat="png"
+            loading="lazy"
+            decoding="async"
+          />
         </span>
-      </span>
-    </span>
-  </a>
+        <span class="pcard__body">
+          <span class="pcard__name">{line.name}{v.color ? ` — ${v.color}` : ''}</span>
+          <span class="pcard__row">
+            <span class="pcard__price">{money(v.price)}</span>
+            <span class="pcard__cta">
+              Comprar
+              <Icon name="arrow" class="pcard__ico" />
+            </span>
+          </span>
+        </span>
+      </a>
+    ))
+  }
+
+  {
+    multi && (
+      <div class="pcard__swatches" role="group" aria-label={`Cor — ${line.name}`}>
+        {line.variants.map((v, i) => (
+          <label for={`${group}-${i}`} class="pcard__swatch" style={`--sw:${v.swatch}`}>
+            <span class="sr-only">{v.color}</span>
+          </label>
+        ))}
+      </div>
+    )
+  }
 </article>
 
 <style>
   .pcard {
+    position: relative;
     list-style: none;
   }
 
-  .pcard__link {
-    display: grid;
+  .pcard__variant {
+    display: none;
     gap: 0.75rem;
     text-decoration: none;
     color: inherit;
+  }
+
+  .pcard--solo .pcard__variant {
+    display: grid;
+  }
+
+  .pcard__vradio[data-variant='0']:checked ~ .pcard__variant[data-variant='0'],
+  .pcard__vradio[data-variant='1']:checked ~ .pcard__variant[data-variant='1'],
+  .pcard__vradio[data-variant='2']:checked ~ .pcard__variant[data-variant='2'],
+  .pcard__vradio[data-variant='3']:checked ~ .pcard__variant[data-variant='3'] {
+    display: grid;
   }
 
   .pcard__frame {
@@ -71,8 +119,8 @@ const { product, reveal = 'scale', index = 0 } = Astro.props;
     transition: border-color 0.3s var(--ease-out);
   }
 
-  .pcard__link:hover .pcard__frame,
-  .pcard__link:focus-visible .pcard__frame {
+  .pcard__variant:hover .pcard__frame,
+  .pcard__variant:focus-visible .pcard__frame {
     border-color: var(--red);
   }
 
@@ -84,7 +132,7 @@ const { product, reveal = 'scale', index = 0 } = Astro.props;
     transition: transform 0.5s var(--ease-out);
   }
 
-  .pcard__link:hover .pcard__frame :global(img) {
+  .pcard__variant:hover .pcard__frame :global(img) {
     transform: scale(1.04);
   }
 
@@ -131,12 +179,42 @@ const { product, reveal = 'scale', index = 0 } = Astro.props;
     transition: gap 0.25s var(--ease-out);
   }
 
-  .pcard__link:hover .pcard__cta {
+  .pcard__variant:hover .pcard__cta {
     gap: 0.55em;
   }
 
   .pcard__ico {
     width: 0.85em;
     height: 0.85em;
+  }
+
+  .pcard__swatches {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .pcard__swatch {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    background: var(--sw);
+    border: 1px solid rgba(5, 5, 6, 0.3);
+    box-shadow: 0 0 0 1px rgba(242, 240, 236, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease-out);
+  }
+
+  .pcard__swatch:hover {
+    transform: scale(1.12);
+  }
+
+  .pcard__vradio[data-variant='0']:checked ~ .pcard__swatches .pcard__swatch:nth-child(1),
+  .pcard__vradio[data-variant='1']:checked ~ .pcard__swatches .pcard__swatch:nth-child(2),
+  .pcard__vradio[data-variant='2']:checked ~ .pcard__swatches .pcard__swatch:nth-child(3),
+  .pcard__vradio[data-variant='3']:checked ~ .pcard__swatches .pcard__swatch:nth-child(4) {
+    box-shadow:
+      0 0 0 2px var(--ink),
+      0 0 0 4px var(--red);
   }
 </style>

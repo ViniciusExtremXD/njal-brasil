@@ -4,13 +4,19 @@ import Wordmark from './Wordmark.astro';
 import Monogram from './Monogram.astro';
 import Icon from './Icon.astro';
 
+interface Props {
+  /** Rodapé mais discreto: usado na /loja, onde o wordmark gigante compete com a vitrine. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+
 const year = new Date().getFullYear();
 const { scriptures, point } = BRAND;
 const list = [scriptures.forged, scriptures.who, scriptures.valhalla, scriptures.armor];
 const lojaHref = withBase('/loja');
 ---
 
-<footer class="foot" id="rodape">
+<footer class:list={['foot', { 'foot--compact': compact }]} id="rodape">
   <div class="wrap foot__mark" data-reveal="clip">
     <Wordmark class="foot__word" title="NJAL" />
   </div>
@@ -60,6 +66,17 @@ const lojaHref = withBase('/loja');
         {point.street} — {point.district}<br />
         {point.city}, {point.uf}
       </address>
+      {
+        compact && (
+          <iframe
+            class="foot__map"
+            src={point.mapsEmbed}
+            title={`Mapa — ${point.name}`}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          />
+        )
+      }
       <a class="link" href={point.maps} target="_blank" rel="noopener">Abrir no mapa <Icon name="arrow" class="btn__icon" /></a>
     </div>
 
@@ -92,6 +109,20 @@ const lojaHref = withBase('/loja');
     width: 100%;
     height: auto;
     color: var(--bone);
+  }
+
+  /* Rodapé compacto (loja): o wordmark gigante compete com a vitrine de produtos. */
+  .foot--compact .foot__mark {
+    max-width: 22rem;
+    margin-inline: auto 0;
+    margin-bottom: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .foot__map {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--line);
+    filter: grayscale(1) invert(92%) contrast(83%);
   }
 
   .foot__grid {

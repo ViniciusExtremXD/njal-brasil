@@ -39,6 +39,37 @@ export interface Product {
   /** Link direto do produto em njal.com.br — onde a compra de fato acontece. */
   href: string;
   image: ImageMetadata;
+  /**
+   * Agrupa variantes de cor da mesma peça num só card (ex.: as duas garrafinhas).
+   * Produtos com o mesmo `line` viram um card com seletor de cor.
+   */
+  line?: string;
+  lineName?: string;
+  color?: string;
+  swatch?: string;
+}
+
+/** Uma peça, com uma ou mais variantes de cor (ver `line` em Product). */
+export interface Line {
+  slug: string;
+  name: string;
+  category: ShopCategory;
+  variants: { color?: string; swatch?: string; price: number; href: string; image: ImageMetadata }[];
+}
+
+function buildLines(products: Product[]): Line[] {
+  const bySlug = new Map<string, Line>();
+  for (const p of products) {
+    const key = p.line ?? p.slug;
+    const variant = { color: p.color, swatch: p.swatch, price: p.price, href: p.href, image: p.image };
+    const existing = bySlug.get(key);
+    if (existing) {
+      existing.variants.push(variant);
+    } else {
+      bySlug.set(key, { slug: key, name: p.lineName ?? p.name, category: p.category, variants: [variant] });
+    }
+  }
+  return Array.from(bySlug.values());
 }
 
 export const money = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -61,6 +92,10 @@ export const PRODUCTS: Product[] = [
     category: 'feminino',
     href: SHOP + 'camiseta-feminina-irma-marluce-dale-bicuda-branca',
     image: camisetaFemininaBranca,
+    line: 'camiseta-feminina-irma-marluce',
+    lineName: 'Camiseta Feminina Irmã Marluce',
+    color: 'Branca',
+    swatch: '#f2f0ec',
   },
   {
     slug: 'camiseta-feminina-rosa',
@@ -69,6 +104,10 @@ export const PRODUCTS: Product[] = [
     category: 'feminino',
     href: SHOP + 'camiseta-feminina-irma-marluce-dale-bicuda-rosa',
     image: camisetaFemininaRosa,
+    line: 'camiseta-feminina-irma-marluce',
+    lineName: 'Camiseta Feminina Irmã Marluce',
+    color: 'Rosa',
+    swatch: '#e39ab0',
   },
   {
     slug: 'oversized-feminina-treino-abencoado',
@@ -93,6 +132,10 @@ export const PRODUCTS: Product[] = [
     category: 'feminino',
     href: SHOP + 'camiseta-oversized-feminina-branca-irma-marluce-dale-bicuda',
     image: camisetaOversizedFemininaBranca,
+    line: 'oversized-feminina-irma-marluce',
+    lineName: 'Oversized Feminina Irmã Marluce',
+    color: 'Branca',
+    swatch: '#f2f0ec',
   },
   {
     slug: 'oversized-feminina-preta',
@@ -101,6 +144,10 @@ export const PRODUCTS: Product[] = [
     category: 'feminino',
     href: SHOP + 'camiseta-feminina-oversized-irma-marluce-dale-bicuda',
     image: camisetaFemininaOversized,
+    line: 'oversized-feminina-irma-marluce',
+    lineName: 'Oversized Feminina Irmã Marluce',
+    color: 'Preta',
+    swatch: '#050506',
   },
   {
     slug: 'regata-feminina',
@@ -158,6 +205,10 @@ export const PRODUCTS: Product[] = [
     category: 'masculino',
     href: SHOP + 'camiseta-oversized-masculina-branca-irma-marluce-dale-bicuda',
     image: camisetaOversizedMasculinaBranca,
+    line: 'oversized-masculina-irma-marluce',
+    lineName: 'Oversized Masculina Irmã Marluce',
+    color: 'Branca',
+    swatch: '#f2f0ec',
   },
   {
     slug: 'camiseta-masculina-rosa',
@@ -166,6 +217,10 @@ export const PRODUCTS: Product[] = [
     category: 'masculino',
     href: SHOP + 'camiseta-masculina-irma-marluce-dale-bicuda-rosa',
     image: camisetaMasculinaRosa,
+    line: 'camiseta-masculina-irma-marluce',
+    lineName: 'Camiseta Masculina Irmã Marluce',
+    color: 'Rosa',
+    swatch: '#e39ab0',
   },
   {
     slug: 'camiseta-masculina-branca',
@@ -174,6 +229,10 @@ export const PRODUCTS: Product[] = [
     category: 'masculino',
     href: SHOP + 'camiseta-marculina-irma-marluce-dale-bicuda',
     image: camisetaMasculinaBranca,
+    line: 'camiseta-masculina-irma-marluce',
+    lineName: 'Camiseta Masculina Irmã Marluce',
+    color: 'Branca',
+    swatch: '#f2f0ec',
   },
   {
     slug: 'rashguard-manga-curta',
@@ -206,6 +265,10 @@ export const PRODUCTS: Product[] = [
     category: 'masculino',
     href: SHOP + 'camiseta-oversized-irma-marluce-dale-bicuda',
     image: camisetaOversizedUnissex,
+    line: 'oversized-masculina-irma-marluce',
+    lineName: 'Oversized Masculina Irmã Marluce',
+    color: 'Preta',
+    swatch: '#050506',
   },
   // Sale
   {
@@ -215,6 +278,10 @@ export const PRODUCTS: Product[] = [
     category: 'sale',
     href: SHOP + '86ykpstqc-garrafinha-njal-black',
     image: garrafinhaPerola,
+    line: 'garrafinha-njal',
+    lineName: 'Garrafinha NJAL',
+    color: 'Pérola',
+    swatch: '#e7ded0',
   },
   {
     slug: 'garrafinha-red',
@@ -223,6 +290,10 @@ export const PRODUCTS: Product[] = [
     category: 'sale',
     href: SHOP + 'garrafinha-njal-red',
     image: garrafinhaRed,
+    line: 'garrafinha-njal',
+    lineName: 'Garrafinha NJAL',
+    color: 'Vermelha',
+    swatch: '#e8123f',
   },
 ];
 
@@ -241,3 +312,9 @@ export const FEATURED_SLUGS = [
 export const FEATURED: Product[] = FEATURED_SLUGS.map(
   (slug) => PRODUCTS.find((p) => p.slug === slug)!,
 );
+
+/** Catálogo completo, com variantes de cor agrupadas num card por peça. */
+export const LINES: Line[] = buildLines(PRODUCTS);
+
+/** Vitrine da home, com variantes de cor agrupadas. */
+export const FEATURED_LINES: Line[] = buildLines(FEATURED);
