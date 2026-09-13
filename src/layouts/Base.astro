@@ -111,10 +111,26 @@ const ld = {
         window.addEventListener('load', () => window.setTimeout(safety, 250), { once: true });
       }
 
-      /* Navegação: fundo sólido depois do primeiro scroll. */
+      /* Navegação: fundo sólido depois do primeiro scroll, some ao descer, volta ao subir. */
       const nav = document.querySelector<HTMLElement>('[data-nav]');
       if (nav) {
-        const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 24);
+        const menu = nav.querySelector<HTMLDetailsElement>('[data-menu]');
+        let lastY = window.scrollY;
+
+        const onScroll = () => {
+          const y = window.scrollY;
+          nav.classList.toggle('is-scrolled', y > 24);
+
+          if (!menu?.open) {
+            if (y > lastY && y > nav.offsetHeight * 1.5) {
+              nav.classList.add('nav--hidden');
+            } else if (y < lastY) {
+              nav.classList.remove('nav--hidden');
+            }
+          }
+
+          lastY = y;
+        };
         onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });
       }

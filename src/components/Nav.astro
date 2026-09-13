@@ -79,12 +79,17 @@ const homeHref = `${withBase('/')}#topo`;
     border-bottom: 1px solid var(--line);
     transition:
       background-color 0.4s var(--ease-out),
-      border-color 0.4s var(--ease-out);
+      border-color 0.4s var(--ease-out),
+      transform 0.35s var(--ease-out);
   }
 
   :global(.js) .nav:not(.is-scrolled) {
     background: transparent;
     border-color: transparent;
+  }
+
+  :global(.js) .nav.nav--hidden {
+    transform: translateY(-100%);
   }
 
   .nav__in {
