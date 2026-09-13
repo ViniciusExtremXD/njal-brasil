@@ -69,6 +69,22 @@ import { CATEGORIES, LINES } from '../data/shop';
         </ul>
       </div>
     </section>
+
+    <section class="loja-mapa section--line" aria-labelledby="loja-mapa-title">
+      <div class="wrap loja-mapa__head">
+        <p class="eyebrow" id="loja-mapa-title">Ponto físico · {BRAND.point.name}</p>
+        <a class="link" href={BRAND.point.maps} target="_blank" rel="noopener">
+          Abrir no mapa <Icon name="arrow" class="btn__icon" />
+        </a>
+      </div>
+      <iframe
+        class="loja-mapa__frame"
+        src={BRAND.point.mapsEmbed}
+        title={`Mapa — ${BRAND.point.name}`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      />
+    </section>
   </main>
   <Footer compact />
   <MobileBar />
@@ -196,5 +212,28 @@ import { CATEGORIES, LINES } from '../data/shop';
     .loja__grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+
+  .loja-mapa {
+    padding-block: clamp(2rem, 4vw, 3rem) 0;
+  }
+
+  .loja-mapa__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .loja-mapa__frame {
+    display: block;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: clamp(320px, 42vw, 480px);
+    border: 0;
+    border-top: 1px solid var(--line);
+    filter: grayscale(1) invert(92%) contrast(83%);
   }
 </style>
