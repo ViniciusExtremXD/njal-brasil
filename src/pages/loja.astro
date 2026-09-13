@@ -14,7 +14,7 @@ const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
 
 <Base
   title="Loja — NJAL BRASIL"
-  description="Catálogo oficial da NJAL: camisetas, moletons, regatas, shorts e acessórios. Escolha a peça e finalize a compra no checkout oficial em njal.com.br."
+  description="Catálogo oficial da NJAL: camisetas, moletons, regatas, shorts e acessórios. Escolha a peça e chame no WhatsApp pra fechar."
   path="/loja"
 >
   <Nav />
@@ -27,13 +27,12 @@ const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
       <div class="wrap">
         <p class="eyebrow" data-reveal><b>Loja oficial</b> · njal.com.br</p>
         <h1 class="loja-hero__title d" data-reveal="forge">
-          A armadura tem<br />
-          <span class="d--red" data-reveal="forge-red" style="--i:1">tamanho e preço.</span>
+          Dá uma olhada<br />
+          <span class="d--red" data-reveal="forge-red" style="--i:1">no catálogo real.</span>
         </h1>
         <p class="lead" data-reveal style="--i:1">
-          Este é o catálogo real da NJAL. Escolha a peça, o tamanho e finalize a compra no
-          checkout oficial — frete, parcelamento e pagamento acontecem lá, em
-          <strong>njal.com.br</strong>.
+          Escolha a peça e chame no WhatsApp pra fechar — sem carrinho, sem checkout por aqui.
+          Tamanho, cor e forma de pagamento se acertam direto na conversa.
         </p>
         <div class="cta-row" data-reveal style="--i:2">
           <a class="btn btn--red" href={BRAND.shopUrl} target="_blank" rel="noopener">
@@ -232,6 +231,5 @@ const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
     height: clamp(320px, 42vw, 480px);
     border: 0;
     border-top: 1px solid var(--line);
-    filter: grayscale(1) invert(92%) contrast(83%);
   }
 </style>
