@@ -8,6 +8,8 @@ import Icon from '../components/Icon.astro';
 import Monogram from '../components/Monogram.astro';
 import { BRAND } from '../data/site';
 import { CATEGORIES, LINES } from '../data/shop';
+
+const shopCats = CATEGORIES.filter((c) => c.id !== 'todos');
 ---
 
 <Base
@@ -48,25 +50,22 @@ import { CATEGORIES, LINES } from '../data/shop';
 
     <section class="loja section section--tight section--line" aria-label="Catálogo de produtos">
       <div class="wrap">
+        <nav class="loja__jump" aria-label="Ir para categoria">
+          {shopCats.map((c) => <a href={`#cat-${c.id}`}>{c.label}</a>)}
+        </nav>
+
         {
-          CATEGORIES.map((c, i) => (
-            <input
-              type="radio"
-              name="loja-cat"
-              id={`cat-${c.id}`}
-              class="sr-only loja__radio"
-              checked={i === 0}
-            />
+          shopCats.map((c) => (
+            <div class="loja__cat" id={`cat-${c.id}`}>
+              <h2 class="loja__cat-title d">{c.label}</h2>
+              <ul class="loja__grid">
+                {LINES.filter((l) => l.category === c.id).map((l, i) => (
+                  <ProductCard line={l} index={i} />
+                ))}
+              </ul>
+            </div>
           ))
         }
-
-        <div class="loja__tabs" role="tablist" aria-label="Filtrar por categoria">
-          {CATEGORIES.map((c) => <label for={`cat-${c.id}`}>{c.label}</label>)}
-        </div>
-
-        <ul class="loja__grid">
-          {LINES.map((l, i) => <ProductCard line={l} index={i} />)}
-        </ul>
       </div>
     </section>
 
@@ -152,21 +151,21 @@ import { CATEGORIES, LINES } from '../data/shop';
     margin-top: 2rem;
   }
 
-  .loja__tabs {
+  .loja__jump {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-bottom: clamp(2rem, 4vw, 3rem);
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
   }
 
-  .loja__tabs label {
-    cursor: pointer;
+  .loja__jump a {
     padding: 0.6em 1.2em;
     font-family: var(--font-display), 'Arial Narrow', sans-serif;
     font-weight: 700;
     font-size: 0.75rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    text-decoration: none;
     color: var(--bone-70);
     border: 1px solid var(--line-strong);
     transition:
@@ -175,31 +174,30 @@ import { CATEGORIES, LINES } from '../data/shop';
       border-color 0.2s var(--ease-out);
   }
 
-  .loja__tabs label:hover {
-    border-color: var(--bone);
-    color: var(--bone);
+  .loja__jump a:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .loja__cat {
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+  }
+
+  .loja__cat + .loja__cat {
+    margin-top: clamp(3rem, 7vw, 5.5rem);
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .loja__cat-title {
+    font-size: clamp(1.8rem, 1.2rem + 2.6vw, 3rem);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   }
 
   .loja__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem clamp(1rem, 2.5vw, 2rem);
-  }
-
-  /* Filtro por categoria: puro CSS, funciona sem JS */
-  #cat-feminino:checked ~ .loja__tabs label[for='cat-feminino'],
-  #cat-masculino:checked ~ .loja__tabs label[for='cat-masculino'],
-  #cat-sale:checked ~ .loja__tabs label[for='cat-sale'],
-  #cat-todos:checked ~ .loja__tabs label[for='cat-todos'] {
-    background: var(--red);
-    border-color: var(--red);
-    color: var(--ink);
-  }
-
-  #cat-feminino:checked ~ .loja__grid :global(.pcard:not([data-cat='feminino'])),
-  #cat-masculino:checked ~ .loja__grid :global(.pcard:not([data-cat='masculino'])),
-  #cat-sale:checked ~ .loja__grid :global(.pcard:not([data-cat='sale'])) {
-    display: none;
   }
 
   @media (min-width: 640px) {
