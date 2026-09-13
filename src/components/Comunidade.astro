@@ -1,11 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import { AVATAR, BRAND, FEED } from '../data/site';
-import Plate from './Plate.astro';
 import Icon from './Icon.astro';
 import Kicker from './Kicker.astro';
-
-const { point } = BRAND;
 ---
 
 <section class="com section section--line" id="comunidade" aria-labelledby="com-title">
@@ -13,93 +10,95 @@ const { point } = BRAND;
     <header class="sec-head com__head">
       <Kicker index="05" label="Comunidade" />
       <div class="sec-head__row">
-        <h2 class="sec-head__title d" id="com-title" data-reveal="forge" data-split="forge">Do feed<br />para o box.</h2>
-        <div class="com__profile" data-reveal style="--i:1">
-          <Image src={AVATAR} alt="" width={112} height={112} class="com__avatar" loading="lazy" />
-          <div class="com__who">
-            <p class="com__handle d">{BRAND.handle}</p>
-            <p class="eyebrow">Drops, bastidores e a comunidade</p>
+        <h2 class="sec-head__title d" id="com-title" data-reveal="forge" data-split="forge">
+          Do feed<br />para o box.
+        </h2>
+        <div class="com__header-side">
+          <div class="com__profile" data-reveal style="--i:1">
+            <Image src={AVATAR} alt="" width={112} height={112} class="com__avatar" loading="lazy" />
+            <div class="com__who">
+              <p class="com__handle d">{BRAND.handle}</p>
+              <p class="eyebrow">Drops, bastidores e a comunidade</p>
+            </div>
+            <a class="btn btn--sm" href={BRAND.instagram} target="_blank" rel="noopener">
+              <Icon name="instagram" class="btn__icon" />
+              Seguir
+            </a>
           </div>
-          <a class="btn btn--sm" href={BRAND.instagram} target="_blank" rel="noopener">
-            <Icon name="instagram" class="btn__icon" />
-            Seguir
-          </a>
+
+          <div class="com__nav-actions" data-reveal style="--i:2">
+            <button class="com__nav-btn" data-com-prev aria-label="Voltar card do carrossel">
+              <Icon name="arrow" class="com__nav-ico com__nav-ico--prev" />
+            </button>
+            <button class="com__nav-btn" data-com-next aria-label="Avançar card do carrossel">
+              <Icon name="arrow" class="com__nav-ico" />
+            </button>
+          </div>
         </div>
       </div>
     </header>
   </div>
 
-  <div class="com__strip" data-com-carousel tabindex="0" aria-label="Peças do feed, em carrossel">
-    {
-      FEED.map((f, i) => {
-        if (f.kind === 'art' && f.art) {
-          return (
-            <div class="com__tile" style={`--ratio:${(f.art.width / f.art.height).toFixed(4)}`}>
-              <Plate
-                src={f.art}
-                alt={f.alt ?? ''}
-                label={f.label}
-                sizes={`(max-width: 720px) ${Math.round((400 * f.art.width) / f.art.height)}px, ${Math.round((470 * f.art.width) / f.art.height)}px`}
-                reveal="scale"
-              />
-            </div>
-          );
-        }
-        if (f.kind === 'say') {
-          return (
-            <div class="com__tile com__tile--type" data-reveal style={`--i:${i}`}>
-              <span class="com__hand" aria-hidden="true">
-                ✌
-              </span>
-              <p class="eyebrow">Se escreve NJAL.</p>
-              <p class="com__big d">
-                Se fala <span class="d--red">Nijal</span>
-              </p>
-              <p class="copy com__small">Pronúncia é bandeira. Fala certo, treina certo.</p>
-            </div>
-          );
-        }
-        if (f.kind === 'point') {
-          return (
-            <div class="com__tile com__tile--type com__tile--point" data-reveal style={`--i:${i}`}>
-              <Icon name="pin" class="com__pin" />
-              <p class="eyebrow">
-                <b>Ponto físico</b> · {point.role.split(' · ')[0]}
-              </p>
-              <p class="com__big d">{point.name}</p>
-              <address class="com__addr copy">
-                {point.street} — {point.district}
-                <br />
-                {point.city}, {point.uf}
-              </address>
-              <a class="link" href={point.maps} target="_blank" rel="noopener">
-                Abrir no mapa
-                <Icon name="arrow" class="btn__icon" />
+  <div class="com__rotator" data-com-rotator tabindex="0" aria-label="Carrossel contínuo do feed Instagram">
+    <div class="com__track" data-com-track>
+      {
+        [0, 1].map((copyIndex) => (
+          <div class="com__set" data-com-set aria-hidden={copyIndex === 1 ? 'true' : undefined}>
+            {FEED.map((f, i) => (
+              <a
+                href={BRAND.instagram}
+                target="_blank"
+                rel="noopener"
+                class="com__card"
+                style={`--ratio:${(f.art.width / f.art.height).toFixed(4)}`}
+                tabindex={copyIndex === 1 ? -1 : 0}
+                aria-label={`${f.label} — ver no Instagram`}
+              >
+                <div class="com__card-box">
+                  <Image
+                    src={f.art}
+                    alt={f.alt}
+                    width={Math.round((460 * f.art.width) / f.art.height)}
+                    height={460}
+                    class="com__card-img"
+                    loading={copyIndex === 0 && i < 3 ? 'eager' : 'lazy'}
+                  />
+                  <div class="com__card-scrim" aria-hidden="true" />
+                  <div class="com__card-tag">
+                    <span class="eyebrow">{f.tag}</span>
+                  </div>
+                  <div class="com__card-foot">
+                    <p class="com__card-title">{f.label}</p>
+                    <span class="com__card-author">
+                      <Icon name="instagram" class="com__card-ico" />
+                      {BRAND.handle}
+                    </span>
+                  </div>
+                </div>
               </a>
-            </div>
-          );
-        }
-        return (
-          <div class="com__tile com__tile--type" data-reveal style={`--i:${i}`}>
-            <span class="com__hand" aria-hidden="true">
-              ⚔
-            </span>
-            <p class="eyebrow">Escritura NJAL</p>
-            <p class="com__big d">{BRAND.scriptures.valhalla}</p>
+            ))}
           </div>
-        );
-      })
-    }
+        ))
+      }
+    </div>
   </div>
 </section>
 
 <style>
   .com {
-    --tile-h: clamp(380px, 52vh, 470px);
+    --tile-h: clamp(380px, 50vh, 480px);
+    overflow: hidden;
   }
 
   .com__head {
-    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    margin-bottom: clamp(1.75rem, 3.5vw, 3rem);
+  }
+
+  .com__header-side {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .com__profile {
@@ -110,45 +109,29 @@ const { point } = BRAND;
     border: 1px solid var(--line);
     background: var(--carbon);
     flex-wrap: wrap;
-  }
-
-  .com__avatar {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 50%;
-    border: 1px solid var(--line-strong);
-    background: var(--ink);
     transition:
-      transform 0.9s var(--ease-spring) 0.35s,
-      opacity 0.6s var(--ease-out) 0.35s,
-      filter 0.6s var(--ease-out) 0.35s,
-      border-color 0.3s var(--ease-out);
-  }
-
-  /* Avatar "pinga" na tela depois do card */
-  :global(.js) .com__profile .com__avatar {
-    opacity: 0;
-    transform: scale(0.5) rotate(-14deg);
-  }
-
-  :global(.js) .com__profile.in .com__avatar {
-    opacity: 1;
-    transform: none;
-  }
-
-  .com__profile:hover .com__avatar {
-    border-color: var(--red);
-  }
-
-  .com__profile {
-    transition:
-      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
-      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
-      border-color 0.35s var(--ease-out);
+      border-color 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
   }
 
   .com__profile:hover {
     border-color: var(--line-strong);
+  }
+
+  .com__avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--ink);
+    transition:
+      transform 0.5s var(--ease-spring),
+      border-color 0.3s var(--ease-out);
+  }
+
+  .com__profile:hover .com__avatar {
+    border-color: var(--red);
+    transform: scale(1.05);
   }
 
   .com__who {
@@ -163,192 +146,391 @@ const { point } = BRAND;
     letter-spacing: 0.02em;
   }
 
-  .com__strip {
+  .com__nav-actions {
     display: flex;
-    gap: var(--gap);
-    align-items: flex-start;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: var(--pad);
-    padding: 0.25rem var(--pad) 1.25rem;
-    scrollbar-width: thin;
-    scrollbar-color: var(--line-strong) transparent;
+    align-items: center;
+    gap: 0.5rem;
   }
 
-  .com__strip:focus-visible {
+  .com__nav-btn {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--line);
+    background: var(--carbon);
+    color: var(--bone);
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      background-color 0.25s var(--ease-out),
+      color 0.25s var(--ease-out),
+      transform 0.2s var(--ease-spring);
+  }
+
+  .com__nav-btn:hover {
+    border-color: var(--red);
+    background: var(--red-glow);
+    color: var(--bone);
+    transform: translateY(-2px);
+  }
+
+  .com__nav-btn:active {
+    transform: translateY(0) scale(0.95);
+  }
+
+  .com__nav-ico {
+    width: 1.15rem;
+    height: 1.15rem;
+    transition: transform 0.2s var(--ease-out);
+  }
+
+  .com__nav-ico--prev {
+    transform: rotate(180deg);
+  }
+
+  .com__nav-btn:hover .com__nav-ico {
+    transform: translateX(2px);
+  }
+
+  .com__nav-btn:hover .com__nav-ico--prev {
+    transform: rotate(180deg) translateX(2px);
+  }
+
+  /* Carrossel contínuo infinito com fade suave nas bordas */
+  .com__rotator {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding-block: 0.5rem 2rem;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y pinch-zoom;
+    mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  }
+
+  .com__rotator:active,
+  .com__rotator.is-dragging {
+    cursor: grabbing;
+  }
+
+  .com__rotator:focus-visible {
+    outline: 2px solid var(--red);
     outline-offset: -2px;
   }
 
-  .com__tile {
+  .com__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  /* Fallback em CSS puro se JS falhar ou estiver desligado */
+  :global(.no-js) .com__track {
+    animation: com-glide-fallback 45s linear infinite;
+  }
+
+  :global(.no-js) .com__rotator:hover .com__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes com-glide-fallback {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .com__set {
+    display: flex;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    padding-right: clamp(1rem, 2vw, 1.5rem);
     flex: none;
-    scroll-snap-align: start;
-    width: calc(var(--tile-h) * var(--ratio, 0.75));
   }
 
-  .com__tile :global(.plate) {
-    width: 100%;
-  }
-
-  .com__tile--type {
-    width: clamp(260px, 32vw, 400px);
+  .com__card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    flex: none;
     height: var(--tile-h);
-    display: grid;
-    align-content: end;
-    gap: 0.75rem;
-    padding: clamp(1.25rem, 2.5vw, 2rem);
+    width: clamp(270px, calc(var(--tile-h) * var(--ratio, 0.75)), 520px);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .com__card:hover,
+  .com__card:focus-visible {
+    transform: translateY(-6px);
+  }
+
+  .com__card-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     border: 1px solid var(--line);
     background: var(--carbon);
     transition:
-      opacity var(--dur-slow) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
-      transform 1.2s var(--ease-out) calc(var(--i, 0) * var(--stagger)),
-      border-color 0.4s var(--ease-out),
-      box-shadow 0.6s var(--ease-out);
+      border-color 0.35s var(--ease-out),
+      box-shadow 0.45s var(--ease-out);
   }
 
-  .com__tile--type:hover {
-    border-color: var(--line-strong);
-    box-shadow: 0 30px 60px -30px rgba(232, 18, 63, 0.35);
+  .com__card:hover .com__card-box,
+  .com__card:focus-visible .com__card-box {
+    border-color: var(--red);
+    box-shadow:
+      0 20px 40px -15px rgba(232, 18, 63, 0.4),
+      0 0 0 1px rgba(232, 18, 63, 0.4);
   }
 
-  /* Conteúdo dos cards tipográficos entra escalonado depois do card */
-  :global(.js) .com__tile--type > * {
-    opacity: 0;
-    transform: translate3d(0, 14px, 0);
+  .com__card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s var(--ease-out);
+  }
+
+  .com__card:hover .com__card-img {
+    transform: scale(1.05);
+  }
+
+  /* Gradiente escuro sutil para realçar as legendas */
+  .com__card-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(5, 5, 6, 0.3) 0%,
+      transparent 30%,
+      transparent 50%,
+      rgba(5, 5, 6, 0.88) 100%
+    );
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-out);
+  }
+
+  .com__card:hover .com__card-scrim {
+    opacity: 0.95;
+  }
+
+  /* Badge com categoria/tag no canto superior */
+  .com__card-tag {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.35rem 0.65rem;
+    background: rgba(5, 5, 6, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--line-strong);
+    color: var(--bone);
     transition:
-      opacity 0.7s var(--ease-out),
-      transform 0.8s var(--ease-out);
+      border-color 0.3s var(--ease-out),
+      background-color 0.3s var(--ease-out);
   }
 
-  :global(.js) .com__tile--type.in > * {
-    opacity: 1;
-    transform: none;
+  .com__card:hover .com__card-tag {
+    border-color: var(--red);
+    background: rgba(232, 18, 63, 0.2);
   }
 
-  :global(.js) .com__tile--type.in > :nth-child(1) {
-    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.25s);
+  .com__card-tag .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--bone);
   }
 
-  :global(.js) .com__tile--type.in > :nth-child(2) {
-    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.35s);
+  /* Rodapé do card com texto e handle do Instagram */
+  .com__card-foot {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 1.25rem 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    transform: translateY(4px);
+    transition: transform 0.4s var(--ease-out);
   }
 
-  :global(.js) .com__tile--type.in > :nth-child(3) {
-    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.45s);
+  .com__card:hover .com__card-foot {
+    transform: translateY(0);
   }
 
-  :global(.js) .com__tile--type.in > :nth-child(4) {
-    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.55s);
+  .com__card-title {
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--bone);
+    line-height: 1.3;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   }
 
-  :global(.js) .com__tile--type.in > :nth-child(5) {
-    transition-delay: calc(var(--i, 0) * var(--stagger) + 0.65s);
-  }
-
-  .com__tile--point {
-    border-color: rgba(232, 18, 63, 0.5);
-  }
-
-  .com__hand {
-    font-size: 2.6rem;
-    line-height: 1;
-    margin-bottom: auto;
-    width: fit-content;
-    transform-origin: 70% 90%;
-  }
-
-  :global(.js) .com__tile--type.in .com__hand {
-    animation: wave 1.4s var(--ease-in-out) 1.7s 1;
-  }
-
-  .com__tile--type:hover .com__hand {
-    animation: wave 1.2s var(--ease-in-out) infinite;
-  }
-
-  .com__pin {
-    width: 2rem;
-    height: 2rem;
+  .com__card-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--red);
-    margin-bottom: auto;
   }
 
-  :global(.js) .com__tile--point.in .com__pin {
-    animation: pin-drop 0.9s var(--ease-spring) 0.9s both;
-  }
-
-  @keyframes pin-drop {
-    from {
-      transform: translateY(-18px) scale(0.8);
-    }
-    to {
-      transform: none;
-    }
-  }
-
-  .com__tile--point:hover .com__pin {
-    animation: bounce-y 1.2s var(--ease-in-out) infinite;
-  }
-
-  .com__big {
-    font-size: clamp(1.7rem, 2.6vw, 2.6rem);
-    line-height: 0.95;
-  }
-
-  .com__small {
-    font-size: 0.95rem;
-  }
-
-  .com__addr {
-    font-style: normal;
+  .com__card-ico {
+    width: 0.9rem;
+    height: 0.9rem;
   }
 
   @media (max-width: 720px) {
     .com {
-      --tile-h: 400px;
+      --tile-h: 390px;
+    }
+
+    .com__header-side {
+      width: 100%;
+      justify-content: space-between;
     }
 
     .com__profile {
       width: 100%;
     }
-  }
 
+    .com__nav-actions {
+      display: none;
+    }
+  }
 </style>
 
 <script>
-  /* Feed em carrossel: avança sozinho de peça em peça, volta ao início ao chegar no fim.
-     Pausa com o mouse em cima, no toque ou com foco (teclado) -- o visitante sempre pode navegar na mão. */
-  const ADVANCE_MS = 4000;
+  /**
+   * Carrossel contínuo suave (60/120fps via requestAnimationFrame).
+   * - Deslocamento uniforme e constante (rotacionando sem trancos).
+   * - Pausa ao passar o mouse ou tocar.
+   * - Permite arrastar com mouse (drag-to-scroll) ou dedo (touch-to-scroll).
+   * - Botões de anterior / próximo para navegar em saltos suaves.
+   */
+  const rotators = document.querySelectorAll<HTMLElement>('[data-com-rotator]');
 
-  document.querySelectorAll<HTMLElement>('[data-com-carousel]').forEach((strip) => {
-    const tiles = Array.from(strip.querySelectorAll<HTMLElement>('.com__tile'));
-    if (tiles.length < 2) return;
+  rotators.forEach((rotator) => {
+    const track = rotator.querySelector<HTMLElement>('[data-com-track]');
+    const set = rotator.querySelector<HTMLElement>('[data-com-set]');
+    if (!track || !set) return;
 
-    let index = 0;
-    let paused = false;
-    let resumeTimer: ReturnType<typeof setTimeout>;
+    let position = 0;
+    let baseSpeed = 0.75; // pixels por frame (~45px/s a 60fps)
+    let nudgeDelta = 0;
+    let isPaused = false;
+    let isDragging = false;
+    let startX = 0;
+    let dragStartX = 0;
+    let dragDist = 0;
+    let resumeTimeout: ReturnType<typeof setTimeout>;
 
-    const next = () => {
-      if (paused) return;
-      index = (index + 1) % tiles.length;
-      strip.scrollTo({ left: tiles[index].offsetLeft, behavior: 'smooth' });
-    };
+    // Velocidade constante suave
+    const getSetWidth = () => set.offsetWidth;
 
-    setInterval(next, ADVANCE_MS);
+    function step() {
+      const setWidth = getSetWidth();
+
+      if (setWidth > 0) {
+        if (Math.abs(nudgeDelta) > 0.4) {
+          const stepNudge = nudgeDelta * 0.12;
+          position += stepNudge;
+          nudgeDelta -= stepNudge;
+        } else {
+          nudgeDelta = 0;
+          if (!isPaused && !isDragging) {
+            position += baseSpeed;
+          }
+        }
+
+        // Loop infinito contínuo e sem emendas
+        while (position >= setWidth) {
+          position -= setWidth;
+        }
+        while (position < 0) {
+          position += setWidth;
+        }
+
+        track!.style.transform = `translate3d(${-position}px, 0, 0)`;
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
 
     const pause = () => {
-      paused = true;
-      clearTimeout(resumeTimer);
-    };
-    const resumeSoon = () => {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => (paused = false), 1500);
+      isPaused = true;
+      clearTimeout(resumeTimeout);
     };
 
-    strip.addEventListener('mouseenter', pause);
-    strip.addEventListener('mouseleave', resumeSoon);
-    strip.addEventListener('touchstart', pause, { passive: true });
-    strip.addEventListener('touchend', resumeSoon, { passive: true });
-    strip.addEventListener('focusin', pause);
-    strip.addEventListener('focusout', resumeSoon);
+    const resumeSoon = (delay = 1200) => {
+      clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => {
+        isPaused = false;
+      }, delay);
+    };
+
+    // Hover e foco
+    rotator.addEventListener('mouseenter', pause);
+    rotator.addEventListener('mouseleave', () => resumeSoon(300));
+    rotator.addEventListener('focusin', pause);
+    rotator.addEventListener('focusout', () => resumeSoon(300));
+
+    // Pointer Drag (Mouse e Touch)
+    const onPointerDown = (e: PointerEvent) => {
+      isDragging = true;
+      pause();
+      nudgeDelta = 0;
+      startX = e.clientX;
+      dragStartX = position;
+      dragDist = 0;
+      rotator.classList.add('is-dragging');
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      dragDist = Math.abs(dx);
+      position = dragStartX - dx;
+    };
+
+    const onPointerUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      rotator.classList.remove('is-dragging');
+      resumeSoon(1200);
+    };
+
+    rotator.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
+
+    // Evitar que arrasto abra o link acidentalmente
+    rotator.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        if (dragDist > 6) {
+          e.preventDefault();
+        }
+      });
+    });
+
+    // Botões Próximo / Anterior
+    const nextBtn = document.querySelector<HTMLButtonElement>('[data-com-next]');
+    const prevBtn = document.querySelector<HTMLButtonElement>('[data-com-prev]');
+
+    const nudge = (amount: number) => {
+      pause();
+      nudgeDelta += amount;
+      resumeSoon(2000);
+    };
+
+    nextBtn?.addEventListener('click', () => nudge(340));
+    prevBtn?.addEventListener('click', () => nudge(-340));
   });
 </script>

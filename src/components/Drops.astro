@@ -145,10 +145,12 @@ const MONO_PATH = 'M15 15H49L111 77V31L102 15H131V170H97L32 105V149L42.5 170H15Z
   /* Padrão de monogramas deriva devagar (um "tile" de 72×94 por ciclo → loop sem emenda) */
   .drop__pattern {
     position: absolute;
-    top: -94px;
-    left: -72px;
-    width: calc(100% + 144px);
-    height: calc(100% + 188px);
+    top: -188px;
+    left: -144px;
+    width: calc(100% + 288px);
+    height: calc(100% + 376px);
+    max-width: none;
+    max-height: none;
     fill: var(--ink);
     opacity: 0.9;
     animation: drop-drift 14s linear infinite;

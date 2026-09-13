@@ -15,6 +15,10 @@ import artConfeccao from '../assets/images/post-confeccao-portfolio.jpg';
 import artNovidades from '../assets/images/post-athlete-blacktee.jpg';
 import feedRegata from '../assets/images/diogo-regata-reel.jpg';
 import feedEspelho from '../assets/images/post-diogo-crossfit.jpg';
+import feedRashguard from '../assets/images/feed-jiujitsu-rashguard.jpg';
+import feedBatalha from '../assets/images/feed-batalha-armadura.jpg';
+import feedTatami from '../assets/images/feed-jiujitsu-fight.jpg';
+import feedHoodie from '../assets/images/feed-custom-hoodie.jpg';
 import avatar from '../assets/images/njal-profile.jpg';
 
 /** Caminho base do deploy (GitHub Pages serve em subdiretório). Use para qualquer link de página interna. */
@@ -241,28 +245,55 @@ export const FABRIC: FabricSpec[] = [
 ];
 
 export interface FeedItem {
-  kind: 'art' | 'say' | 'point' | 'valhalla';
-  art?: ImageMetadata;
-  alt?: string;
-  label?: string;
+  art: ImageMetadata;
+  alt: string;
+  label: string;
+  tag: string;
 }
 
 export const FEED: FeedItem[] = [
   {
-    kind: 'art',
-    art: feedRegata,
-    alt: 'Atleta de regata vermelha NJAL em frente ao espelho da academia',
-    label: 'Reel · Regata Valhalla',
-  },
-  { kind: 'say' },
-  {
-    kind: 'art',
     art: feedEspelho,
-    alt: 'Atleta de camiseta preta NJAL com o brasão do viking em frente ao espelho',
+    alt: 'Atleta Diogo de camiseta preta NJAL em frente ao espelho da academia',
     label: 'Feed · Camiseta Training Dept.',
+    tag: 'Treino',
   },
-  { kind: 'point' },
-  { kind: 'valhalla' },
+  {
+    art: feedRashguard,
+    alt: 'Atleta com camiseta azul NJAL no tatami de Jiu-Jitsu',
+    label: 'Feed · Rashguard No-Gi',
+    tag: 'Jiu-Jitsu',
+  },
+  {
+    art: feedRegata,
+    alt: 'Atleta Diogo em treino pesado com regata vermelha NJAL',
+    label: 'Reel · Regata Valhalla',
+    tag: 'Crossfit',
+  },
+  {
+    art: feedBatalha,
+    alt: 'Atletas em luta no tatami com armadura fightwear NJAL',
+    label: 'Feed · Fightwear Armadura',
+    tag: 'Championship',
+  },
+  {
+    art: feedTatami,
+    alt: 'Atleta no tatami do Templo Jiu-Jitsu com camiseta NJAL',
+    label: 'Feed · Templo Jiu-Jitsu',
+    tag: 'Tatami',
+  },
+  {
+    art: feedHoodie,
+    alt: 'Atleta vestindo camiseta térmica manga longa com zíper NJAL',
+    label: 'Feed · Long Sleeve Compression',
+    tag: 'Performance',
+  },
+  {
+    art: artNovidades,
+    alt: 'Atleta vestindo camiseta streetwear NJAL',
+    label: 'Feed · Streetwear NJAL',
+    tag: 'Streetwear',
+  },
 ];
 
 export const AVATAR = avatar;
